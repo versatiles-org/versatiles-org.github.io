@@ -35,11 +35,9 @@
 				'interactive web map',
 			])
 
-			chart.addBreak();
-
 			chart.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 
-			chart.addCover([
+			let coverBoxes = chart.addCover([
 				['docker', 'versatiles-maker', [0, 1, 2]],
 				['rust', 'versatiles-rs', [1, 2]],
 				['npm', 'node-versatiles', [2]],

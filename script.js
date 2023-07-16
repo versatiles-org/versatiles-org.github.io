@@ -19,9 +19,9 @@ class BBox {
 	}
 	asAttributes() {
 		return {
-			width: this.width,
-			height: this.height,
-			viewBox: this.bbox.join(' ')
+			width: this.bbox[2],
+			height: this.bbox[3],
+			viewBox: [0, 0, this.bbox[2], this.bbox[3]].join(' ')
 		}
 	}
 	includeRect(rect) {
@@ -106,7 +106,7 @@ class Canvas {
 			.replace(/[xy][0-9]/g, key => coords[key[0]][parseInt(key[1], 10)]);
 		this.#setAttributes(node, { d });
 		this.#setStyle(node, style);
-		this.bbox.includeRect(rect);
+		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] / 2, rect[3]]);
 	}
 	#append(node) {
 		this.node.append(node);
@@ -148,8 +148,8 @@ class Chart {
 	}
 
 	addHeadline(text) {
-		this.addBreak();
-		
+		this.addBreak(2);
+
 		let group = this.canvas.appendGroup();
 		let rect = [
 			this.colStart - this.colWidth / 4 - this.boxHeight / 4, this.y0,
@@ -196,7 +196,7 @@ class Chart {
 		let group = this.canvas.appendGroup();
 		let lastPosition = -3.1;
 
-		elements.forEach((element, i) => {
+		return elements.map((element, i) => {
 			let [type, name, connections, position] = element;
 			position ??= connections[0];
 			if (position === lastPosition) this.y0 += this.boxHeight / 2;
@@ -223,7 +223,7 @@ class Chart {
 			group.drawRect(rect, { fill: color });
 			group.drawText(rect, title, { fill: '#000A', fontFamily, fontSize: 7 });
 
-			group.drawRect([x, this.y0, this.boxWidth, this.boxHeight], { fill: color + '5', stroke: color });
+			let box = group.drawRect([x, this.y0, this.boxWidth, this.boxHeight], { fill: color + '5', stroke: color });
 			group.drawText([x, this.y0 + 10, this.boxWidth, this.boxHeight - 10], name, { fill: color, fontFamily, fontSize: this.boxHeight / 3 });
 
 			let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
@@ -233,6 +233,8 @@ class Chart {
 
 
 			this.y0 += this.boxHeight;
+
+			return box;
 		})
 	}
 
