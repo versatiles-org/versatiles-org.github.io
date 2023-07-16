@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<title>Page Title</title>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<style>
+		body {
+			background: #000;
+		}
+	</style>
+	<script src="script.js"></script>
+	<script>
+
+		window.on('DOMContentLoaded', () => document.getElementById('chart').append(getChart()))
+
+		function getChart() {
+			let chart = new Chart();
+
+			chart.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive map?');
+
+			chart.addFlow([
+				'OpenStreetMap data',
+				'generator',
+				'.mbtiles',
+				'converter',
+				'.versatiles',
+				'server',
+				'HTTP',
+				'proxy / CDN',
+				'HTTPS',
+				'frontend',
+				'interactive web map',
+			])
+
+			chart.addBreak();
+
+			chart.addHeadline('Which containers, packages or files can cover which part of this process chain?');
+
+			return chart.asSVG();
+		}
+	</script>
+</head>
+
+<body>
+	<div id="chart"></div>
+</body>
+
+</html>
