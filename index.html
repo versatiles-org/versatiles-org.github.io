@@ -39,6 +39,17 @@
 
 			chart.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 
+			chart.addCover([
+				['docker', 'versatiles-maker', [0, 1, 2]],
+				['rust', 'versatiles-rs', [1, 2]],
+				['npm', 'node-versatiles', [2]],
+				['docker', 'versatiles', [1, 2]],
+				['docker', 'versatiles-server', [1, 2, 3, 4]],
+				['file', 'frontend.tar', [4], 3],
+			])
+
+			chart.addCoverGuides();
+
 			return chart.asSVG();
 		}
 	</script>
