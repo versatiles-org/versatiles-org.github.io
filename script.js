@@ -115,7 +115,7 @@ class Canvas {
 	}
 	drawArrowHead(point, dir, style) {
 		let node = this.#appendElement('path');
-		let a = 0.3;
+		let a = 0.4;
 		let d1 = [dir[0] - dir[1] * a, dir[1] + dir[0] * a];
 		let d2 = [dir[0] + dir[1] * a, dir[1] - dir[0] * a];
 		let d = `M${point.join(',')}L${p(i => point[i] + d1[i])}L${p(i => point[i] + d2[i])}z`;
@@ -256,6 +256,7 @@ class Chart {
 		this.dependencyGroup ??= this.canvas.appendGroup();
 		this.depColY ??= [this.y0, this.y0, this.y0, this.y0];
 
+		if (options.dy) this.depColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
 		let box = this.#drawContainer(this.dependencyGroup, [x, this.depColY[col]], type, name);
 		this.depColY[col] += this.boxHeight * 1.5;
@@ -289,7 +290,7 @@ class Chart {
 		opt.shortenStart ??= 0;
 		opt.shortenEnd ??= 0;
 		opt.offset ??= 20;
-		opt.radius ??= 10;
+		opt.radius ??= 0;
 
 		let size0 = [box0.rect[2] / 2, box0.rect[3] / 2];
 		let size1 = [box1.rect[2] / 2, box1.rect[3] / 2];

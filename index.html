@@ -56,10 +56,10 @@
 			let depDocS = c.addDependency('docker', 'versatiles-server', 2, covDocS);
 			c.addDepDep(depDoc0, depDocS);
 
-			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'E', endDir: 'E' });
+			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy:20 });
 			c.addDepDep(depRust, depDoc0);
 
-			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'W', endDir: 'W' });
+			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'E', endDir: 'E', dy:20 });
 
 			let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro);
 			c.addDepDep(depFFro, depDocS);
