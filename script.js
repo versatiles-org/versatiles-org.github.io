@@ -102,11 +102,31 @@ class Canvas {
 			y: [rect[1], rect[1] + rect[3] / 2, rect[1] + rect[3]]
 		}
 
-		let d = 'Mx0,y0Lx1,y1Lx0,y2Lx2,y2Lx3,y1Lx2,y0,z'
+		let d = 'Mx0,y0Lx1,y1Lx0,y2Lx2,y2Lx3,y1Lx2,y0z'
 			.replace(/[xy][0-9]/g, key => coords[key[0]][parseInt(key[1], 10)]);
 		this.#setAttributes(node, { d });
 		this.#setStyle(node, style);
 		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] / 2, rect[3]]);
+	}
+	drawPath(d, style) {
+		let node = this.#appendElement('path');
+		this.#setAttributes(node, { d });
+		this.#setStyle(node, style);
+	}
+	drawArrowHead(point, dir, style) {
+		let node = this.#appendElement('path');
+		let a = 0.3;
+		let b = Math.sqrt(1 - a * a);
+		let d1 = [dir[0] * b - dir[1] * a, dir[1] * b + dir[0] * a];
+		let d2 = [dir[0] * b + dir[1] * a, dir[1] * b - dir[0] * a];
+		let d = `M${point.join(',')}L${p(i => point[i] + d1[i])}L${p(i => point[i] + d2[i])}z`;
+		console.log(d);
+		this.#setAttributes(node, { d });
+		this.#setStyle(node, style);
+
+		function p(cb) {
+			return [0, 1].map(i => cb(i)).join(',');
+		}
 	}
 	#append(node) {
 		this.node.append(node);
@@ -200,14 +220,7 @@ class Chart {
 		if (position === this.coverLastPosition) this.y0 += this.boxHeight / 2;
 		this.coverLastPosition = position;
 
-		let color, title;
-		switch (type) {
-			case 'docker': color = '#00F'; title = 'Docker Container'; break;
-			case 'rust': color = '#0AF'; title = 'Rust Package'; break;
-			case 'npm': color = '#0FF'; title = 'NPM Package'; break;
-			case 'file': color = '#0FA'; title = 'File'; break;
-			default: throw Error(type);
-		}
+		let [color, title] = this.#getType(type);
 
 		let cy = this.y0 + this.boxHeight / 2;
 
@@ -217,18 +230,7 @@ class Chart {
 		})
 
 		let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
-		let rect = [x, this.y0, this.boxWidth, 10];
-		this.coverGroup.drawRect(rect, { fill: color });
-		this.coverGroup.drawText(rect, title, { fill: '#000A', fontFamily, fontSize: 7 });
-
-		let box = this.coverGroup.drawRect(
-			[x, this.y0, this.boxWidth, this.boxHeight],
-			{ fill: color + '5', stroke: color }
-		);
-		this.coverGroup.drawText(
-			[x, this.y0 + 10, this.boxWidth, this.boxHeight - 10], name,
-			{ fill: color, fontFamily, fontSize: this.boxHeight / 3 }
-		);
+		let box = this.#drawContainer(this.coverGroup, [x, this.y0], type, name);
 
 		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
 		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
@@ -249,5 +251,87 @@ class Chart {
 				{ stroke: '#F105', strokeWidth: 5 }
 			)
 		}
+	}
+
+	addDependency(type, name, col, ref) {
+		this.dependencyGroup ??= this.canvas.appendGroup();
+		this.depColY ??= [this.y0, this.y0, this.y0, this.y0];
+
+		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
+		let box = this.#drawContainer(this.dependencyGroup, [x, this.depColY[col]], type, name);
+		this.depColY[col] += this.boxHeight * 1.5;
+
+		if (ref) {
+			let path = this.#getPath(ref, box);
+			this.dependencyGroup.drawPath(path.d, { stroke: box.color + '5', strokeWidth: 1 })
+		}
+
+		return box;
+	}
+
+	addDepDep(dep0, dep1, options) {
+		let path = this.#getPath(dep0, dep1, options);
+		this.dependencyGroup.drawPath(path.d, { stroke: dep0.color, strokeWidth: 2 })
+		this.dependencyGroup.drawArrowHead(path.point1, path.dir1.map(v => 20 * v), { fill: dep0.color })
+	}
+
+	#getType(type) {
+		switch (type) {
+			case 'docker': return ['#00F', 'Docker Container'];
+			case 'rust': return ['#0AF', 'Rust Package'];
+			case 'npm': return ['#0FF', 'NPM Package'];
+			case 'file': return ['#0FA', 'File'];
+			default: throw Error(type);
+		}
+	}
+
+	#getPath(box0, box1, options) {
+		let s0 = [box0.rect[2] / 2, box0.rect[3] / 2];
+		let s1 = [box1.rect[2] / 2, box1.rect[3] / 2];
+		let p0 = [box0.rect[0] + s0[0], box0.rect[1] + s0[1]];
+		let p1 = [box1.rect[0] + s1[0], box1.rect[1] + s1[1]];
+		let dx = p0[0] - p1[0];
+		let dy = p0[1] - p1[1];
+		let dir0;
+		if (Math.abs(dx) > Math.abs(dy)) {
+			dir0 = (dx < 0) ? [1, 0] : [-1, 0];
+		} else {
+			dir0 = (dy < 0) ? [0, 1] : [0, -1];
+		}
+		let dir1 = dir0.map(v => -v);
+
+
+		let point0 = p(i => p0[i] + s0[i] * dir0[i]);
+		let point1 = p(i => p1[i] + s1[i] * dir1[i]);
+		return {
+			point0, dir0,
+			point1, dir1,
+			d: 'M' + point0.join(',') + 'L' + point1.join(',')
+		};
+
+		function p(cb) {
+			return [0, 1].map(i => cb(i));
+		}
+	}
+
+	#drawContainer(canvas, pos, type, name) {
+		let [color, title] = this.#getType(type);
+
+		let head = [pos[0], pos[1], this.boxWidth, 10]
+		canvas.drawRect(head, { fill: color });
+		canvas.drawText(head, title, { fill: '#000A', fontFamily, fontSize: 7 });
+
+		let rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
+		canvas.drawRect(
+			rect,
+			{ fill: color + '5', stroke: color }
+		);
+
+		canvas.drawText(
+			[pos[0], pos[1] + 10, this.boxWidth, this.boxHeight - 10], name,
+			{ fill: color, fontFamily, fontSize: this.boxHeight / 3 }
+		);
+
+		return { rect, color };
 	}
 }
