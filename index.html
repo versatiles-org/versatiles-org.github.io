@@ -56,22 +56,22 @@
 			let depDocS = c.addDependency('docker', 'versatiles-server', 2, covDocS);
 			c.addDepDep(depDoc0, depDocS);
 
-			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust);
+			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'E', endDir: 'E' });
 			c.addDepDep(depRust, depDoc0);
 
-			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV);
+			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'W', endDir: 'W' });
 
 			let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro);
 			c.addDepDep(depFFro, depDocS);
 
 			let depFSty = c.addDependency('file', 'styles.tar', 3);
-			c.addDepDep(depFSty, depFFro);
+			c.addDepDep(depFSty, depFFro, { startDir: 'E', endDir: 'E' });
 
 			let depFSpr = c.addDependency('file', 'sprites.tar', 3);
-			c.addDepDep(depFSpr, depFFro);
+			c.addDepDep(depFSpr, depFFro, { startDir: 'E', endDir: 'E' });
 
 			let depFFon = c.addDependency('file', 'fonts.tar', 3);
-			c.addDepDep(depFFon, depFFro);
+			c.addDepDep(depFFon, depFFro, { startDir: 'E', endDir: 'E' });
 
 			return c.asSVG();
 		}

@@ -116,11 +116,10 @@ class Canvas {
 	drawArrowHead(point, dir, style) {
 		let node = this.#appendElement('path');
 		let a = 0.3;
-		let b = Math.sqrt(1 - a * a);
-		let d1 = [dir[0] * b - dir[1] * a, dir[1] * b + dir[0] * a];
-		let d2 = [dir[0] * b + dir[1] * a, dir[1] * b - dir[0] * a];
+		let d1 = [dir[0] - dir[1] * a, dir[1] + dir[0] * a];
+		let d2 = [dir[0] + dir[1] * a, dir[1] - dir[0] * a];
 		let d = `M${point.join(',')}L${p(i => point[i] + d1[i])}L${p(i => point[i] + d2[i])}z`;
-		console.log(d);
+
 		this.#setAttributes(node, { d });
 		this.#setStyle(node, style);
 
@@ -253,7 +252,7 @@ class Chart {
 		}
 	}
 
-	addDependency(type, name, col, ref) {
+	addDependency(type, name, col, ref, options = {}) {
 		this.dependencyGroup ??= this.canvas.appendGroup();
 		this.depColY ??= [this.y0, this.y0, this.y0, this.y0];
 
@@ -262,17 +261,18 @@ class Chart {
 		this.depColY[col] += this.boxHeight * 1.5;
 
 		if (ref) {
-			let path = this.#getPath(ref, box);
-			this.dependencyGroup.drawPath(path.d, { stroke: box.color + '5', strokeWidth: 1 })
+			let path = this.#getPath(ref, box, options);
+			this.dependencyGroup.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
 		}
 
 		return box;
 	}
 
-	addDepDep(dep0, dep1, options) {
+	addDepDep(dep0, dep1, options = {}) {
+		options.shortenEnd = 5;
 		let path = this.#getPath(dep0, dep1, options);
-		this.dependencyGroup.drawPath(path.d, { stroke: dep0.color, strokeWidth: 2 })
-		this.dependencyGroup.drawArrowHead(path.point1, path.dir1.map(v => 20 * v), { fill: dep0.color })
+		this.dependencyGroup.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
+		this.dependencyGroup.drawArrowHead(path.point1, path.dir1.map(v => 10 * v), { fill: dep0.color })
 	}
 
 	#getType(type) {
@@ -285,13 +285,18 @@ class Chart {
 		}
 	}
 
-	#getPath(box0, box1, options) {
-		let s0 = [box0.rect[2] / 2, box0.rect[3] / 2];
-		let s1 = [box1.rect[2] / 2, box1.rect[3] / 2];
-		let p0 = [box0.rect[0] + s0[0], box0.rect[1] + s0[1]];
-		let p1 = [box1.rect[0] + s1[0], box1.rect[1] + s1[1]];
-		let dx = p0[0] - p1[0];
-		let dy = p0[1] - p1[1];
+	#getPath(box0, box1, opt = {}) {
+		opt.shortenStart ??= 0;
+		opt.shortenEnd ??= 0;
+		opt.offset ??= 20;
+		opt.radius ??= 10;
+
+		let size0 = [box0.rect[2] / 2, box0.rect[3] / 2];
+		let size1 = [box1.rect[2] / 2, box1.rect[3] / 2];
+		let point0 = [box0.rect[0] + size0[0], box0.rect[1] + size0[1]];
+		let point1 = [box1.rect[0] + size1[0], box1.rect[1] + size1[1]];
+		let dx = point0[0] - point1[0];
+		let dy = point0[1] - point1[1];
 		let dir0;
 		if (Math.abs(dx) > Math.abs(dy)) {
 			dir0 = (dx < 0) ? [1, 0] : [-1, 0];
@@ -300,17 +305,42 @@ class Chart {
 		}
 		let dir1 = dir0.map(v => -v);
 
+		if (opt.startDir) dir0 = dirLookup(opt.startDir);
+		if (opt.endDir) dir1 = dirLookup(opt.endDir);
 
-		let point0 = p(i => p0[i] + s0[i] * dir0[i]);
-		let point1 = p(i => p1[i] + s1[i] * dir1[i]);
+		let con0 = p(i => point0[i] + (size0[i] - opt.radius + opt.offset) * dir0[i]);
+		let con1 = p(i => point1[i] + (size1[i] - opt.radius + opt.offset) * dir1[i]);
+
 		return {
-			point0, dir0,
-			point1, dir1,
-			d: 'M' + point0.join(',') + 'L' + point1.join(',')
+			point0: p(i => point0[i] + size0[i] * dir0[i]), dir0,
+			point1: p(i => point1[i] + size1[i] * dir1[i]), dir1,
+			d: [
+				'M',
+				p(i => point0[i] + (size0[i] + opt.shortenStart) * dir0[i]).join(','),
+				'L',
+				con0.join(','),
+
+
+
+				'L',
+				con1.join(','),
+				'L',
+				p(i => point1[i] + (size1[i] + opt.shortenEnd) * dir1[i]).join(',')
+			].join('')
 		};
 
 		function p(cb) {
 			return [0, 1].map(i => cb(i));
+		}
+
+		function dirLookup(text) {
+			switch (text.toUpperCase()) {
+				case 'N': return [0, -1];
+				case 'S': return [0, 1];
+				case 'W': return [-1, 0];
+				case 'E': return [1, 0];
+				default: throw Error();
+			}
 		}
 	}
 
