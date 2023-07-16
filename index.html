@@ -17,11 +17,11 @@
 		window.on('DOMContentLoaded', () => document.getElementById('chart').append(getChart()))
 
 		function getChart() {
-			let chart = new Chart();
+			let c = new Chart();
 
-			chart.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive map?');
+			c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive map?');
 
-			chart.addFlow([
+			c.addFlow([
 				'OpenStreetMap data',
 				'generator',
 				'.mbtiles',
@@ -35,20 +35,22 @@
 				'interactive web map',
 			])
 
-			chart.addHeadline('Which containers, packages or files can cover which part of this process chain?');
+			c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 
-			let coverBoxes = chart.addCover([
-				['docker', 'versatiles-maker', [0, 1, 2]],
-				['rust', 'versatiles-rs', [1, 2]],
-				['npm', 'node-versatiles', [2]],
-				['docker', 'versatiles', [1, 2]],
-				['docker', 'versatiles-server', [1, 2, 3, 4]],
-				['file', 'frontend.tar', [4], 3],
-			])
+			let covDocM = c.addCover('docker', 'versatiles-maker', [0, 1, 2]);
+			let covRust = c.addCover('rust', 'versatiles-rs', [1, 2]);
+			let covNPMV = c.addCover('npm', 'node-versatiles', [2]);
+			let covDoc0 = c.addCover('docker', 'versatiles', [1, 2]);
+			let covDocS = c.addCover('docker', 'versatiles-server', [1, 2, 3, 4]);
+			let covFron = c.addCover('file', 'frontend.tar', [4], 3);
 
-			chart.addCoverGuides();
+			c.addCoverGuides();
 
-			return chart.asSVG();
+			c.addHeadline('How do containers, packages or files build on each other?');
+
+			//c.addDependency('docker', 'versatiles')
+
+			return c.asSVG();
 		}
 	</script>
 </head>

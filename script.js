@@ -192,50 +192,52 @@ class Chart {
 		return group;
 	}
 
-	addCover(elements) {
-		let group = this.canvas.appendGroup();
-		let lastPosition = -3.1;
+	addCover(type, name, connections, position) {
+		this.coverGroup ??= this.canvas.appendGroup();
+		this.coverLastPosition ??= -3.1;
 
-		return elements.map((element, i) => {
-			let [type, name, connections, position] = element;
-			position ??= connections[0];
-			if (position === lastPosition) this.y0 += this.boxHeight / 2;
-			lastPosition = position;
+		position ??= connections[0];
+		if (position === this.coverLastPosition) this.y0 += this.boxHeight / 2;
+		this.coverLastPosition = position;
 
-			let color, title;
-			switch (type) {
-				case 'docker': color = '#00F'; title = 'Docker Container'; break;
-				case 'rust': color = '#0AF'; title = 'Rust Package'; break;
-				case 'npm': color = '#0FF'; title = 'NPM Package'; break;
-				case 'file': color = '#0FA'; title = 'File'; break;
-				default: throw Error(type);
-			}
+		let color, title;
+		switch (type) {
+			case 'docker': color = '#00F'; title = 'Docker Container'; break;
+			case 'rust': color = '#0AF'; title = 'Rust Package'; break;
+			case 'npm': color = '#0FF'; title = 'NPM Package'; break;
+			case 'file': color = '#0FA'; title = 'File'; break;
+			default: throw Error(type);
+		}
 
-			let cy = this.y0 + this.boxHeight / 2;
+		let cy = this.y0 + this.boxHeight / 2;
 
-			connections.forEach(c => {
-				let x = this.colStart + c * this.colWidth;
-				group.drawCircle([x, cy], 5, { fill: color });
-			})
-
-			let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
-			let rect = [x, this.y0, this.boxWidth, 10];
-			group.drawRect(rect, { fill: color });
-			group.drawText(rect, title, { fill: '#000A', fontFamily, fontSize: 7 });
-
-			let box = group.drawRect([x, this.y0, this.boxWidth, this.boxHeight], { fill: color + '5', stroke: color });
-			group.drawText([x, this.y0 + 10, this.boxWidth, this.boxHeight - 10], name, { fill: color, fontFamily, fontSize: this.boxHeight / 3 });
-
-			let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
-			let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
-			if (cx0 <= x) group.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
-			if (cx1 > x) group.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
-
-
-			this.y0 += this.boxHeight;
-
-			return box;
+		connections.forEach(c => {
+			let x = this.colStart + c * this.colWidth;
+			this.coverGroup.drawCircle([x, cy], 5, { fill: color });
 		})
+
+		let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
+		let rect = [x, this.y0, this.boxWidth, 10];
+		this.coverGroup.drawRect(rect, { fill: color });
+		this.coverGroup.drawText(rect, title, { fill: '#000A', fontFamily, fontSize: 7 });
+
+		let box = this.coverGroup.drawRect(
+			[x, this.y0, this.boxWidth, this.boxHeight],
+			{ fill: color + '5', stroke: color }
+		);
+		this.coverGroup.drawText(
+			[x, this.y0 + 10, this.boxWidth, this.boxHeight - 10], name,
+			{ fill: color, fontFamily, fontSize: this.boxHeight / 3 }
+		);
+
+		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
+		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
+		if (cx0 <= x) this.coverGroup.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
+		if (cx1 > x) this.coverGroup.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
+
+		this.y0 += this.boxHeight;
+
+		return box;
 	}
 
 	addCoverGuides() {
