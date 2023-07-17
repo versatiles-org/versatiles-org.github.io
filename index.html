@@ -11,10 +11,13 @@
 			background: #000;
 		}
 	</style>
-	<script src="script.js"></script>
-	<script>
+	<!--<script src="script.js" type="module"></script>-->
+	<script type="module">
+		import { Chart } from './script.js';
 
-		window.on('DOMContentLoaded', () => document.getElementById('chart').append(getChart()))
+		window.addEventListener('DOMContentLoaded', () => {
+			document.getElementById('chart').append(getChart())
+		})
 
 		function getChart() {
 			let c = new Chart();
