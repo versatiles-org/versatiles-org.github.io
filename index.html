@@ -35,6 +35,8 @@
 				'interactive web map',
 			])
 
+
+
 			c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 
 			let covDocM = c.addCover('docker', 'versatiles-maker', [0, 1, 2]);
@@ -46,6 +48,8 @@
 
 			c.addCoverGuides();
 
+
+
 			c.addHeadline('How do containers, packages or files build on each other?');
 
 			let depDoc0 = c.addDependency('docker', 'versatiles', 1, covDoc0);
@@ -56,10 +60,10 @@
 			let depDocS = c.addDependency('docker', 'versatiles-server', 2, covDocS);
 			c.addDepDep(depDoc0, depDocS);
 
-			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy:20 });
+			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy: 20 });
 			c.addDepDep(depRust, depDoc0);
 
-			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'E', endDir: 'E', dy:20 });
+			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'E', endDir: 'E', dy: 20 });
 
 			let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro);
 			c.addDepDep(depFFro, depDocS);
@@ -72,6 +76,25 @@
 
 			let depFFon = c.addDependency('file', 'fonts.tar', 3);
 			c.addDepDep(depFFon, depFFro, { startDir: 'E', endDir: 'E' });
+
+
+
+			c.addHeadline('Which repositories produce which containers, packages or files?');
+
+			c.addRepo('versatiles-docker', 0, [depDoc0, depDocM, depDocS]);
+			c.addRepo('shortbread-tilemaker', 0);
+			c.addRepo('versatiles-website', 0);
+			c.addRepo('versatiles-docs', 0);
+
+			c.addRepo('versatiles-rs', 1, [depRust]);
+			c.addRepo('versatiles-spec', 1);
+
+			c.addRepo('node-versatiles', 2, [depNPMV]);
+
+			c.addRepo('versatiles-fonts', 3, [depFFon]);
+			c.addRepo('versatiles-sprites', 3, [depFSpr]);
+			c.addRepo('versatiles-styles', 3, [depFSty]);
+			c.addRepo('versatiles-frontend', 3, [depFFro]);
 
 			return c.asSVG();
 		}
