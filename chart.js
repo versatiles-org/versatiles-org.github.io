@@ -166,7 +166,7 @@ export class Chart {
 		opt.shortenStart ??= 0;
 		opt.shortenEnd ??= 0;
 		opt.offset ??= 20;
-		opt.radius ??= 0;
+		opt.radius ??= 10;
 
 		let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
 		let size1 = new Vec(box1.rect[2], box1.rect[3]).scale(0.5);
@@ -211,7 +211,7 @@ export class Chart {
 				}
 			}
 		}
-		
+
 		if (dir0.isEqual(dir1)) {
 			if (dir0.isHorizontal()) {
 				let x;
@@ -237,38 +237,28 @@ export class Chart {
 		console.log({ dir0, dir1, contact0, contact1 })
 		throw Error();
 
-		//if (dir0.isEqual(dir1)) {
-		//	// direkte Linie
-		//	if (contact0.getDirection(contact1).isParallelToAxis()) {
-		//		return { ...result, d: makePath(start0, start1) }
-		//	}
-		//}
-		return { ...result, d: '' }
-
-		if (dir0.isOpposite(dir1)) {
-			if (dir0.isHorizontal()) {
-				let x;
-				if (dir0.x > 0) {
-					x = Math.max(contact0.x, contact1.x) + opt.offset;
-				} else {
-					x = Math.min(contact0.x, contact1.x) - opt.offset;
-				}
-				console.log(x);
-				return { ...result, d: makePath(start0, contact0.setX(x), contact1.setX(x), start1) }
-			} else if (dir0.isVertical()) {
-				console.error('vertical')
-			} else {
-				throw Error();
-			}
-		}
-
-		console.log({ dir0, dir1 })
-
-		return { ...result, d: '' }
-
 		function makePath(...points) {
-			//console.log(makePath, points);
-			return 'M' + points.map(p => p.str()).join('L');
+			let radius = opt.radius;
+			return points.map((p1, i) => {
+				if (i === 0) return 'M' + p1.str();
+				if (i === points.length - 1) return 'L' + p1.str();
+
+				let p0 = points[i - 1];
+				let p2 = points[i + 1];
+
+				let m = p0.getMiddle(p2);
+				m = p1.getTowards(m, radius * 1.414213562373095);
+				let c0 = p1.getTowards(p0, radius);
+				let c2 = p1.getTowards(p2, radius);
+
+				let d1 = p0.getDirection(p1);
+				let d2 = p1.getDirection(p2);
+				let angle = d1.getAngleTo(d2);
+				return [
+					'L' + c0.str(),
+					'A' + [radius, radius, 0, 0, angle > 0 ? 0 : 1, c2.str()].join(',')
+				].join('')
+			}).join('');
 		}
 	}
 
@@ -383,6 +373,18 @@ class Vec {
 	}
 	getMiddle(vec) {
 		return new Vec((this.x + vec.x) / 2, (this.y + vec.y) / 2);
+	}
+	getDistanceSquared(vec) {
+		let dx = this.x - vec.x;
+		let dy = this.y - vec.y;
+		return dx * dx + dy * dy;
+	}
+	getTowards(vec, distance) {
+		let dir = this.getDirection(vec);
+		return this.clone().addScaled(dir, distance);
+	}
+	getAngleTo(vec) {
+		return vec.x * this.y - vec.y * this.x;
 	}
 	static fromChar(char) {
 		switch (char.toUpperCase()) {
