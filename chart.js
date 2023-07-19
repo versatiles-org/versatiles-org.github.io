@@ -10,13 +10,13 @@ export class Chart {
 
 		this.y0 = 0;
 		this.layers = Object.fromEntries(
-			'background,linesBack,boxes,linesFront,headlines'.split(',')
+			'background,linesBack,boxes,linesFront,headlines,highlights'.split(',')
 				.map(k => [k, this.canvas.appendGroup()])
 		);
 
-		this.colWidth = 200;
+		this.colWidth = 190;
 		this.colStart = 180;
-		this.boxWidth = 140;
+		this.boxWidth = 130;
 		this.boxHeight = 40;
 		this.gapHeight = 40;
 		this.backgroundColor = new Color(backgroundColor || '#000');
@@ -63,7 +63,7 @@ export class Chart {
 				fill: color + '5',
 			});
 			rect[0] += this.boxHeight / 3;
-			group.drawText(rect, text, { fill: color, fontFamily, fontSize: 12 });
+			group.drawText(rect, text, { fill: color, fontFamily, fontSize: 13 });
 		})
 		this.y0 += this.boxHeight;
 		this.flowYMax = this.y0;
@@ -120,8 +120,8 @@ export class Chart {
 			let x = this.colStart + this.colWidth * i;
 			this.layers.background.drawLine(
 				[x, this.flowYMax],
-				[x, this.y0 + this.gapHeight],
-				{ stroke: '#F105', strokeWidth: 5 }
+				[x, this.y0 + this.gapHeight / 2],
+				{ stroke: this.#fadeColor('#F10'), strokeWidth: 8 }
 			)
 		}
 	}
@@ -136,8 +136,8 @@ export class Chart {
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		if (ref) {
-			let path = this.#getPath(box, ref, options);
-			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 2 })
+			let path = getConnectionPath(box, ref, options);
+			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 2 })
 		}
 
 		return box;
@@ -145,9 +145,9 @@ export class Chart {
 
 	addDepDep(dep0, dep1, options = {}) {
 		options.shortenEnd = 5;
-		let path = this.#getPath(dep0, dep1, options);
-		this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
-		this.layers.linesFront.drawArrowHead(
+		let path = getConnectionPath(dep0, dep1, options);
+		let node1 = this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
+		let node2 = this.layers.linesFront.drawArrowHead(
 			path.point1.array(),
 			path.dir1.scale(10).array(),
 			{ fill: dep0.color }
@@ -164,8 +164,8 @@ export class Chart {
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		box.addLink = (ref, options) => {
-			let path = this.#getPath(box, ref, options);
-			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
+			let path = getConnectionPath(box, ref, options);
+			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 1 })
 			return box;
 		}
 
@@ -174,141 +174,145 @@ export class Chart {
 
 	#getType(type) {
 		switch (type) {
-			case 'docker': return ['#0AF', 'Docker Container'];
-			case 'rust': return ['#0F5', 'Rust Package'];
-			case 'npm': return ['#0FA', 'NPM Package'];
-			case 'file': return ['#FF0', 'File'];
+			case 'docker': return ['#08C', 'Docker Container'];
+			case 'rust': return ['#0C4', 'Rust Package'];
+			case 'npm': return ['#0C8', 'NPM Package'];
+			case 'file': return ['#CC0', 'File'];
 			case 'repo': return ['#AAA', 'GitHub Repository'];
 			default: throw Error(type);
 		}
 	}
 
-	#getPath(box0, box1, opt = {}) {
-		opt.shortenStart ??= 0;
-		opt.shortenEnd ??= 0;
-		opt.offset ??= 15;
-		opt.radius ??= 10;
 
-		let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
-		let size1 = new Vec(box1.rect[2], box1.rect[3]).scale(0.5);
+	#drawContainer(pos, type, name) {
+		const headerHeight = 13;
+		const group = this.layers.boxes.appendGroup();
+		let [color, title] = this.#getType(type);
+		let darkColor = this.#fadeColor(color);
 
-		let center0 = new Vec(box0.rect[0], box0.rect[1]).add(size0);
-		let center1 = new Vec(box1.rect[0], box1.rect[1]).add(size1);
+		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
+		const rectText = [pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight];
+		const rectHead = [pos[0], pos[1], this.boxWidth, headerHeight]
+		group.drawRect(rect, { fill: darkColor, stroke: color, cursor: 'pointer' });
+		group.drawText(rectText, name, { fill: color, fontFamily, fontSize: 13, pointerEvents: 'none' });
+		group.drawRect(rectHead, { fill: color, pointerEvents: 'none' });
+		group.drawText(rectHead, title, { fill: darkColor, fontWeight: 'bold', fontFamily, fontSize: 10, pointerEvents: 'none' });
 
-		let dir0 = center0.getDirection(center1).snapToAxis().normalize();
-		let dir1 = dir0.clone().scale(-1);
+		const overlay = [];
+		group.node.addEventListener('mouseover', () => {
+			console.log(neighborhood);
+			neighborhood.forEach(n => n.setAttribute('filter', 'url(#highlight)'))
+		});
+		group.node.addEventListener('mouseout', () => {
+			neighborhood.forEach(n => n.setAttribute('filter', ''))
+		});
 
-		if (opt.startDir) dir0 = Vec.fromChar(opt.startDir);
-		if (opt.endDir) dir1 = Vec.fromChar(opt.endDir);
+		return { rect, color, overlay };
+	}
 
-		let distance0 = Math.abs(dir0.scalar(size0));
-		let distance1 = Math.abs(dir1.scalar(size1));
+	#fadeColor(color) {
+		return new Color(color).fadeTo(this.backgroundColor, 2 / 3).toString();
+	}
+}
 
-		let contact0 = center0.clone().addScaled(dir0, distance0);
-		let contact1 = center1.clone().addScaled(dir1, distance1);
+function getConnectionPath(box0, box1, opt = {}) {
+	opt.shortenStart ??= 0;
+	opt.shortenEnd ??= 0;
+	opt.offset ??= 15;
+	opt.radius ??= 10;
 
-		if (opt.startContactShift) contact0.addScaled(dir0.getRotated90(), opt.startContactShift);
-		if (opt.endContactShift) contact1.addScaled(dir1.getRotated90(), opt.endContactShift);
+	let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
+	let size1 = new Vec(box1.rect[2], box1.rect[3]).scale(0.5);
 
-		let start0 = contact0.clone().addScaled(dir0, opt.shortenStart || 0);
-		let start1 = contact1.clone().addScaled(dir1, opt.shortenEnd || 0);
+	let center0 = new Vec(box0.rect[0], box0.rect[1]).add(size0);
+	let center1 = new Vec(box1.rect[0], box1.rect[1]).add(size1);
 
-		let result = {
-			point0: contact0, dir0,
-			point1: contact1, dir1
-		};
+	let dir0 = center0.getDirection(center1).snapToAxis().normalize();
+	let dir1 = dir0.clone().scale(-1);
 
-		// Enden zeigen aufeinander
-		if (dir0.isOpposite(dir1)) {
-			if (contact0.getDirection(contact1).isEqual(dir0)) {
-				// direkte Linie
-				return { ...result, d: makePath(start0, start1) }
-			} else {
-				// Linie, mit zwei Knicks
-				let m = contact0.getMiddle(contact1);
-				if (opt.endOffset) m = contact1.clone().addScaled(dir1, opt.endOffset);
-				if (dir0.isHorizontal()) {
-					return { ...result, d: makePath(start0, start0.getWithX(m.x), start1.getWithX(m.x), start1) }
-				} else if (dir0.isVertical()) {
-					return { ...result, d: makePath(start0, start0.getWithY(m.y), start1.getWithY(m.y), start1) }
-				} else {
-					throw Error();
-				}
-			}
-		}
+	if (opt.startDir) dir0 = Vec.fromChar(opt.startDir);
+	if (opt.endDir) dir1 = Vec.fromChar(opt.endDir);
 
-		if (dir0.isEqual(dir1)) {
+	let distance0 = Math.abs(dir0.scalar(size0));
+	let distance1 = Math.abs(dir1.scalar(size1));
+
+	let contact0 = center0.clone().addScaled(dir0, distance0);
+	let contact1 = center1.clone().addScaled(dir1, distance1);
+
+	if (opt.startContactShift) contact0.addScaled(dir0.getRotated90(), opt.startContactShift);
+	if (opt.endContactShift) contact1.addScaled(dir1.getRotated90(), opt.endContactShift);
+
+	let start0 = contact0.clone().addScaled(dir0, opt.shortenStart || 0);
+	let start1 = contact1.clone().addScaled(dir1, opt.shortenEnd || 0);
+
+	let result = {
+		point0: contact0, dir0,
+		point1: contact1, dir1
+	};
+
+	// Enden zeigen aufeinander
+	if (dir0.isOpposite(dir1)) {
+		if (contact0.getDirection(contact1).isEqual(dir0)) {
+			// direkte Linie
+			return { ...result, d: makePath(start0, start1) }
+		} else {
+			// Linie, mit zwei Knicks
+			let m = contact0.getMiddle(contact1);
+			if (opt.endOffset) m = contact1.clone().addScaled(dir1, opt.endOffset);
 			if (dir0.isHorizontal()) {
-				let x;
-				if (dir0.x > 0) {
-					x = Math.max(contact0.x, contact1.x) + opt.offset;
-				} else {
-					x = Math.min(contact0.x, contact1.x) - opt.offset;
-				}
-				return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
+				return { ...result, d: makePath(start0, start0.getWithX(m.x), start1.getWithX(m.x), start1) }
 			} else if (dir0.isVertical()) {
-				let y;
-				if (dir0.y > 0) {
-					y = Math.max(contact0.y, contact1.y) + opt.offset;
-				} else {
-					y = Math.min(contact0.y, contact1.y) - opt.offset;
-				}
-				return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
+				return { ...result, d: makePath(start0, start0.getWithY(m.y), start1.getWithY(m.y), start1) }
 			} else {
 				throw Error();
 			}
 		}
+	}
 
-		console.log({ dir0, dir1, contact0, contact1 })
-		throw Error();
-
-		function makePath(...points) {
-			let radius = opt.radius;
-			return points.map((p1, i) => {
-				if (i === 0) return 'M' + p1.str();
-				if (i === points.length - 1) return 'L' + p1.str();
-
-				let p0 = points[i - 1];
-				let p2 = points[i + 1];
-
-				let c0 = p1.getTowards(p0, radius);
-				let c2 = p1.getTowards(p2, radius);
-
-				let d1 = p0.getDirection(p1);
-				let d2 = p1.getDirection(p2);
-				let angle = d1.getAngleTo(d2);
-				return [
-					'L' + c0.str(),
-					'A' + [radius, radius, 0, 0, angle > 0 ? 0 : 1, c2.str()].join(',')
-				].join('')
-			}).join('');
+	if (dir0.isEqual(dir1)) {
+		if (dir0.isHorizontal()) {
+			let x;
+			if (dir0.x > 0) {
+				x = Math.max(contact0.x, contact1.x) + opt.offset;
+			} else {
+				x = Math.min(contact0.x, contact1.x) - opt.offset;
+			}
+			return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
+		} else if (dir0.isVertical()) {
+			let y;
+			if (dir0.y > 0) {
+				y = Math.max(contact0.y, contact1.y) + opt.offset;
+			} else {
+				y = Math.min(contact0.y, contact1.y) - opt.offset;
+			}
+			return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
+		} else {
+			throw Error();
 		}
 	}
 
-	#drawContainer(pos, type, name) {
-		const headerHeight = 13;
-		const canvas = this.layers.boxes;
-		let [color, title] = this.#getType(type);
+	console.log({ dir0, dir1, contact0, contact1 })
+	throw Error();
 
-		const head = [pos[0], pos[1], this.boxWidth, headerHeight]
-		canvas.drawRect(head, { fill: color });
-		canvas.drawText(head, title, { fill: '#000A', fontWeight: 'bold', fontFamily, fontSize: 10 });
+	function makePath(...points) {
+		let radius = opt.radius;
+		return points.map((p1, i) => {
+			if (i === 0) return 'M' + p1.str();
+			if (i === points.length - 1) return 'L' + p1.str();
 
-		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
-		canvas.drawRect(
-			rect,
-			{ fill: color + '5', stroke: color }
-		);
+			let p0 = points[i - 1];
+			let p2 = points[i + 1];
 
-		canvas.drawText(
-			[pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight], name,
-			{ fill: color, fontFamily, fontSize: 13 }
-		);
+			let c0 = p1.getTowards(p0, radius);
+			let c2 = p1.getTowards(p2, radius);
 
-		return { rect, color };
-	}
-
-	#fadeColor(color, strength) {
-		return new Color(color).fadeTo(this.backgroundColor, strength).toString();
+			let d1 = p0.getDirection(p1);
+			let d2 = p1.getDirection(p2);
+			let angle = d1.getAngleTo(d2);
+			return [
+				'L' + c0.str(),
+				'A' + [radius, radius, 0, 0, angle > 0 ? 0 : 1, c2.str()].join(',')
+			].join('')
+		}).join('');
 	}
 }

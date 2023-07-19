@@ -2,7 +2,7 @@ import { BBox } from "./bbox.js";
 
 export class Canvas {
 	constructor() {
-		this.node = this.#getElement('g');
+		this.node = getElement('g');
 		this.bbox = new BBox();
 		this.subGroups = [];
 	}
@@ -12,9 +12,17 @@ export class Canvas {
 		return bbox;
 	}
 	asSVG() {
-		let svg = this.#getElement('svg');
+		let svg = getElement('svg');
 		let bbox = this.getBBox();
-		this.#setAttributes(svg, bbox.asAttributes());
+		setAttributes(svg, bbox.asAttributes());
+		svg.insertAdjacentHTML('afterbegin', `<filter id="highlight">
+			<feColorMatrix in="SourceGraphic" type="matrix" values="
+				2 2 2 0 0
+				2 2 2 0 0
+				2 2 2 0 0
+				0 0 0 1 0"
+			/>
+		</filter>`)
 		svg.append(this.node);
 		return svg;
 	}
@@ -26,30 +34,34 @@ export class Canvas {
 	}
 	drawRect(rect, style) {
 		let node = this.#appendElement('rect');
-		this.#setAttributes(node, { x: rect[0], y: rect[1], width: rect[2], height: rect[3] });
-		this.#setStyle(node, style);
+		setAttributes(node, { x: rect[0], y: rect[1], width: rect[2], height: rect[3] });
+		setStyle(node, style);
 		this.bbox.includeRect(rect);
+		return node;
 	}
 	drawCircle(pos, radius, style) {
 		let node = this.#appendElement('circle');
-		this.#setAttributes(node, { cx: pos[0], cy: pos[1], r: radius });
-		this.#setStyle(node, style);
+		setAttributes(node, { cx: pos[0], cy: pos[1], r: radius });
+		setStyle(node, style);
 		this.bbox.includeRect([pos[0] - radius, pos[1] - radius, radius * 2, radius * 2]);
+		return node;
 	}
 	drawText(rect, text, style) {
 		let node = this.#appendElement('text');
-		this.#setAttributes(node, { x: rect[0] + rect[2] / 2, y: rect[1] + rect[3] / 2 });
-		this.#setStyle(node, style);
-		this.#setAttributes(node, { alignmentBaseline: 'central', textAnchor: 'middle' });
+		setAttributes(node, { x: rect[0] + rect[2] / 2, y: rect[1] + rect[3] / 2 });
+		setStyle(node, style);
+		setAttributes(node, { alignmentBaseline: 'central', textAnchor: 'middle' });
 		node.textContent = text;
 		this.bbox.includeRect(rect);
+		return node;
 	}
 	drawLine(p1, p2, style) {
 		let node = this.#appendElement('line');
-		this.#setAttributes(node, { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1] });
-		this.#setStyle(node, style);
+		setAttributes(node, { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1] });
+		setStyle(node, style);
 		this.bbox.includePoint(p1);
 		this.bbox.includePoint(p2);
+		return node;
 	}
 	drawFlowBox(rect, style) {
 		let node = this.#appendElement('path');
@@ -60,14 +72,16 @@ export class Canvas {
 
 		let d = 'Mx0,y0Lx1,y1Lx0,y2Lx2,y2Lx3,y1Lx2,y0z'
 			.replace(/[xy][0-9]/g, key => coords[key[0]][parseInt(key[1], 10)]);
-		this.#setAttributes(node, { d });
-		this.#setStyle(node, style);
+		setAttributes(node, { d });
+		setStyle(node, style);
 		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] / 2, rect[3]]);
+		return node;
 	}
 	drawPath(d, style) {
 		let node = this.#appendElement('path');
-		this.#setAttributes(node, { d });
-		this.#setStyle(node, style);
+		setAttributes(node, { d });
+		setStyle(node, style);
+		return node;
 	}
 	drawArrowHead(point, dir, style) {
 		let node = this.#appendElement('path');
@@ -76,8 +90,9 @@ export class Canvas {
 		let d2 = [dir[0] + dir[1] * a, dir[1] - dir[0] * a];
 		let d = `M${point.join(',')}L${p(i => point[i] + d1[i])}L${p(i => point[i] + d2[i])}z`;
 
-		this.#setAttributes(node, { d });
-		this.#setStyle(node, style);
+		setAttributes(node, { d });
+		setStyle(node, style);
+		return node;
 
 		function p(cb) {
 			return [0, 1].map(i => cb(i)).join(',');
@@ -88,20 +103,23 @@ export class Canvas {
 		return node;
 	}
 	#appendElement(tagName) {
-		return this.#append(this.#getElement(tagName));
+		return this.#append(getElement(tagName));
 	}
-	#getElement(tagName) {
-		return document.createElementNS('http://www.w3.org/2000/svg', tagName);
+}
+
+function getElement(tagName) {
+	return document.createElementNS('http://www.w3.org/2000/svg', tagName);
+}
+
+function setAttributes(node, attributeObj) {
+	for (let key in attributeObj) {
+		node.setAttribute(
+			key.replace(/[A-Z]/g, c => '-' + c.toLowerCase()),
+			attributeObj[key]
+		);
 	}
-	#setAttributes(node, attributeObj) {
-		for (let key in attributeObj) {
-			node.setAttribute(
-				key.replace(/[A-Z]/g, c => '-' + c.toLowerCase()),
-				attributeObj[key]
-			);
-		}
-	}
-	#setStyle(node, styleObj) {
-		for (let key in styleObj) node.style[key] = styleObj[key];
-	}
+}
+
+function setStyle(node, styleObj) {
+	for (let key in styleObj) node.style[key] = styleObj[key];
 }
