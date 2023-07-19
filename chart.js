@@ -1,4 +1,6 @@
 import { Canvas } from "./canvas.js";
+import { Color } from "./color.js";
+import { Vec } from "./vec.js";
 
 const fontFamily = 'sans-serif';
 
@@ -11,6 +13,7 @@ export class Chart {
 		this.boxWidth = 120;
 		this.boxHeight = 40;
 		this.gapHeight = 40;
+		this.backgroundColor = new Color('#000');
 	}
 
 	asSVG() {
@@ -144,7 +147,7 @@ export class Chart {
 
 		box.addLink = (ref, options) => {
 			let path = this.#getPath(ref, box, options);
-			this.repoGroup.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
+			this.repoGroup.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
 			return box;
 		}
 
@@ -246,8 +249,7 @@ export class Chart {
 				let p0 = points[i - 1];
 				let p2 = points[i + 1];
 
-				let m = p0.getMiddle(p2);
-				m = p1.getTowards(m, radius * 1.414213562373095);
+				let m = p1.getTowards(p0.getMiddle(p2), radius * 1.414213562373095);
 				let c0 = p1.getTowards(p0, radius);
 				let c2 = p1.getTowards(p2, radius);
 
@@ -282,117 +284,8 @@ export class Chart {
 
 		return { rect, color };
 	}
-}
 
-class Vec {
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
-	}
-	clone() {
-		return new Vec(this.x, this.y);
-	}
-	add(vec) {
-		this.x += vec.x;
-		this.y += vec.y;
-		return this;
-	}
-	scalar(vec) {
-		return this.x * vec.x + this.y * vec.y;
-	}
-	scale(v) {
-		this.x *= v;
-		this.y *= v;
-		return this;
-	}
-	multiply(vec) {
-		this.x *= vec.x;
-		this.y *= vec.y;
-		return this;
-	}
-	normalize() {
-		let r = Math.sqrt(this.x * this.x + this.y * this.y)
-		this.x /= r;
-		this.y /= r;
-		return this;
-	}
-	getDirection(vec) {
-		return new Vec(vec.x - this.x, vec.y - this.y).normalize();
-	}
-	addScaled(vec, scale) {
-		this.x += vec.x * scale;
-		this.y += vec.y * scale;
-		return this;
-	}
-	snapToAxis() {
-		if (Math.abs(this.x) < Math.abs(this.y)) {
-			this.x = 0;
-		} else {
-			this.y = 0;
-		}
-		return this;
-	}
-	isParallelToAxis() {
-		return (Math.abs(this.x) < 1e-10) || (Math.abs(this.y) < 1e-10)
-	}
-	str() {
-		return this.x + ',' + this.y
-	}
-	array() {
-		return [this.x, this.y]
-	}
-	isOpposite(vec) {
-		let dx = this.x + vec.x;
-		let dy = this.y + vec.y;
-		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
-	}
-	isEqual(vec) {
-		let dx = this.x - vec.x;
-		let dy = this.y - vec.y;
-		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
-	}
-	isHorizontal() {
-		return Math.abs(this.y) < 1e-10;
-	}
-	isVertical() {
-		return Math.abs(this.x) < 1e-10;
-	}
-	setX(x) {
-		this.x = x;
-		return this;
-	}
-	setY(y) {
-		this.y = y;
-		return this;
-	}
-	getWithX(x) {
-		return new Vec(x, this.y);
-	}
-	getWithY(y) {
-		return new Vec(this.x, y);
-	}
-	getMiddle(vec) {
-		return new Vec((this.x + vec.x) / 2, (this.y + vec.y) / 2);
-	}
-	getDistanceSquared(vec) {
-		let dx = this.x - vec.x;
-		let dy = this.y - vec.y;
-		return dx * dx + dy * dy;
-	}
-	getTowards(vec, distance) {
-		let dir = this.getDirection(vec);
-		return this.clone().addScaled(dir, distance);
-	}
-	getAngleTo(vec) {
-		return vec.x * this.y - vec.y * this.x;
-	}
-	static fromChar(char) {
-		switch (char.toUpperCase()) {
-			case 'N': return new Vec(0, -1);
-			case 'S': return new Vec(0, 1);
-			case 'W': return new Vec(-1, 0);
-			case 'E': return new Vec(1, 0);
-			default: throw Error();
-		}
+	#fadeColor(color, strength) {
+		return new Color(color).fadeTo(this.backgroundColor, strength).toString();
 	}
 }
