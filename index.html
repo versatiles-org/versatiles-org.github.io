@@ -84,20 +84,23 @@
 
 			c.addHeadline('Which repositories produce which containers, packages or files?');
 
-			c.addRepo('versatiles-docker', 0, [depDoc0, depDocM, depDocS]);
-			c.addRepo('shortbread-tilemaker', 0);
+			let repDoc0 = c.addRepo('versatiles-docker', 0)
+				.addLink(depDoc0)
+				.addLink(depDocM)
+				.addLink(depDocS, { startDir: 'S', endDir: 'N' });
+			c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0);
 			c.addRepo('versatiles-website', 0);
 			c.addRepo('versatiles-docs', 0);
 
-			c.addRepo('versatiles-rs', 1, [depRust]);
+			c.addRepo('versatiles-rs', 1).addLink(depRust);
 			c.addRepo('versatiles-spec', 1);
 
-			c.addRepo('node-versatiles', 2, [depNPMV]);
+			c.addRepo('node-versatiles', 2).addLink(depNPMV);
 
-			c.addRepo('versatiles-fonts', 3, [depFFon]);
-			c.addRepo('versatiles-sprites', 3, [depFSpr]);
-			c.addRepo('versatiles-styles', 3, [depFSty]);
-			c.addRepo('versatiles-frontend', 3, [depFFro]);
+			c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W' });
+			c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 30 });
+			c.addRepo('versatiles-styles', 3).addLink(depFSty, { startDir: 'W', endDir: 'W', offset: 40 });
+			c.addRepo('versatiles-frontend', 3).addLink(depFFro, { startDir: 'W', endDir: 'W', offset: 50 });
 
 			return c.asSVG();
 		}

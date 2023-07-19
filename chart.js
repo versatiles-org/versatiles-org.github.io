@@ -142,10 +142,11 @@ export class Chart {
 		this.repoColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
-		refs.forEach(ref => {
+		box.addLink = (ref, options) => {
 			let path = this.#getPath(ref, box, options);
-			this.repoGroup.drawPath(path.d, { fill: 'none', stroke: box.color + 'A', strokeWidth: 1 })
-		})
+			this.repoGroup.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
+			return box;
+		}
 
 		return box;
 	}
@@ -173,7 +174,7 @@ export class Chart {
 		let center0 = new Vec(box0.rect[0], box0.rect[1]).add(size0);
 		let center1 = new Vec(box1.rect[0], box1.rect[1]).add(size1);
 
-		let dir0 = center0.getDirection(center1).orthogonalize().normalize();
+		let dir0 = center0.getDirection(center1).snapToAxis().normalize();
 		let dir1 = dir0.clone().scale(-1);
 
 		if (opt.startDir) dir0 = Vec.fromChar(opt.startDir);
@@ -194,14 +195,81 @@ export class Chart {
 		};
 		//console.log({ center0, dir0, size0, contact0 });
 
-		if (contact0.getDirection(contact1).isOrthogonal()) {
-			return { ...result, d: 'M' + start0.str() + 'L' + start1.str() }
+		if (dir0.isOpposite(dir1)) {
+			if (contact0.getDirection(contact1).isEqual(dir0)) {
+				// direkte Linie
+				return { ...result, d: makePath(start0, start1) }
+			} else {
+				if (dir0.isHorizontal()) {
+					let x = contact0.getMiddle(contact1).x;
+					return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
+				} else if (dir0.isVertical()) {
+					let y = contact0.getMiddle(contact1).y;
+					return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
+				} else {
+					throw Error();
+				}
+			}
+		}
+		
+		if (dir0.isEqual(dir1)) {
+			if (dir0.isHorizontal()) {
+				let x;
+				if (dir0.x > 0) {
+					x = Math.max(contact0.x, contact1.x) + opt.offset;
+				} else {
+					x = Math.min(contact0.x, contact1.x) - opt.offset;
+				}
+				return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
+			} else if (dir0.isVertical()) {
+				let y;
+				if (dir0.y > 0) {
+					y = Math.max(contact0.y, contact1.y) + opt.offset;
+				} else {
+					y = Math.min(contact0.y, contact1.y) - opt.offset;
+				}
+				return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
+			} else {
+				throw Error();
+			}
 		}
 
-		let connnection0 = start0.clone().addScaled(dir0, opt.offset);
-		let connnection1 = start1.clone().addScaled(dir1, opt.offset);
+		console.log({ dir0, dir1, contact0, contact1 })
+		throw Error();
 
-		return { ...result, d: 'M' + contact0.str() + 'L' + contact1.str() }
+		//if (dir0.isEqual(dir1)) {
+		//	// direkte Linie
+		//	if (contact0.getDirection(contact1).isParallelToAxis()) {
+		//		return { ...result, d: makePath(start0, start1) }
+		//	}
+		//}
+		return { ...result, d: '' }
+
+		if (dir0.isOpposite(dir1)) {
+			if (dir0.isHorizontal()) {
+				let x;
+				if (dir0.x > 0) {
+					x = Math.max(contact0.x, contact1.x) + opt.offset;
+				} else {
+					x = Math.min(contact0.x, contact1.x) - opt.offset;
+				}
+				console.log(x);
+				return { ...result, d: makePath(start0, contact0.setX(x), contact1.setX(x), start1) }
+			} else if (dir0.isVertical()) {
+				console.error('vertical')
+			} else {
+				throw Error();
+			}
+		}
+
+		console.log({ dir0, dir1 })
+
+		return { ...result, d: '' }
+
+		function makePath(...points) {
+			//console.log(makePath, points);
+			return 'M' + points.map(p => p.str()).join('L');
+		}
 	}
 
 	#drawContainer(canvas, pos, type, name) {
@@ -225,35 +293,6 @@ export class Chart {
 		return { rect, color };
 	}
 }
-/*
-class Direction {
-	constructor(input) {
-		if (Array.isArray(input)) {
-			this.x = input[0];
-			this.y = input[1];
-			return
-		} else if (typeof input === 'string') {
-			// compass
-			throw Error();
-
-			function dirLookup(text) {
-				switch (text.toUpperCase()) {
-					case 'N': return [0, -1];
-					case 'S': return [0, 1];
-					case 'W': return [-1, 0];
-					case 'E': return [1, 0];
-					default: throw Error();
-				}
-			}
-		}
-		throw Error();
-	}
-	add(point) {
-		this.x += point.x;
-		this.y += point.y;
-		return this;
-	}
-}*/
 
 class Vec {
 	constructor(x, y) {
@@ -295,7 +334,7 @@ class Vec {
 		this.y += vec.y * scale;
 		return this;
 	}
-	orthogonalize() {
+	snapToAxis() {
 		if (Math.abs(this.x) < Math.abs(this.y)) {
 			this.x = 0;
 		} else {
@@ -303,7 +342,7 @@ class Vec {
 		}
 		return this;
 	}
-	isOrthogonal() {
+	isParallelToAxis() {
 		return (Math.abs(this.x) < 1e-10) || (Math.abs(this.y) < 1e-10)
 	}
 	str() {
@@ -311,6 +350,39 @@ class Vec {
 	}
 	array() {
 		return [this.x, this.y]
+	}
+	isOpposite(vec) {
+		let dx = this.x + vec.x;
+		let dy = this.y + vec.y;
+		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
+	}
+	isEqual(vec) {
+		let dx = this.x - vec.x;
+		let dy = this.y - vec.y;
+		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
+	}
+	isHorizontal() {
+		return Math.abs(this.y) < 1e-10;
+	}
+	isVertical() {
+		return Math.abs(this.x) < 1e-10;
+	}
+	setX(x) {
+		this.x = x;
+		return this;
+	}
+	setY(y) {
+		this.y = y;
+		return this;
+	}
+	getWithX(x) {
+		return new Vec(x, this.y);
+	}
+	getWithY(y) {
+		return new Vec(this.x, y);
+	}
+	getMiddle(vec) {
+		return new Vec((this.x + vec.x) / 2, (this.y + vec.y) / 2);
 	}
 	static fromChar(char) {
 		switch (char.toUpperCase()) {
