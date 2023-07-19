@@ -20,12 +20,12 @@
 		})
 
 		function getChart() {
-			let c = new Chart();
+			let c = new Chart('#000');
 
 			c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive map?');
 
 			c.addFlow([
-				'OpenStreetMap data',
+				'OpenStreetMap',
 				'generator',
 				'.mbtiles',
 				'converter',
@@ -35,10 +35,8 @@
 				'proxy / CDN',
 				'HTTPS',
 				'frontend',
-				'interactive web map',
+				'interactive map',
 			])
-
-
 
 			c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 

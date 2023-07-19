@@ -5,21 +5,21 @@ import { Vec } from "./vec.js";
 const fontFamily = 'sans-serif';
 
 export class Chart {
-	constructor() {
+	constructor(backgroundColor) {
 		this.canvas = new Canvas();
 
 		this.y0 = 0;
 		this.layers = Object.fromEntries(
-			'background,boxes,lines,headlines'.split(',')
+			'background,linesBack,boxes,linesFront,headlines'.split(',')
 				.map(k => [k, this.canvas.appendGroup()])
 		);
 
 		this.colWidth = 200;
-		this.colStart = 220;
+		this.colStart = 180;
 		this.boxWidth = 120;
 		this.boxHeight = 40;
 		this.gapHeight = 40;
-		this.backgroundColor = new Color('#000');
+		this.backgroundColor = new Color(backgroundColor || '#000');
 	}
 
 	asSVG() {
@@ -83,7 +83,7 @@ export class Chart {
 
 		connections.forEach(c => {
 			let x = this.colStart + c * this.colWidth;
-			this.layers.lines.drawCircle([x, cy], 5, { fill: color });
+			this.layers.linesFront.drawCircle([x, cy], 5, { fill: color });
 		})
 
 		let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
@@ -91,8 +91,8 @@ export class Chart {
 
 		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
 		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
-		if (cx0 <= x) this.layers.lines.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
-		if (cx1 > x) this.layers.lines.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
+		if (cx0 <= x) this.layers.linesFront.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
+		if (cx1 > x) this.layers.linesFront.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
 
 		this.y0 += this.boxHeight;
 
@@ -121,7 +121,7 @@ export class Chart {
 
 		if (ref) {
 			let path = this.#getPath(box, ref, options);
-			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 2 })
+			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 2 })
 		}
 
 		return box;
@@ -130,8 +130,8 @@ export class Chart {
 	addDepDep(dep0, dep1, options = {}) {
 		options.shortenEnd = 5;
 		let path = this.#getPath(dep0, dep1, options);
-		this.layers.lines.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
-		this.layers.lines.drawArrowHead(
+		this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
+		this.layers.linesFront.drawArrowHead(
 			path.point1.array(),
 			path.dir1.scale(10).array(),
 			{ fill: dep0.color }
@@ -149,7 +149,7 @@ export class Chart {
 
 		box.addLink = (ref, options) => {
 			let path = this.#getPath(box, ref, options);
-			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
+			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
 			return box;
 		}
 
