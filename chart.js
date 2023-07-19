@@ -16,7 +16,7 @@ export class Chart {
 
 		this.colWidth = 200;
 		this.colStart = 180;
-		this.boxWidth = 120;
+		this.boxWidth = 140;
 		this.boxHeight = 40;
 		this.gapHeight = 40;
 		this.backgroundColor = new Color(backgroundColor || '#000');
@@ -70,31 +70,47 @@ export class Chart {
 		return group;
 	}
 
-	addCover(type, name, connections, position) {
-		this.coverLastPosition ??= -3.1;
+	addCover(type, name, connections, col) {
+		this.coverColY ??= Array.from({ length: 5 }, i => this.y0);
+		this.coverConY ??= Array.from({ length: 5 }, i => this.y0);
 
-		position ??= connections[0];
-		if (position === this.coverLastPosition) this.y0 += this.boxHeight / 2;
-		this.coverLastPosition = position;
-
+		col ??= connections[0];
 		let [color] = this.#getType(type);
 
-		let cy = this.y0 + this.boxHeight / 2;
+		let con0 = Math.min(...connections);
+		let con1 = Math.max(...connections);
+		let gapHeight = 20;
+
+		// prevent this box from overlapping with an existing box:
+		let boxY = this.coverColY[col];
+		// prevent the connection line from overlapping with existing boxes:
+		for (let i = con0; i < con1; i++) boxY = Math.max(boxY, this.coverColY[i] - this.boxHeight / 2);
+		// prevent the connection line from overlapping with existing lines:
+		for (let i = con0; i <= con1; i++) boxY = Math.max(boxY, this.coverConY[i] - this.boxHeight / 2);
+
+		let conY = boxY + this.boxHeight / 2;
+
+		// set min start position for this column:
+		this.coverColY[col] = boxY + this.boxHeight + gapHeight;
+		// set min start position for columns with connection line:
+		for (let i = con0; i < con1; i++) this.coverColY[i] = Math.max(this.coverColY[i], conY + gapHeight);
+		// set min start position for axes with connection line:
+		for (let i = con0; i <= con1; i++) this.coverConY[i] = Math.max(this.coverConY[i], conY + 30);
+
+		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
+		let box = this.#drawContainer([x, boxY], type, name);
 
 		connections.forEach(c => {
 			let x = this.colStart + c * this.colWidth;
-			this.layers.linesFront.drawCircle([x, cy], 5, { fill: color });
+			this.layers.linesFront.drawCircle([x, conY], 5, { fill: color });
 		})
-
-		let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer([x, this.y0], type, name);
 
 		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
 		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
-		if (cx0 <= x) this.layers.linesFront.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
-		if (cx1 > x) this.layers.linesFront.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
+		if (cx0 <= x) this.layers.linesFront.drawLine([cx0, conY], [x, conY], { stroke: color, strokeWidth: 2 });
+		if (cx1 > x) this.layers.linesFront.drawLine([x + this.boxWidth, conY], [cx1, conY], { stroke: color, strokeWidth: 2 });
 
-		this.y0 += this.boxHeight;
+		this.y0 = Math.max(this.y0, boxY + this.boxHeight);
 
 		return box;
 	}
@@ -111,7 +127,7 @@ export class Chart {
 	}
 
 	addDependency(type, name, col, ref, options = {}) {
-		this.depColY ??= [this.y0, this.y0, this.y0, this.y0];
+		this.depColY ??= Array.from({ length: 4 }, i => this.y0);;
 
 		if (options.dy) this.depColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
@@ -139,7 +155,7 @@ export class Chart {
 	}
 
 	addRepo(name, col, refs = [], options = {}) {
-		this.repoColY ??= [this.y0, this.y0, this.y0, this.y0];
+		this.repoColY ??= Array.from({ length: 4 }, i => this.y0);;
 
 		if (options.dy) this.repoColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
@@ -170,7 +186,7 @@ export class Chart {
 	#getPath(box0, box1, opt = {}) {
 		opt.shortenStart ??= 0;
 		opt.shortenEnd ??= 0;
-		opt.offset ??= 20;
+		opt.offset ??= 15;
 		opt.radius ??= 10;
 
 		let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);

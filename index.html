@@ -22,7 +22,7 @@
 		function getChart() {
 			let c = new Chart('#000');
 
-			c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive map?');
+			c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive web map?');
 
 			c.addFlow([
 				'OpenStreetMap',
@@ -70,13 +70,13 @@
 			c.addDepDep(depFFro, depDocS);
 
 			let depFSty = c.addDependency('file', 'styles.tar', 3);
-			c.addDepDep(depFSty, depFFro, { startDir: 'E', endDir: 'E' });
+			c.addDepDep(depFSty, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
 
 			let depFSpr = c.addDependency('file', 'sprites.tar', 3);
-			c.addDepDep(depFSpr, depFFro, { startDir: 'E', endDir: 'E' });
+			c.addDepDep(depFSpr, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
 
 			let depFFon = c.addDependency('file', 'fonts.tar', 3);
-			c.addDepDep(depFFon, depFFro, { startDir: 'E', endDir: 'E' });
+			c.addDepDep(depFFon, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
 
 
 

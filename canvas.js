@@ -40,7 +40,7 @@ export class Canvas {
 		let node = this.#appendElement('text');
 		this.#setAttributes(node, { x: rect[0] + rect[2] / 2, y: rect[1] + rect[3] / 2 });
 		this.#setStyle(node, style);
-		this.#setAttributes(node, { alignmentBaseline: 'middle', textAnchor: 'middle' });
+		this.#setAttributes(node, { alignmentBaseline: 'central', textAnchor: 'middle' });
 		node.textContent = text;
 		this.bbox.includeRect(rect);
 	}
