@@ -158,7 +158,7 @@ export class Chart {
 
 	#getType(type) {
 		switch (type) {
-			case 'docker': return ['#07F', 'Docker Container'];
+			case 'docker': return ['#0AF', 'Docker Container'];
 			case 'rust': return ['#0F5', 'Rust Package'];
 			case 'npm': return ['#0FA', 'NPM Package'];
 			case 'file': return ['#FF0', 'File'];
