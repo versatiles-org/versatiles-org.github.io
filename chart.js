@@ -102,7 +102,7 @@ export class Chart {
 	addCoverGuides() {
 		for (let i = 0; i < 5; i++) {
 			let x = this.colStart + this.colWidth * i;
-			this.layers.lines.drawLine(
+			this.layers.background.drawLine(
 				[x, this.flowYMax],
 				[x, this.y0 + this.gapHeight],
 				{ stroke: '#F105', strokeWidth: 5 }
@@ -120,8 +120,8 @@ export class Chart {
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		if (ref) {
-			let path = this.#getPath(ref, box, options);
-			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
+			let path = this.#getPath(box, ref, options);
+			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 2 })
 		}
 
 		return box;
@@ -148,7 +148,7 @@ export class Chart {
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		box.addLink = (ref, options) => {
-			let path = this.#getPath(ref, box, options);
+			let path = this.#getPath(box, ref, options);
 			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
 			return box;
 		}
@@ -158,10 +158,10 @@ export class Chart {
 
 	#getType(type) {
 		switch (type) {
-			case 'docker': return ['#00F', 'Docker Container'];
-			case 'rust': return ['#0AF', 'Rust Package'];
-			case 'npm': return ['#0FF', 'NPM Package'];
-			case 'file': return ['#0FA', 'File'];
+			case 'docker': return ['#07F', 'Docker Container'];
+			case 'rust': return ['#0F5', 'Rust Package'];
+			case 'npm': return ['#0FA', 'NPM Package'];
+			case 'file': return ['#FF0', 'File'];
 			case 'repo': return ['#AAA', 'GitHub Repository'];
 			default: throw Error(type);
 		}
@@ -191,26 +191,30 @@ export class Chart {
 		let contact0 = center0.clone().addScaled(dir0, distance0);
 		let contact1 = center1.clone().addScaled(dir1, distance1);
 
-		let start0 = center0.clone().addScaled(dir0, distance0 + (opt.shortenStart || 0));
-		let start1 = center1.clone().addScaled(dir1, distance1 + (opt.shortenEnd || 0));
+		if (opt.startContactShift) contact0.addScaled(dir0.getRotated90(), opt.startContactShift);
+		if (opt.endContactShift) contact1.addScaled(dir1.getRotated90(), opt.endContactShift);
+
+		let start0 = contact0.clone().addScaled(dir0, opt.shortenStart || 0);
+		let start1 = contact1.clone().addScaled(dir1, opt.shortenEnd || 0);
 
 		let result = {
 			point0: contact0, dir0,
 			point1: contact1, dir1
 		};
-		//console.log({ center0, dir0, size0, contact0 });
 
+		// Enden zeigen aufeinander
 		if (dir0.isOpposite(dir1)) {
 			if (contact0.getDirection(contact1).isEqual(dir0)) {
 				// direkte Linie
 				return { ...result, d: makePath(start0, start1) }
 			} else {
+				// Linie, mit zwei Knicks
+				let m = contact0.getMiddle(contact1);
+				if (opt.endOffset) m = contact1.clone().addScaled(dir1, opt.endOffset);
 				if (dir0.isHorizontal()) {
-					let x = contact0.getMiddle(contact1).x;
-					return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
+					return { ...result, d: makePath(start0, start0.getWithX(m.x), start1.getWithX(m.x), start1) }
 				} else if (dir0.isVertical()) {
-					let y = contact0.getMiddle(contact1).y;
-					return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
+					return { ...result, d: makePath(start0, start0.getWithY(m.y), start1.getWithY(m.y), start1) }
 				} else {
 					throw Error();
 				}
@@ -251,7 +255,6 @@ export class Chart {
 				let p0 = points[i - 1];
 				let p2 = points[i + 1];
 
-				let m = p1.getTowards(p0.getMiddle(p2), radius * 1.414213562373095);
 				let c0 = p1.getTowards(p0, radius);
 				let c2 = p1.getTowards(p2, radius);
 
@@ -267,12 +270,13 @@ export class Chart {
 	}
 
 	#drawContainer(pos, type, name) {
+		const headerHeight = 13;
 		const canvas = this.layers.boxes;
 		let [color, title] = this.#getType(type);
 
-		const head = [pos[0], pos[1], this.boxWidth, 10]
+		const head = [pos[0], pos[1], this.boxWidth, headerHeight]
 		canvas.drawRect(head, { fill: color });
-		canvas.drawText(head, title, { fill: '#000A', fontFamily, fontSize: 7 });
+		canvas.drawText(head, title, { fill: '#000A', fontWeight: 'bold', fontFamily, fontSize: 10 });
 
 		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
 		canvas.drawRect(
@@ -281,8 +285,8 @@ export class Chart {
 		);
 
 		canvas.drawText(
-			[pos[0], pos[1] + 10, this.boxWidth, this.boxHeight - 10], name,
-			{ fill: color, fontFamily, fontSize: 12 }
+			[pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight], name,
+			{ fill: color, fontFamily, fontSize: 13 }
 		);
 
 		return { rect, color };

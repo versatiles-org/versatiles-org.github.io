@@ -97,6 +97,9 @@ export class Vec {
 		let dir = this.getDirection(vec);
 		return this.clone().addScaled(dir, distance);
 	}
+	getRotated90() {
+		return new Vec(this.y, - this.x);
+	}
 	getAngleTo(vec) {
 		return vec.x * this.y - vec.y * this.x;
 	}

@@ -63,7 +63,7 @@
 			let depDocS = c.addDependency('docker', 'versatiles-server', 2, covDocS);
 			c.addDepDep(depDoc0, depDocS);
 
-			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy: 20 });
+			let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy: 20, endContactShift: 10 });
 			c.addDepDep(depRust, depDoc0);
 
 			let depNPMV = c.addDependency('npm', 'node-versatiles', 2, covNPMV, { startDir: 'E', endDir: 'E', dy: 20 });
@@ -85,9 +85,9 @@
 			c.addHeadline('Which repositories produce which containers, packages or files?');
 
 			let repDoc0 = c.addRepo('versatiles-docker', 0)
-				.addLink(depDoc0)
-				.addLink(depDocM)
-				.addLink(depDocS, { startDir: 'S', endDir: 'N' });
+				.addLink(depDocM, { endOffset: 20 })
+				.addLink(depDoc0, { endOffset: 20, endContactShift: - 20 })
+				.addLink(depDocS, { endOffset: 20, startDir: 'N', endDir: 'S' });
 			c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0);
 			c.addRepo('versatiles-website', 0);
 			c.addRepo('versatiles-docs', 0);
@@ -97,10 +97,10 @@
 
 			c.addRepo('node-versatiles', 2).addLink(depNPMV);
 
-			c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset:15 });
+			c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset: 15 });
 			c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 20 });
 			c.addRepo('versatiles-styles', 3).addLink(depFSty, { startDir: 'W', endDir: 'W', offset: 25 });
-			c.addRepo('versatiles-frontend', 3).addLink(depFFro, { startDir: 'W', endDir: 'W', offset: 30 });
+			c.addRepo('versatiles-frontend', 3).addLink(depFFro, { startDir: 'W', endDir: 'W', offset: 30, endContactShift: 10 });
 
 			return c.asSVG();
 		}
