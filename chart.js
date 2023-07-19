@@ -6,8 +6,14 @@ const fontFamily = 'sans-serif';
 
 export class Chart {
 	constructor() {
-		this.y0 = 0;
 		this.canvas = new Canvas();
+
+		this.y0 = 0;
+		this.layers = Object.fromEntries(
+			'background,boxes,lines,headlines'.split(',')
+				.map(k => [k, this.canvas.appendGroup()])
+		);
+
 		this.colWidth = 200;
 		this.colStart = 220;
 		this.boxWidth = 120;
@@ -23,7 +29,7 @@ export class Chart {
 	addHeadline(text) {
 		this.addBreak(2);
 
-		let group = this.canvas.appendGroup();
+		let group = this.layers.headlines;
 		let rect = [
 			this.colStart - this.colWidth / 4 - this.boxHeight / 4, this.y0,
 			this.colWidth * 4.5 + this.boxHeight / 2, this.boxHeight
@@ -41,7 +47,7 @@ export class Chart {
 
 	addFlow(elements) {
 		let x0 = 0;
-		let group = this.canvas.appendGroup();
+		let group = this.layers.boxes;
 		elements.forEach((text, i) => {
 			let width =
 				elements.isIndexInner(i)
@@ -61,34 +67,32 @@ export class Chart {
 		})
 		this.y0 += this.boxHeight;
 		this.flowYMax = this.y0;
-		this.guideGroup = this.canvas.appendGroup();
 		return group;
 	}
 
 	addCover(type, name, connections, position) {
-		this.coverGroup ??= this.canvas.appendGroup();
 		this.coverLastPosition ??= -3.1;
 
 		position ??= connections[0];
 		if (position === this.coverLastPosition) this.y0 += this.boxHeight / 2;
 		this.coverLastPosition = position;
 
-		let [color, title] = this.#getType(type);
+		let [color] = this.#getType(type);
 
 		let cy = this.y0 + this.boxHeight / 2;
 
 		connections.forEach(c => {
 			let x = this.colStart + c * this.colWidth;
-			this.coverGroup.drawCircle([x, cy], 5, { fill: color });
+			this.layers.lines.drawCircle([x, cy], 5, { fill: color });
 		})
 
 		let x = this.colStart + (position + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer(this.coverGroup, [x, this.y0], type, name);
+		let box = this.#drawContainer([x, this.y0], type, name);
 
 		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
 		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
-		if (cx0 <= x) this.coverGroup.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
-		if (cx1 > x) this.coverGroup.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
+		if (cx0 <= x) this.layers.lines.drawLine([cx0, cy], [x, cy], { stroke: color, strokeWidth: 2 });
+		if (cx1 > x) this.layers.lines.drawLine([x + this.boxWidth, cy], [cx1, cy], { stroke: color, strokeWidth: 2 });
 
 		this.y0 += this.boxHeight;
 
@@ -98,7 +102,7 @@ export class Chart {
 	addCoverGuides() {
 		for (let i = 0; i < 5; i++) {
 			let x = this.colStart + this.colWidth * i;
-			this.guideGroup.drawLine(
+			this.layers.lines.drawLine(
 				[x, this.flowYMax],
 				[x, this.y0 + this.gapHeight],
 				{ stroke: '#F105', strokeWidth: 5 }
@@ -107,18 +111,17 @@ export class Chart {
 	}
 
 	addDependency(type, name, col, ref, options = {}) {
-		this.dependencyGroup ??= this.canvas.appendGroup();
 		this.depColY ??= [this.y0, this.y0, this.y0, this.y0];
 
 		if (options.dy) this.depColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer(this.dependencyGroup, [x, this.depColY[col]], type, name);
+		let box = this.#drawContainer([x, this.depColY[col]], type, name);
 		this.depColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		if (ref) {
 			let path = this.#getPath(ref, box, options);
-			this.dependencyGroup.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
+			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: box.color + '5', strokeWidth: 1 })
 		}
 
 		return box;
@@ -127,8 +130,8 @@ export class Chart {
 	addDepDep(dep0, dep1, options = {}) {
 		options.shortenEnd = 5;
 		let path = this.#getPath(dep0, dep1, options);
-		this.dependencyGroup.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
-		this.dependencyGroup.drawArrowHead(
+		this.layers.lines.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
+		this.layers.lines.drawArrowHead(
 			path.point1.array(),
 			path.dir1.scale(10).array(),
 			{ fill: dep0.color }
@@ -136,18 +139,17 @@ export class Chart {
 	}
 
 	addRepo(name, col, refs = [], options = {}) {
-		this.repoGroup ??= this.canvas.appendGroup();
 		this.repoColY ??= [this.y0, this.y0, this.y0, this.y0];
 
 		if (options.dy) this.repoColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer(this.repoGroup, [x, this.repoColY[col]], 'repo', name);
+		let box = this.#drawContainer([x, this.repoColY[col]], 'repo', name);
 		this.repoColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
 		box.addLink = (ref, options) => {
 			let path = this.#getPath(ref, box, options);
-			this.repoGroup.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
+			this.layers.lines.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color, 2 / 3), strokeWidth: 1 })
 			return box;
 		}
 
@@ -264,14 +266,15 @@ export class Chart {
 		}
 	}
 
-	#drawContainer(canvas, pos, type, name) {
+	#drawContainer(pos, type, name) {
+		const canvas = this.layers.boxes;
 		let [color, title] = this.#getType(type);
 
-		let head = [pos[0], pos[1], this.boxWidth, 10]
+		const head = [pos[0], pos[1], this.boxWidth, 10]
 		canvas.drawRect(head, { fill: color });
 		canvas.drawText(head, title, { fill: '#000A', fontFamily, fontSize: 7 });
 
-		let rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
+		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
 		canvas.drawRect(
 			rect,
 			{ fill: color + '5', stroke: color }
