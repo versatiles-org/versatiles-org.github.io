@@ -172,17 +172,20 @@ export class Chart {
 		return box;
 	}
 
+	addHover(groupEvent, groupRef) {
+		
+	}
+
 	#getType(type) {
 		switch (type) {
 			case 'docker': return ['#08C', 'Docker Container'];
 			case 'rust': return ['#0C4', 'Rust Package'];
-			case 'npm': return ['#0C8', 'NPM Package'];
+			case 'node': return ['#0C8', 'NPM Package'];
 			case 'file': return ['#CC0', 'File'];
 			case 'repo': return ['#AAA', 'GitHub Repository'];
 			default: throw Error(type);
 		}
 	}
-
 
 	#drawContainer(pos, type, name) {
 		const headerHeight = 13;
