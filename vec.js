@@ -60,6 +60,9 @@ export class Vec {
 		let dy = this.y + vec.y;
 		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
 	}
+	isOrthogonal(vec) {
+		return Math.abs(this.clone().scalar(vec)) < 1e-10;
+	}
 	isEqual(vec) {
 		let dx = this.x - vec.x;
 		let dy = this.y - vec.y;

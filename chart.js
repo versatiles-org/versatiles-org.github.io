@@ -173,7 +173,7 @@ export class Chart {
 	}
 
 	addHover(groupEvent, groupRef) {
-		
+
 	}
 
 	#getType(type) {
@@ -292,6 +292,13 @@ function getConnectionPath(box0, box1, opt = {}) {
 		} else {
 			throw Error();
 		}
+	}
+
+	if (dir0.isOrthogonal(dir1)) {
+		let k = dir0.x * dir1.y - dir0.y * dir1.x;
+		let l = dir1.y * (contact1.x - contact0.x) - dir1.x * (contact1.y - contact0.y);
+		let corner = new Vec(contact0.x * k + dir0.x * l, contact0.y * k + dir0.y * l);
+		return { ...result, d: makePath(start0, corner, start1) };
 	}
 
 	console.log({ dir0, dir1, contact0, contact1 })
