@@ -86,14 +86,16 @@
 				.addLink(depDocM, { endOffset: 20 })
 				.addLink(depDoc0, { endOffset: 20, endContactShift: - 20 })
 				.addLink(depDocS, { endOffset: 20, startDir: 'N', endDir: 'S' });
-			let repTile = c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0);
+			let repTile = c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0, { endArrow: true });
 			let repVWeb = c.addRepo('versatiles-website', 0);
 			let repVDoc = c.addRepo('versatiles-docs', 0);
 
 			let repRust = c.addRepo('versatiles-rs', 1).addLink(depRust);
 			let repNode = c.addRepo('node-versatiles', 2).addLink(depNode);
 
-			let repVSpe = c.addRepo('versatiles-spec', 1).addLink(repRust).addLink(repNode, { endDir: 'S' });
+			let repVSpe = c.addRepo('versatiles-spec', 1)
+				.addLink(repRust, { endArrow: true })
+				.addLink(repNode, { endArrow: true, endDir: 'S' });
 
 			let repFFon = c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset: 15 });
 			let repFSpr = c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 20 });

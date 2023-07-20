@@ -163,9 +163,20 @@ export class Chart {
 		this.repoColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
-		box.addLink = (ref, options) => {
-			let path = getConnectionPath(box, ref, options);
-			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 1 })
+		let color = this.#fadeColor(box.color);
+
+		box.addLink = (ref, opt = {}) => {
+			if (opt.endArrow) opt.shortenEnd = 4;
+
+			let path = getConnectionPath(box, ref, opt);
+			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: color, strokeWidth: 1 })
+			if (opt.endArrow) {
+				this.layers.linesFront.drawArrowHead(
+					path.point1.array(),
+					path.dir1.scale(8).array(),
+					{ fill: color }
+				)
+			};
 			return box;
 		}
 
