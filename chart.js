@@ -166,6 +166,8 @@ export class Chart {
 		let color = this.#fadeColor(box.color);
 
 		box.addLink = (ref, opt = {}) => {
+			opt.endArrow ??= true;
+			
 			if (opt.endArrow) opt.shortenEnd = 4;
 
 			let path = getConnectionPath(box, ref, opt);

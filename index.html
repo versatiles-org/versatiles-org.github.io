@@ -94,8 +94,8 @@
 			let repNode = c.addRepo('node-versatiles', 2).addLink(depNode);
 
 			let repVSpe = c.addRepo('versatiles-spec', 1)
-				.addLink(repRust, { endArrow: true })
-				.addLink(repNode, { endArrow: true, endDir: 'S' });
+				.addLink(repRust)
+				.addLink(repNode, { endDir: 'S' });
 
 			let repFFon = c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset: 15 });
 			let repFSpr = c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 20 });
