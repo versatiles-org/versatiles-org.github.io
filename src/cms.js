@@ -28,7 +28,7 @@ async function build() {
 	mkdirSync(config.dst.root);
 
 	(await import('./lib/assets.js')).copyAssets(config);
-	(await import('./lib/helpers.js')).installHelpers(config, handlebars);
+	//(await import('./lib/helpers.js')).installHelpers(config, handlebars);
 	(await import('./lib/partials.js')).installPartials(config, handlebars);
 	(await import('./lib/pages.js')).processPages(config, handlebars);
 }

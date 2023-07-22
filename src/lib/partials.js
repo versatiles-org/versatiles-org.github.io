@@ -1,19 +1,21 @@
 
-const fs = require('fs');
-const { resolve } = require('path');
+import { readFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 
+export function installPartials(config, Handlebars) {
+	installHTMLPartials();
 
-module.exports = { installPartials };
+	function installHTMLPartials() {
+		let partials = {};
+		readdirSync(config.src.partials).forEach(filename => {
+			if (!filename.endsWith('.html')) return;
 
-function installPartials(config, Handlebars) {
-	let partials = {};
-	fs.readdirSync(config.partialsDir).forEach(filename => {
-		if (!filename.endsWith('.html')) return;
+			let name = filename.slice(0, -5);
+			let content = readFileSync(resolve(config.src.partials, filename), 'utf8');
 
-		let name = filename.slice(0, -5);
-		let partial = fs.readFileSync(resolve(config.partialsDir, filename), 'utf8');
-		partials[name] = partial;
-	})
-	//console.log(partials);
-	Handlebars.registerPartial(partials);
+			partials[name] = content;
+		})
+
+		Handlebars.registerPartial(partials);
+	}
 }
