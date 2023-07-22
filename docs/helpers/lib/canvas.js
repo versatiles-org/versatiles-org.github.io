@@ -27,8 +27,7 @@ export class Canvas {
 		</filter>`)
 		svg.append(this.node);
 		setAttributes(svg, {
-			width: '100%',
-			height: 'auto',
+			style: `width:100%; height:auto; max-width:${bbox.width}px;`,
 			//preserveAspectRatio: 'xMidYMid meet',
 			version: '1.1',
 			xmlns: 'http://www.w3.org/2000/svg',

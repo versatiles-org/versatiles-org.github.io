@@ -38,7 +38,7 @@ export class Chart {
 			this.colWidth * 4.5 + this.boxHeight / 2, this.boxHeight
 		];
 		group.drawRect(rect, { fill: '#FFFA' });
-		group.drawText(rect, text, { fontColor: '#000', fontFamily, fontSize: this.boxHeight / 2 });
+		group.drawText(rect, text, { fontColor: '#000', fontFamily, fontSize: this.boxHeight / 2 + 'px' });
 		this.y0 += this.boxHeight;
 
 		this.addBreak();
@@ -66,7 +66,7 @@ export class Chart {
 				fill: color + '5',
 			});
 			rect[0] += this.boxHeight / 3;
-			group.drawText(rect, text, { fill: color, fontFamily, fontSize: 13 });
+			group.drawText(rect, text, { fill: color, fontFamily, fontSize: '13px' });
 		})
 		this.y0 += this.boxHeight;
 		this.flowYMax = this.y0;
@@ -170,7 +170,7 @@ export class Chart {
 
 		box.addLink = (ref, opt = {}) => {
 			opt.endArrow ??= true;
-			
+
 			if (opt.endArrow) opt.shortenEnd = 4;
 
 			let path = getConnectionPath(box, ref, opt);
@@ -213,9 +213,9 @@ export class Chart {
 		const rectText = [pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight];
 		const rectHead = [pos[0], pos[1], this.boxWidth, headerHeight]
 		group.drawRect(rect, { fill: darkColor, stroke: color, cursor: 'pointer' });
-		group.drawText(rectText, name, { fill: color, fontFamily, fontSize: 13, pointerEvents: 'none' });
+		group.drawText(rectText, name, { fill: color, fontFamily, fontSize: '13px', pointerEvents: 'none' });
 		group.drawRect(rectHead, { fill: color, pointerEvents: 'none' });
-		group.drawText(rectHead, title, { fill: darkColor, fontWeight: 'bold', fontFamily, fontSize: 10, pointerEvents: 'none' });
+		group.drawText(rectHead, title, { fill: darkColor, fontWeight: 'bold', fontFamily, fontSize: '10px', pointerEvents: 'none' });
 
 		const overlay = [];
 		group.node.addEventListener('mouseover', () => {
