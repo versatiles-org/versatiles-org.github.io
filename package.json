@@ -1,0 +1,13 @@
+{
+  "name": "versatiles-website",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node src/cms.js"
+  },
+  "author": "Michael Kreil <github@michael-kreil.de> (https://github.com/MichaelKreil)",
+  "license": "MIT",
+  "dependencies": {
+    "handlebars": "^4.7.7"
+  }
+}
