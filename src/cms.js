@@ -28,8 +28,20 @@ async function build() {
 	if (existsSync(config.dst.root)) rmSync(config.dst.root, { recursive: true });
 	mkdirSync(config.dst.root);
 
-	await (await import('./lib/assets.js')).copyAssets(config, handlebars);
-	await (await import('./lib/helpers.js')).installHelpers(config, handlebars);
-	await (await import('./lib/partials.js')).installPartials(config, handlebars);
-	await (await import('./lib/pages.js')).processPages(config, handlebars);
+	run('build', config, handlebars);
+}
+
+async function run(command, ...args) {
+	let modules = [
+		'assets',
+		'helpers',
+		'partials',
+		'pages',
+	]
+
+	for (let module of modules) {
+		module = `./lib/${module}.js`;
+		module = await import(module);
+		await module[command](...args)
+	}
 }

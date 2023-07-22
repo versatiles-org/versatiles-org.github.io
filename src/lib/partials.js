@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-export function installPartials(config, handlebars) {
+export function build(config, handlebars) {
 	for (let filename of readdirSync(config.src.partials)) {
 		if (!filename.endsWith('.html')) continue;
 

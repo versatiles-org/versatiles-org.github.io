@@ -4,7 +4,7 @@ import { readdirSync } from 'node:fs';
 //import {}from  'uglify-js';
 import { resolve } from 'node:path';
 
-export async function installHelpers(config, handlebars) {
+export async function build(config, handlebars) {
 	for (let filename of readdirSync(config.src.helpers)) {
 		if (!filename.endsWith('.js')) continue;
 

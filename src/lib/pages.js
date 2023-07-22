@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import colors from 'colors';
 
-export function processPages(config, handlebars) {
+export function build(config, handlebars) {
 	readdirSync(config.src.pages).forEach(filename => {
 		if (!filename.endsWith('.html')) return;
 
