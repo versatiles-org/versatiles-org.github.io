@@ -1,4 +1,7 @@
 import { BBox } from "./bbox.js";
+import { JSDOM } from 'jsdom';
+
+const { document } = (new JSDOM('')).window;
 
 export class Canvas {
 	constructor() {
@@ -14,7 +17,6 @@ export class Canvas {
 	asSVG() {
 		let svg = getElement('svg');
 		let bbox = this.getBBox();
-		setAttributes(svg, bbox.asAttributes());
 		svg.insertAdjacentHTML('afterbegin', `<filter id="highlight">
 			<feColorMatrix in="SourceGraphic" type="matrix" values="
 				2 2 2 0 0
@@ -24,7 +26,15 @@ export class Canvas {
 			/>
 		</filter>`)
 		svg.append(this.node);
-		return svg;
+		setAttributes(svg, {
+			width: '100%',
+			height: 'auto',
+			//preserveAspectRatio: 'xMidYMid meet',
+			version: '1.1',
+			xmlns: 'http://www.w3.org/2000/svg',
+		});
+		svg.setAttribute('viewBox', bbox.viewBox);
+		return svg.outerHTML;
 	}
 	appendGroup() {
 		let group = new Canvas();
@@ -113,10 +123,13 @@ function getElement(tagName) {
 
 function setAttributes(node, attributeObj) {
 	for (let key in attributeObj) {
-		node.setAttribute(
-			key.replace(/[A-Z]/g, c => '-' + c.toLowerCase()),
-			attributeObj[key]
-		);
+		let name = key.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
+		let value = attributeObj[key];
+		if (value !== null) {
+			node.setAttribute(name, value);
+		} else {
+			node.removeAttribute(name);
+		}
 	}
 }
 

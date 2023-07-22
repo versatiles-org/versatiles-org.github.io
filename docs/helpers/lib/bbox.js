@@ -14,12 +14,13 @@ export class BBox {
 	get height() {
 		return this.bbox[3] - this.bbox[1]
 	}
-	asAttributes() {
-		return {
-			width: this.bbox[2],
-			height: this.bbox[3],
-			viewBox: [0, 0, this.bbox[2], this.bbox[3]].join(' ')
-		}
+	get viewBox() {
+		return [
+			this.bbox[0],
+			this.bbox[1],
+			this.bbox[2] - this.bbox[0],
+			this.bbox[3] - this.bbox[1],
+		].join(' ');
 	}
 	includeRect(rect) {
 		this.#include([rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]])

@@ -3,19 +3,12 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 export function installPartials(config, handlebars) {
-	installHTMLPartials();
+	for (let filename of readdirSync(config.src.partials)) {
+		if (!filename.endsWith('.html')) continue;
 
-	function installHTMLPartials() {
-		let partials = {};
-		readdirSync(config.src.partials).forEach(filename => {
-			if (!filename.endsWith('.html')) return;
+		let name = filename.replace(/\..*?$/, '');
+		let fullname = resolve(config.src.partials, filename);
 
-			let name = filename.slice(0, -5);
-			let content = readFileSync(resolve(config.src.partials, filename), 'utf8');
-
-			partials[name] = content;
-		})
-
-		handlebars.registerPartial(partials);
+		handlebars.registerPartial(name, readFileSync(fullname, 'utf8'));
 	}
 }

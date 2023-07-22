@@ -1,3 +1,6 @@
+
+Array.prototype.isIndexInner = function (index) { return (index > 0) && (index < this.length - 1) }
+
 import { Canvas } from "./canvas.js";
 import { Color } from "./color.js";
 import { Vec } from "./vec.js";
