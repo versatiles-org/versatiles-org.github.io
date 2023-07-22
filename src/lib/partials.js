@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-export function installPartials(config, Handlebars) {
+export function installPartials(config, handlebars) {
 	installHTMLPartials();
 
 	function installHTMLPartials() {
@@ -16,6 +16,6 @@ export function installPartials(config, Handlebars) {
 			partials[name] = content;
 		})
 
-		Handlebars.registerPartial(partials);
+		handlebars.registerPartial(partials);
 	}
 }

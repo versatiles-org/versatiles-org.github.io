@@ -9,6 +9,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "colors": "^1.4.0",
     "handlebars": "^4.7.7"
   }
 }
