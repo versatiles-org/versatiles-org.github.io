@@ -1,23 +1,21 @@
 
 import Handlebars from 'handlebars';
-import * as Path from 'node:path';
-import { rmdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { existsSync, mkdirSync, rmdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = Path.dirname(fileURLToPath(import.meta.url));
-const resolve = path => Path.resolve(__dirname, '../', path)
+const projectPath = resolve(fileURLToPath(import.meta.url), '../../');
 
 const config = {
-	dir: {
-		dist: resolve('dist'),
-		docs: resolve('docs'),
-		pages: resolve('docs/pages'),
-		assets: resolve('docs/assets'),
-		graphics: resolve('docs/graphics'),
-		partials: resolve('docs/partials'),
+	src: {
+		pages: resolve(projectPath, 'docs/pages'),
+		assets: resolve(projectPath, 'docs/assets'),
+		graphics: resolve(projectPath, 'docs/graphics'),
+		partials: resolve(projectPath, 'docs/partials'),
 	},
-	url: {
-		assets: 'assets',
+	dst: {
+		root: resolve(projectPath, 'dist'),
+		assets: resolve(projectPath, 'dist/assets'),
 	}
 }
 
@@ -25,7 +23,10 @@ await build()
 
 async function build() {
 	let handlebars = Handlebars.create();
-	rmdirSync(config.dir.dist, { recursive: true });
+
+	if (existsSync(config.dst.root)) rmdirSync(config.dst.root, { recursive: true });
+	mkdirSync(config.dst.root);
+
 	(await import('./lib/assets.js')).copyAssets(config);
 	(await import('./lib/helpers.js')).installHelpers(config, handlebars);
 	(await import('./lib/partials.js')).installPartials(config, handlebars);

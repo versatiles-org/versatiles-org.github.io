@@ -1,13 +1,10 @@
 
-const fs = require('fs');
-const { resolve } = require('path');
+import { cpSync } from 'node:fs';
 
-module.exports = { copyAssets };
-
-function copyAssets(config) {
-	fs.cpSync(
-		resolve(config.docsDir, 'assets'),
-		resolve(config.distDir, 'assets'),
+export function copyAssets(config) {
+	cpSync(
+		config.src.assets,
+		config.dst.assets,
 		{ recursive: true }
 	)
 }
