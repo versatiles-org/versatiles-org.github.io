@@ -1,18 +1,70 @@
 {{> header title="Intro" }}
 
-<div id="headblock">
-	<img src="assets/logo/versatiles.svg">
-	<div id="headline">
-		<h1>VersaTiles</h1>
-		<span>
-			<p>a</p>
-			<p>complete</p>
-			<p><abbr title="Free, Libre and Open Source Software">FLOSS</abbr></p>
-			<p>map</p>
-			<p>stack</p>
-		</span>
+<section>
+	<style scoped>
+		#headblock {
+			padding: 2em 0;
+			display: flex;
+			flex-direction: row;
+			flex-flow: row wrap;
+			justify-content: center;
+			align-items: center;
+			gap: 2em;
+		}
+
+		#headblock img {
+			display: flex;
+		}
+
+		#headline {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#headline h1 {
+			background-clip: text;
+			background: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034);
+			color: #fff;
+			font-family: sans-serif;
+			font-size: 4em;
+			font-weight: 300;
+			padding: 0.1em 0.2em;
+		}
+
+		#headline span {
+			color: #bbb;
+			display: flex;
+			flex-direction: row;
+			font-size: 1.3rem;
+			font-weight: 400;
+			justify-content: space-between;
+			letter-spacing: 0.1em;
+			margin: 0.1em 0 0;
+			padding: 0;
+			text-transform: uppercase;
+			width: 100%;
+		}
+
+		#headline span p {
+			margin: 0;
+		}
+	</style>
+	<div id="headblock">
+		<img src="assets/logo/versatiles.svg">
+		<div id="headline">
+			<h1>VersaTiles</h1>
+			<span>
+				<p>a</p>
+				<p>complete</p>
+				<p><abbr title="Free, Libre and Open Source Software">FLOSS</abbr></p>
+				<p>map</p>
+				<p>stack</p>
+			</span>
+		</div>
 	</div>
-</div>
+</section>
 <section>
 	<hero>
 		VersaTiles is a completely <abbr title="Free, Libre and Open Source Software">FLOSS</abbr> stack for
@@ -20,6 +72,16 @@
 	</hero>
 </section>
 <section>
+	<style scoped>
+		#map {
+			display: block;
+			width: 100%;
+			max-width: 640px;
+			height: 360px;
+			margin: auto;
+			-webkit-box-reflect: below 5px -webkit-gradient(linear, left top, left bottom, from(#0000), color-stop(0.5, #0000), to(#0003));
+		}
+	</style>
 	<h2>Try it out</h2>
 	<div id="map"></div>
 	<script>
