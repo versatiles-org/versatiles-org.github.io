@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "node src/cms.js"
+    "build": "node src/cms.js",
+    "dev": "node src/cms.js watch serve",
+    "preview": "node src/cms.js serve",
+    "watch": "node src/cms.js watch"
   },
   "author": "Michael Kreil <github@michael-kreil.de> (https://github.com/MichaelKreil)",
   "license": "MIT",
@@ -12,5 +15,8 @@
     "colors": "^1.4.0",
     "handlebars": "^4.7.7",
     "jsdom": "^22.1.0"
+  },
+  "devDependencies": {
+    "express": "^4.18.2"
   }
 }

@@ -4,30 +4,39 @@ import { resolve } from 'node:path';
 import { existsSync, mkdirSync, rmSync, watch } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const projectPath = resolve(fileURLToPath(import.meta.url), '../../');
+const PORT = 8080;
+const PROJECT_PATH = resolve(fileURLToPath(import.meta.url), '../../');
 
-const config = {
+const CONFIG = {
 	src: {
-		root: resolve(projectPath, 'docs'),
-		pages: resolve(projectPath, 'docs/pages'),
-		assets: resolve(projectPath, 'docs/assets'),
-		graphics: resolve(projectPath, 'docs/graphics'),
-		helpers: resolve(projectPath, 'docs/helpers'),
-		partials: resolve(projectPath, 'docs/partials'),
+		root: resolve(PROJECT_PATH, 'docs'),
+		pages: resolve(PROJECT_PATH, 'docs/pages'),
+		assets: resolve(PROJECT_PATH, 'docs/assets'),
+		graphics: resolve(PROJECT_PATH, 'docs/graphics'),
+		helpers: resolve(PROJECT_PATH, 'docs/helpers'),
+		partials: resolve(PROJECT_PATH, 'docs/partials'),
 	},
 	dst: {
-		root: resolve(projectPath, 'dist'),
-		assets: resolve(projectPath, 'dist/assets'),
+		root: resolve(PROJECT_PATH, 'dist'),
+		assets: resolve(PROJECT_PATH, 'dist/assets'),
 	}
 }
 
-if (existsSync(config.dst.root)) rmSync(config.dst.root, { recursive: true });
-mkdirSync(config.dst.root);
+if (existsSync(CONFIG.dst.root)) rmSync(CONFIG.dst.root, { recursive: true });
+mkdirSync(CONFIG.dst.root);
+
+let options = process.argv.slice(2).map(a => a.toLowerCase());
+
+if (options.some(o => o.includes('serve'))) startServer();
 
 await build();
 
-if (process.argv[2] === 'watch') {
-	watch(config.src.root, { recursive: true }, async () => { await build() });
+if (options.some(o => o.includes('watch'))) {
+	watch(
+		CONFIG.src.root,
+		{ recursive: true },
+		(event, filename) => build()
+	);
 }
 
 async function build() {
@@ -44,8 +53,15 @@ async function build() {
 	for (let module of modules) {
 		module = `./lib/${module}.js`;
 		module = await import(module);
-		await module.build(config, handlebars)
+		await module.build(CONFIG, handlebars)
 	}
 
 	console.log('rebuild:', (Date.now() - t) + 'ms')
+}
+
+async function startServer() {
+	const express = (await import('express')).default;
+	const app = new express();
+	app.use(express.static(CONFIG.dst.root))
+	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
 }
