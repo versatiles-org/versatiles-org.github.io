@@ -13,6 +13,22 @@
 		<a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and
 		<a href="https://maplibre.org/" rel="follow">MapLibre</a>.
 	</p>
+
+	<div style="text-align: center; height: 350px;">
+		<div id="map"
+			style="display: inline-block;width: 400px;height: 300px;-webkit-box-reflect: below 5px -webkit-gradient(linear, left top, left bottom, from(#0000), color-stop(0.5, #0000), to(#0003));">
+		</div>
+	</div>
+	<script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js">
+	</script>
+	<script>
+		var map = new maplibregl.Map({
+			container: 'map', // container id
+			style: 'https://demotiles.maplibre.org/style.json', // style URL
+			center: [0, 0], // starting position [lng, lat]
+			zoom: 0.2 // starting zoom
+		});
+	</script>
 	<p>
 		<img src="assets/stack.svg" title="" alt="wtf" />
 	</p>
