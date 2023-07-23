@@ -1,7 +1,5 @@
 
 import { readdirSync } from 'node:fs';
-//import {} from 'csso';
-//import {}from  'uglify-js';
 import { resolve } from 'node:path';
 
 export async function build(config, handlebars) {
@@ -10,9 +8,10 @@ export async function build(config, handlebars) {
 
 		let name = filename.replace(/\..*?$/, '');
 		let fullname = resolve(config.src.helpers, filename);
+		fullname += '?version=' + Date.now();
 
-		let fun = (await import(fullname)).default;
-		
+		let { default: fun } = await import(fullname);
+
 		handlebars.registerHelper(name, function (...args) {
 			return fun(...args);
 		})

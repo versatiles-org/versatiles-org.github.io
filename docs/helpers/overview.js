@@ -2,12 +2,19 @@
 import { Chart } from './lib/chart.js'
 
 export default function () {
-	let c = new Chart('#000');
+	let c = new Chart({
+		backgroundColor: '#000',
+		colWidth: 200,
+		colStart: 180,
+		boxWidth: 140,
+		boxHeight: 40,
+		gapHeight: 40,
+	});
 
 	c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive web map?');
 
 	c.addFlow([
-		'OpenStreetMap',
+		'OSM data',
 		'generator',
 		'.mbtiles',
 		'converter',
@@ -17,7 +24,7 @@ export default function () {
 		'proxy / CDN',
 		'HTTPS',
 		'frontend',
-		'interactive map',
+		'web map',
 	])
 
 	c.addHeadline('Which containers, packages or files can cover which part of this process chain?');

@@ -8,7 +8,7 @@ import { Vec } from "./vec.js";
 const fontFamily = 'sans-serif';
 
 export class Chart {
-	constructor(backgroundColor) {
+	constructor(opt = {}) {
 		this.canvas = new Canvas();
 
 		this.y0 = 0;
@@ -17,12 +17,12 @@ export class Chart {
 				.map(k => [k, this.canvas.appendGroup()])
 		);
 
-		this.colWidth = 190;
-		this.colStart = 180;
-		this.boxWidth = 130;
-		this.boxHeight = 40;
-		this.gapHeight = 40;
-		this.backgroundColor = new Color(backgroundColor || '#000');
+		this.colWidth = opt.colWidth || 200;
+		this.colStart = opt.colStart || 180;
+		this.boxWidth = opt.boxWidth || 140;
+		this.boxHeight = opt.boxHeight || 40;
+		this.gapHeight = opt.gapHeight || 40;
+		this.backgroundColor = new Color(opt.backgroundColor || '#000');
 	}
 
 	asSVG() {
