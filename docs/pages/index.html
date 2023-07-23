@@ -1,37 +1,32 @@
 {{> header title="Intro" }}
 <section>
 	<hero>
-		VersaTiles aims to be a completely <abbr title="Free, Libre and Open Source Software">FLOSS</abbr> stack for
+		VersaTiles is a completely <abbr title="Free, Libre and Open Source Software">FLOSS</abbr> stack for
 		generating, distributing and using map tiles based on OpenStreetMap data, free of any commercial interests.
 	</hero>
 </section>
 <section>
-	<h2></h2>
+	<h2>Try it out</h2>
+	<div id="map"></div>
+	<script>
+		var map = new maplibregl.Map({
+			container: 'map',
+			style: 'assets/colorful.json',
+			center: [13.3976, 52.523],
+			zoom: 9,
+			//customAttribution: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+		});
+	</script>
+</section>
+<section>
+	<h2>How did we do it?</h2>
 	<p>
-		We make use of permissively licensed open source software, data, schemes and styles, such as
+		We combined permissively licensed open source software, data, schemes and styles, such as
 		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
 		<a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and
 		<a href="https://maplibre.org/" rel="follow">MapLibre</a>.
 	</p>
 
-	<div style="text-align: center; height: 350px;">
-		<div id="map"
-			style="display: inline-block;width: 400px;height: 300px;-webkit-box-reflect: below 5px -webkit-gradient(linear, left top, left bottom, from(#0000), color-stop(0.5, #0000), to(#0003));">
-		</div>
-	</div>
-	<script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js">
-	</script>
-	<script>
-		var map = new maplibregl.Map({
-			container: 'map', // container id
-			style: 'https://demotiles.maplibre.org/style.json', // style URL
-			center: [0, 0], // starting position [lng, lat]
-			zoom: 0.2 // starting zoom
-		});
-	</script>
-	<p>
-		<img src="assets/stack.svg" title="" alt="wtf" />
-	</p>
 </section>
 <section>
 	<h2></h2>
