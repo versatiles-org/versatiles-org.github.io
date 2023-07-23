@@ -7,10 +7,12 @@ export function build(config, handlebars) {
 	readdirSync(config.src.pages).forEach(filename => {
 		if (!filename.endsWith('.html')) return;
 
+		let pagename = filename.replace(/\..*?$/, '');
+
 		let page = readFileSync(resolve(config.src.pages, filename), 'utf8');
 		try {
 			page = handlebars.compile(page, { strict: true });
-			page = page();
+			page = page({ pagename, filename });
 		} catch (err) {
 			console.error(colors.red.bold('Error in ' + filename));
 			throw err;

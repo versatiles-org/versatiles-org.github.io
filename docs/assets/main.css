@@ -11,6 +11,10 @@ body {
 a {
 	color: #fff;
 	text-decoration: underline;
+	text-decoration-color: #fff0;
+}
+
+section a {
 	text-decoration-color: #fff5;
 }
 
@@ -58,8 +62,16 @@ a.button i {
 }
 
 header {
-	height: 1.5rem;
 	background-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034);
+}
+
+header ul {
+	text-align: right;
+	font-size: 1em;
+}
+header ul li {
+	display: inline-block;
+	margin: 0.2em 0.5em;
 }
 
 #headblock {

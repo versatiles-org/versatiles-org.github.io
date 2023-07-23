@@ -22,6 +22,8 @@ const CONFIG = {
 	}
 }
 
+process.chdir(CONFIG.src.root);
+
 if (existsSync(CONFIG.dst.root)) rmSync(CONFIG.dst.root, { recursive: true });
 mkdirSync(CONFIG.dst.root);
 
