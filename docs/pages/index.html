@@ -81,8 +81,9 @@
 			width: 100%;
 			max-width: 640px;
 			aspect-ratio: 16 / 9;
+			min-height: 240px;
 			margin: auto;
-			-webkit-box-reflect: below 5px -webkit-gradient(linear, left top, left bottom, from(#0000), color-stop(0.5, #0000), to(#0005));
+			-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(#0000), color-stop(0.5, #0000), to(#0005));
 		}
 	</style>
 	<div id="map"></div>
@@ -95,6 +96,9 @@
 		});
 		map.addControl(new maplibregl.AttributionControl({ compact: true }));
 	</script>
+	<p>
+		If you want to use 
+	</p>
 </section>
 <section>
 	<h2>How to use VersaTiles?</h2>
@@ -162,4 +166,9 @@
 				Foundation</abbr></a>
 	</card>
 </cards>
+<section>
+	<div id="test" style="text-align: center; display: flex; width: 100%">
+		{{{overview}}}
+	</div>
+</section>
 {{> footer }}
