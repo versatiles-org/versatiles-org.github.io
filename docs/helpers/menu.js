@@ -11,8 +11,10 @@ export default function (arg) {
 	];
 
 	links.forEach(l => {
-		if (l.href === filename) l.title = `<b>${l.title}</b>`
+		if (l.href === filename) l.add = ' class="selected"'
 	})
 
-	return '<ul>' + links.map(({ href, title }) => `<li><a href="/${href}">${title}</a></li>`).join('') + '</ul>'
+	return '<ul id="menu">' + links.map(
+		({ href, title, add }) => `<li${add || ''}><a href="/${href}">${title}</a></li>`
+	).join('') + '</ul>'
 }

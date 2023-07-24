@@ -9,7 +9,7 @@ body {
 }
 
 a {
-	color: #fff;
+	color: inherit;
 	text-decoration: underline;
 	text-decoration-color: #fff0;
 }
@@ -61,17 +61,27 @@ a.button i {
 	color: #999;
 }
 
-header {
-	background-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034);
+#menu {
+	text-align: right;
+	font-size: 1rem;
+	
+	border-style: solid;
+	border-width: 0 0 1px;
+	border-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034) 0.5;
 }
 
-header ul {
-	text-align: right;
-	font-size: 1em;
-}
-header ul li {
+#menu li {
 	display: inline-block;
 	margin: 0.2em 0.5em;
+	color: #aaa;
+}
+
+#menu li.selected, #menu li:hover {
+	color: #fff;
+}
+
+#menu li a {
+	text-decoration: none;
 }
 
 abbr {
@@ -85,7 +95,6 @@ section p {
 	padding: 0;
 	font-weight: 400;
 	color: #eee;
-	font-size: 1.4rem;
 	text-align: justify;
 }
 
@@ -99,7 +108,8 @@ main {
 	align-items: center;
 	background: rgba(0, 0, 0, 0.75);
 	gap: 5rem;
-	padding: 5rem 0 10rem;
+	padding: 5rem 1rem 10rem;
+	overflow-x: hidden;
 }
 
 main section {
@@ -115,101 +125,10 @@ main section {
 	border-radius: 2rem;
 }
 
-main cards {
-	display: flex;
-	flex-flow: row wrap;
-	max-width: 1024px;
-	margin: 0;
-	padding: 0 2rem;
-	align-items: stretch;
-	align-content: stretch;
-	border-radius: 2rem;
-}
-
-main cards card:first-child {
-	border-radius: 1rem 1rem 0 0;
-}
-
-main cards card:last-child {
-	border-radius: 0 0 1rem 1rem;
-}
-
-
-@media screen and (min-width: 1024px) {
-
-	main cards card:first-child {
-		border-radius: 1rem 0 0 1rem;
-	}
-
-	main cards card:last-child {
-		border-radius: 0 1rem 1rem 0;
-	}
-
-	main cards {
-		flex-flow: row nowrap;
-		align-items: stretch;
-		justify-content: stretch;
-
-	}
-
-}
-
-main card {
-	display: flex;
-	align-self: stretch;
-
-	flex-flow: column wrap;
-	align-items: stretch;
-	justify-content: space-between;
-
-	width: 100%;
-
-	font-size: 1.2rem;
-	padding: 1rem;
-	gap: 1rem;
-}
-
-card p {
-	margin: 0;
-	padding: 0;
-}
-
-card a+a {
-	margin-left: 1em;
-}
-
 main section hero {
 	color: #eee;
-	font-size: 2rem;
-}
-
-
-
-#card-1 {
-	background-color: #6b0075;
-	color: #f37eff;
-}
-
-#card-2 {
-	background-color: #9d35ff;
-	color: #dbb5ff;
-}
-
-#card-3 {
-	background-color: #606e0f;
-	color: #f1ffa1;
-}
-
-#card-4 {
-	background-color: #005034;
-	color: #70ffcc;
-}
-
-main article {
-	display: flex;
-	flex-direction: column;
-	padding: 1em;
-	background-color: #000;
+	text-align: center;
+	font-size: 1.5rem;
 }
 
 footer {
@@ -217,7 +136,6 @@ footer {
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	background-color: rgba(0, 0, 0, 0.95);
 	border-top: 1px solid #444;
 	display: flex;
 	padding: 2rem;
