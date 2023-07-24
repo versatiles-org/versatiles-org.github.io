@@ -5,9 +5,8 @@ export default function (arg) {
 
 	let links = [
 		{ href: '', title: 'Introduction' },
-		{ href: 'overview.html', title: 'Overview' },
 		{ href: 'how_to_use.html', title: 'How to use' },
-		{ href: 'links.html', title: 'Links' },
+		{ href: 'how_to_help.html', title: 'Contribute' },
 	];
 
 	links.forEach(l => {
