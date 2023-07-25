@@ -58,7 +58,7 @@ async function build() {
 		await module.build(CONFIG, handlebars)
 	}
 
-	console.log('rebuild:', (Date.now() - t) + 'ms')
+	process.stderr.write((Date.now() - t) + 'ms ')
 }
 
 async function startServer() {

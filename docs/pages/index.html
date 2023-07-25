@@ -107,27 +107,70 @@
 		The flexibility of VersaTiles means that there are <a href="how_to_use.html">simple solutions for every use
 			case</a>:
 	</p>
-	<ul>
+	<style scoped>
+		ul#use_cases {
+			max-width: 25em;
+			margin: auto;
+			padding: 0;
+		}
+
+		ul#use_cases li {
+			margin-bottom: 1.5em;
+			font-weight: 100;
+			list-style-type: none;
+		}
+
+		ul#use_cases li em {
+			display: block;
+			text-align: right;
+		}
+	</style>
+	<ul id="use_cases">
 		<li>
-			<i>Need a quick and easy map?</i>
-			&nbsp; <em><a href="how_to_use.html#use_url">Just use our server.</a></em>
+			Need a quick and easy map?
+			<em><a href="how_to_use.html#use_url">Use our server.</a></em>
 		</li>
 		<li>
-			<i>Do you expect a lot of traffic?</i>
-			&nbsp; <em><a href="how_to_use.html#use_cdn">Put a CDN in between.</a></em>
+			Do you expect a lot of traffic?
+			<em><a href="how_to_use.html#use_cdn">Put a CDN in between.</a></em>
 		</li>
 		<li>
-			<i>Do you want to be independent?</i>
-			&nbsp; <em><a href="how_to_use.html#use_server">Set up your own server.</a></em>
+			Do you want to be independent?
+			<em><a href="how_to_use.html#use_server">Set up your own server.</a></em>
 		</li>
 		<li>
-			<i>Do you want maximum reliability and scalability?</i>
-			&nbsp; <em><a href="how_to_use.html#use_cloud">Set up your own infrastructure.</a></em>
+			Do you want maximum reliability and scalability?
+			<em><a href="how_to_use.html#use_cloud">Set up your own cloud solution.</a></em>
 		</li>
 	</ul>
 </section>
 <section>
-	<h2>What is the idea?</h2>
+	<h2>What is the idea behind VersaTiles?</h2>
+	<p>
+		There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But you have
+		to build a complete tech stack combining multiple solutions to serve maps. That takes a lot of effort.
+	</p>
+	<p>
+		VersaTiles tackles this by defining a 5-layer stack to process OpenStreetMap data and serve maps. It also provides
+		a
+		reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your
+		preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you can
+		just replace that part but can still use the other layers.
+	</p>
+	<p>
+		The 5 layers are:
+	</p>
+	<p>
+		{{{chart_flow}}}
+	</p>
+	<ol>
+		<li><b>Generator</b> produces vector tiles using OpenStreetMap data.</li>
+		<li><b>Converter</b> prepares these vector tiles for the server, e.g. by precompressing, filtering and/or
+			converting them to a more suitable file format.</li>
+		<li><b>Server</b> is serving the vector tiles.</li>
+		<li><b>Proxy</b> is handling network stuff, like TLS certificates, caching, load balancing etc.</li>
+		<li><b>Frontend</b> is the actual frontend, that loads and renders the vector tiles.</li>
+	</ol>
 	<p>
 		We combined permissively licensed open source software, data, schemes and styles, such as
 		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
@@ -141,6 +184,8 @@
 		Our open spec, royalty free and permissively licensed <a href="">conatainer format</a> works with virtually any
 		webserver or <abbr title="Content Delivery Network">CDN</abbr> — with no requirement to pay unreasonable prices
 		for "Tiles-as-a-Service".
+	</p>
+	<p>
 	</p>
 </section>
 
@@ -184,7 +229,7 @@
 <section>
 	<h2>How is it build?</h2>
 	<div id="test" style="text-align: center; display: flex; width: 100%">
-		{{{overview}}}
+		{{{chart_overview}}}
 	</div>
 </section>
 {{> footer }}

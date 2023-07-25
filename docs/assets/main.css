@@ -35,11 +35,6 @@ h6 {
 	color: #fff;
 }
 
-i {
-	font-style: normal;
-	font-weight: 100;
-}
-
 em {
 	font-style: normal;
 	font-weight: 700;
@@ -113,12 +108,19 @@ section h3,
 section h4,
 section h5,
 section h6,
-section p {
+section p,
+section ol,
+section ul {
 	display: block;
 	width: 100%;
 	margin: 0;
 	padding: 0 1rem;
 	box-sizing: border-box;
+}
+
+section ol,
+section ul {
+	padding-inline: 3em;
 }
 
 section p {
