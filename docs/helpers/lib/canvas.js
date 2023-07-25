@@ -14,9 +14,10 @@ export class Canvas {
 		this.subGroups.forEach(g => bbox.includeBBox(g.getBBox()));
 		return bbox;
 	}
-	asSVG() {
+	asSVG(padding = 5) {
 		let svg = getElement('svg');
 		let bbox = this.getBBox();
+		bbox.addPadding(padding);
 		svg.insertAdjacentHTML('afterbegin', `<filter id="highlight">
 			<feColorMatrix in="SourceGraphic" type="matrix" values="
 				2 2 2 0 0

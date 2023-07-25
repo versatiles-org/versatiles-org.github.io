@@ -152,25 +152,96 @@
 	</p>
 	<p>
 		VersaTiles tackles this by defining a 5-layer stack to process OpenStreetMap data and serve maps. It also provides
-		a
-		reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your
-		preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you can
-		just replace that part but can still use the other layers.
-	</p>
-	<p>
-		The 5 layers are:
+		a reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your
+		preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you
+		can just replace that part but can still use the other layers.
 	</p>
 	<p>
 		{{{chart_flow}}}
 	</p>
-	<ol>
-		<li><b>Generator</b> produces vector tiles using OpenStreetMap data.</li>
-		<li><b>Converter</b> prepares these vector tiles for the server, e.g. by precompressing, filtering and/or
-			converting them to a more suitable file format.</li>
-		<li><b>Server</b> is serving the vector tiles.</li>
-		<li><b>Proxy</b> is handling network stuff, like TLS certificates, caching, load balancing etc.</li>
-		<li><b>Frontend</b> is the actual frontend, that loads and renders the vector tiles.</li>
-	</ol>
+	<p>
+		The 5 layers are:
+		<style scoped>
+			table {
+				max-width: 600px;
+				margin: auto;
+				font-size: 0.8rem;
+				color: #fffa;
+			}
+
+			table tr th {
+				width: 130px;
+				line-height: 0;
+			}
+
+			table em {
+				font-size: 1rem;
+				color: #fff;
+			}
+		</style>
+	<table>
+		<tr>
+			<th>{{{chart_flow 0}}}</th>
+			<td>Using the latest OSM dump …</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 1}}}</th>
+			<td>
+				<em>Generator produces vector tiles.</em><br>
+				We are using <a href="https://tilemaker.org/" rel="follow">tilemaker</a> to generate vector tiles in <a
+					href="https://shortbread.geofabrik.de/schema/" rel="follow">shortbread scheme</a>.
+			</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 2}}}</th>
+			<td>But .mbtiles is not the best format for scalable infrastructures, so …</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 3}}}</th>
+			<td>
+				<em>Converter prepares these tiles for the server</em><br>
+				by precompressing, cleaning and converting them to …
+			</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 4}}}</th>
+			<td>a <a href="http://github.com/versatiles-org/versatiles-spec">versatiles container</a>, a much more simpler
+				file format.</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 5}}}</th>
+			<td>
+				<em>Server is serving the vector tiles.</em><br>
+			</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 6}}}</th>
+			<td>… but only speaks HTTP, because …</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 7}}}</th>
+			<td>
+				<em>Proxy is handling network stuff</em><br>
+				like TLS certificates, caching, load balancing etc.
+			</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 8}}}</th>
+			<td>Now we have a running server infrastructure, so we can put in front of it a …</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 9}}}</th>
+			<td>
+				<em>Frontend loads and renders the vector tiles.</em><br>
+
+			</td>
+		</tr>
+		<tr>
+			<th>{{{chart_flow 10}}}</th>
+			<td>Enjoy.</td>
+		</tr>
+	</table>
+	</p>
 	<p>
 		We combined permissively licensed open source software, data, schemes and styles, such as
 		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
@@ -180,7 +251,7 @@
 	<p>
 		VersaTiles lets you use OpenStreetMap based vector tiles, without any restrictions, locked-in paid services or
 		attribution requirements beyond OpenStreetMap.
-		You can use the freely downloadable tilesets from VersaTiles on your own infrastrure, in any way you like.
+		You can use the freely downloadable tilesets from VersaTiles on your own infrastructure, in any way you like.
 		Our open spec, royalty free and permissively licensed <a href="">conatainer format</a> works with virtually any
 		webserver or <abbr title="Content Delivery Network">CDN</abbr> — with no requirement to pay unreasonable prices
 		for "Tiles-as-a-Service".

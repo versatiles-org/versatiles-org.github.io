@@ -25,8 +25,8 @@ export class Chart {
 		this.backgroundColor = new Color(opt.backgroundColor || '#000');
 	}
 
-	asSVG() {
-		return this.canvas.asSVG();
+	asSVG(padding) {
+		return this.canvas.asSVG(padding);
 	}
 
 	addHeadline(text) {
@@ -48,28 +48,36 @@ export class Chart {
 		this.y0 += this.gapHeight * count;
 	}
 
-	addFlow(elements) {
-		let x0 = 0;
-		let group = this.layers.boxes;
-		elements.forEach((text, i) => {
-			let width =
-				elements.isIndexInner(i)
-					? this.colWidth / 2
-					: this.colStart - this.colWidth / 4 - this.boxHeight / 4;
+	addFlow() {
+		let x0 = 0, y0 = this.y0, colIndex = 0;
 
-			let color = (i % 2 === 0) ? '#666' : '#F10';
-			let rect = [x0, this.y0, width, this.boxHeight];
-			x0 += width;
+		this.y0 += this.boxHeight;
+		this.flowYMax = this.y0;
+
+		let group = this.layers.boxes;
+		group.add = (text, highlight, end) => {
+			let width = end
+				? this.colStart - this.colWidth / 4 - this.boxHeight / 4
+				: this.colWidth / 2;
+
+			highlight ??= (colIndex % 2 === 1);
+
+			let color = highlight ? '#F10' : '#666';
+			let rect = [x0, y0, width, this.boxHeight];
 			group.drawFlowBox(rect, {
-				strokeWidth: (i % 2 === 0) ? 0 : 1,
+				strokeWidth: highlight ? 1 : 0,
 				stroke: color,
 				fill: color + '5',
 			});
 			rect[0] += this.boxHeight / 3;
 			group.drawText(rect, text, { fill: color, fontFamily, fontSize: '13px' });
-		})
-		this.y0 += this.boxHeight;
-		this.flowYMax = this.y0;
+			
+			x0 += width;
+			colIndex++;
+
+			return group;
+		}
+
 		return group;
 	}
 

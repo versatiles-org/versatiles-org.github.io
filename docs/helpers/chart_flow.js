@@ -1,8 +1,8 @@
 
 import { Chart } from './lib/chart.js'
 
-export default function () {
-	let c = new Chart({
+export default function (a, b) {
+	const c = new Chart({
 		backgroundColor: '#000',
 		colWidth: 200,
 		colStart: 180,
@@ -11,19 +11,26 @@ export default function () {
 		gapHeight: 40,
 	});
 
-	c.addFlow([
-		'OSM data',
-		'1. Generator',
-		'.mbtiles',
-		'2. Converter',
-		'.versatiles',
-		'3. Server',
-		'HTTP',
-		'4. Proxy',
-		'HTTPS',
-		'5. Frontend',
-		'web map',
-	])
+	const steps = [
+		['OSM data', false, true],
+		['1. Generator', true],
+		['.mbtiles', false],
+		['2. Converter', true],
+		['.versatiles', false],
+		['3. Server', true],
+		['HTTP', false],
+		['4. Proxy', true],
+		['HTTPS', false],
+		['5. Frontend', true],
+		['web map', false, true],
+	];
 
-	return c.asSVG();
+	let f = c.addFlow();
+	if (typeof a === 'number') {
+		f.add(...(steps[a].slice(0, 2)));
+	} else {
+		steps.forEach(s => f.add(...s));
+	}
+
+	return c.asSVG(2);
 }

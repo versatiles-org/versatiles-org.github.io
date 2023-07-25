@@ -13,19 +13,18 @@ export default function () {
 
 	c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive web map?');
 
-	c.addFlow([
-		'OSM data',
-		'generator',
-		'.mbtiles',
-		'converter',
-		'.versatiles',
-		'server',
-		'HTTP',
-		'proxy / CDN',
-		'HTTPS',
-		'frontend',
-		'web map',
-	])
+	c.addFlow()
+		.add('OSM data', null, true)
+		.add('1. Generator')
+		.add('.mbtiles')
+		.add('2. Converter')
+		.add('.versatiles')
+		.add('3. Server')
+		.add('HTTP')
+		.add('4. Proxy')
+		.add('HTTPS')
+		.add('5. Frontend')
+		.add('web map', null, true);
 
 	c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 

@@ -40,4 +40,10 @@ export class BBox {
 	clone() {
 		return new BBox(this.bbox);
 	}
+	addPadding(padding) {
+		this.bbox[0] -= padding;
+		this.bbox[1] -= padding;
+		this.bbox[2] += padding;
+		this.bbox[3] += padding;
+	}
 }
