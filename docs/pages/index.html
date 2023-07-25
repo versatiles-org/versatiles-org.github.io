@@ -93,33 +93,47 @@
 			style: 'assets/colorful.json',
 			bounds: [13.09, 52.33, 13.74, 52.68],
 			attributionControl: false,
+			cooperativeGestures: true,
 		});
 		map.addControl(new maplibregl.AttributionControl({ compact: true }));
 	</script>
 	<p>
-		If you want to use 
+		If you want to use
 	</p>
 </section>
 <section>
 	<h2>How to use VersaTiles?</h2>
 	<p>
-		We combined permissively licensed open source software, data, schemes and styles, such as
-		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
-		<a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and
-		<a href="https://maplibre.org/" rel="follow">MapLibre</a>.
+		The flexibility of VersaTiles means that there are <a href="how_to_use.html">simple solutions for every use
+			case</a>:
 	</p>
+	<ul>
+		<li>
+			<i>Need a quick and easy map?</i>
+			&nbsp; <em><a href="how_to_use.html#use_url">Just use our server.</a></em>
+		</li>
+		<li>
+			<i>Do you expect a lot of traffic?</i>
+			&nbsp; <em><a href="how_to_use.html#use_cdn">Put a CDN in between.</a></em>
+		</li>
+		<li>
+			<i>Do you want to be independent?</i>
+			&nbsp; <em><a href="how_to_use.html#use_server">Set up your own server.</a></em>
+		</li>
+		<li>
+			<i>Do you want maximum reliability and scalability?</i>
+			&nbsp; <em><a href="how_to_use.html#use_cloud">Set up your own infrastructure.</a></em>
+		</li>
+	</ul>
 </section>
 <section>
-	<h2>How does it work?</h2>
+	<h2>What is the idea?</h2>
 	<p>
 		We combined permissively licensed open source software, data, schemes and styles, such as
 		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
 		<a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and
 		<a href="https://maplibre.org/" rel="follow">MapLibre</a>.
 	</p>
-</section>
-<section>
-	<h2></h2>
 	<p>
 		VersaTiles lets you use OpenStreetMap based vector tiles, without any restrictions, locked-in paid services or
 		attribution requirements beyond OpenStreetMap.
@@ -129,6 +143,7 @@
 		for "Tiles-as-a-Service".
 	</p>
 </section>
+
 <cards>
 	<card id="card-1">
 		<h3>Explore the map</h3>
@@ -167,6 +182,7 @@
 	</card>
 </cards>
 <section>
+	<h2>How is it build?</h2>
 	<div id="test" style="text-align: center; display: flex; width: 100%">
 		{{{overview}}}
 	</div>

@@ -13,7 +13,7 @@ export default function (arg) {
 		if (l.href === filename) l.add = ' class="selected"'
 	})
 
-	return '<ul id="menu">' + links.map(
+	return '<nav><ul>' + links.map(
 		({ href, title, add }) => `<li${add || ''}><a href="/${href}">${title}</a></li>`
-	).join('') + '</ul>'
+	).join('') + '</ul></nav>'
 }

@@ -15,12 +15,12 @@ a {
 	text-decoration-color: #fff0;
 }
 
-section a {
-	text-decoration-color: #fff5;
-}
-
 a:hover {
 	text-decoration-color: #ffff;
+}
+
+section a {
+	text-decoration-color: #fff5;
 }
 
 h1,
@@ -35,53 +35,42 @@ h6 {
 	color: #fff;
 }
 
-ul,
-li {
-	list-style: none;
-	margin: 0;
-	padding: 0;
+i {
+	font-style: normal;
+	font-weight: 100;
 }
 
-a.button {
-	display: inline-block;
-	width: auto;
-	background: #333;
-	color: #eee;
-	text-align: center;
-	border-radius: .5rem;
-	padding: .5rem 1rem;
-	font-size: 1rem;
-	font-weight: 300;
+em {
+	font-style: normal;
+	font-weight: 700;
 }
 
-a.button:hover {
-	background-color: #222;
-}
-
-a.button i {
-	color: #999;
-}
-
-#menu {
-	text-align: right;
+nav {
 	font-size: 1em;
 	border-style: solid;
 	border-width: 0 0 1px;
 	border-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034) 0.5;
 }
 
-#menu li {
+nav ul {
+	text-align: right;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+nav li {
 	display: inline-block;
 	margin: 0.2em 0.5em;
 	color: #aaa;
 }
 
-#menu li.selected,
-#menu li:hover {
+nav li.selected,
+nav li:hover {
 	color: #fff;
 }
 
-#menu li a {
+nav li a {
 	text-decoration: none;
 }
 
@@ -99,7 +88,7 @@ main {
 	overflow-x: hidden;
 }
 
-main section {
+section {
 	display: flex;
 	flex-flow: column wrap;
 	width: 100%;
@@ -109,9 +98,10 @@ main section {
 	gap: 2rem;
 	align-items: stretch;
 	align-content: stretch;
+	color: #eee;
 }
 
-main section hero {
+section hero {
 	color: #eee;
 	text-align: center;
 	font-size: 1.3em;
@@ -133,7 +123,6 @@ section p {
 
 section p {
 	font-weight: 400;
-	color: #eee;
 	text-align: justify;
 }
 
