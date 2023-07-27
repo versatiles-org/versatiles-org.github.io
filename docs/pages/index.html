@@ -10,6 +10,7 @@
 			justify-content: center;
 			align-items: center;
 			gap: 2em;
+			font-size: min(1em, 4vw);
 		}
 
 		#headblock img {
@@ -37,7 +38,7 @@
 			color: #fff5;
 			display: flex;
 			flex-direction: row;
-			font-size: 1.2rem;
+			font-size: 1em;
 			font-weight: 400;
 			justify-content: space-between;
 			letter-spacing: 0.1em;
@@ -111,11 +112,11 @@
 		ul#use_cases {
 			max-width: 25em;
 			margin: auto;
-			padding: 0;
+			padding-inline: 2rem;
 		}
 
 		ul#use_cases li {
-			margin-bottom: 1.5em;
+			margin-bottom: 2em;
 			font-weight: 100;
 			list-style-type: none;
 		}
@@ -123,6 +124,7 @@
 		ul#use_cases li em {
 			display: block;
 			text-align: right;
+			margin-top: 0.3em;
 		}
 	</style>
 	<ul id="use_cases">
@@ -147,11 +149,12 @@
 <section>
 	<h2>What is the idea behind VersaTiles?</h2>
 	<p>
-		There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But you have
-		to build a complete tech stack combining multiple solutions to serve maps. That takes a lot of effort.
+		There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But in the
+		end you have to build a complete tech stack combining multiple solutions to serve maps. That takes a lot of
+		effort.
 	</p>
 	<p>
-		VersaTiles tackles this by defining a 5-layer stack to process OpenStreetMap data and serve maps. It also provides
+		VersaTiles tackles this by defining a 5-step process chain to OpenStreetMap data and serve maps. It also provides
 		a reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your
 		preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you
 		can just replace that part but can still use the other layers.
