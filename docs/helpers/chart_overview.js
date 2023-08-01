@@ -32,7 +32,8 @@ export default function () {
 	let covRust = c.addCover('rust', 'versatiles-rs', [1, 2]);
 	let covNode = c.addCover('node', 'node-versatiles', [2]);
 	let covDoc0 = c.addCover('docker', 'versatiles', [1, 2]);
-	let covDocS = c.addCover('docker', 'versatiles-server', [1, 2, 3, 4], 2);
+	let covDocN = c.addCover('docker', 'versatiles-nginx', [2, 3, 4], 2);
+	let covDocF = c.addCover('docker', 'versatiles-frontend', [2, 4], 3);
 	let covFFro = c.addCover('file', 'frontend.tar', [4], 3);
 
 	c.addCoverGuides();
@@ -41,21 +42,25 @@ export default function () {
 
 	c.addHeadline('How do containers, packages or files build on each other?');
 
-	let depDoc0 = c.addDependency('docker', 'versatiles', 1, covDoc0);
+	let depDoc0 = c.addDependency('docker', 'versatiles', 1, covDoc0, { dy: 60 });
 
-	let depDocM = c.addDependency('docker', 'versatiles-maker', 0, covDocM);
+	let depDocM = c.addDependency('docker', 'versatiles-maker', 0, covDocM, { dy: 60 });
 	c.addDepDep(depDoc0, depDocM);
 
-	let depDocS = c.addDependency('docker', 'versatiles-server', 2, covDocS);
-	c.addDepDep(depDoc0, depDocS);
+	let depDocN = c.addDependency('docker', 'versatiles-nginx', 2, covDocN);
+
+	let depDocF = c.addDependency('docker', 'versatiles-frontend', 2, covDocF, { startDir: 'E', endDir: 'W', startContactShift: 10, endContactShift: 10, endOffset: 45 });
+	c.addDepDep(depDoc0, depDocF);
+	c.addDepDep(depDocF, depDocN);
 
 	let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy: 20, endContactShift: 10 });
 	c.addDepDep(depRust, depDoc0);
 
-	let depNode = c.addDependency('node', 'node-versatiles', 2, covNode, { startDir: 'E', endDir: 'E', dy: 20 });
+	let depNode = c.addDependency('node', 'node-versatiles', 2, covNode, { startDir: 'W', endDir: 'W', dy: 20 });
 
-	let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro);
-	c.addDepDep(depFFro, depDocS);
+	let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro, { dy: 60 });
+	c.addDepDep(depFFro, depDocF);
+	c.addDepDep(depFFro, depDocN);
 
 	let depFSty = c.addDependency('file', 'styles.tar', 3);
 	c.addDepDep(depFSty, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
@@ -71,25 +76,29 @@ export default function () {
 	c.addHeadline('Which repositories produce which containers, packages or files?');
 
 	let repDoc0 = c.addRepo('versatiles-docker', 0)
-		.addLink(depDocM, { endOffset: 20 })
-		.addLink(depDoc0, { endOffset: 20, endContactShift: - 20 })
-		.addLink(depDocS, { endOffset: 20, startDir: 'N', endDir: 'S' });
+		.addLink(depDocM, { startDir: 'N', endDir: 'S' })
+		.addLink(depDoc0, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 })
+		.addLink(depDocF, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 })
+		//.addLink(depDocN, { startDir: 'N', endDir: 'W', endOffset: 230 })
+
 	let repTile = c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0, { endArrow: true });
-	let repVWeb = c.addRepo('versatiles-website', 0);
-	let repVDoc = c.addRepo('versatiles-docs', 0);
 
 	let repRust = c.addRepo('versatiles-rs', 1).addLink(depRust);
 	let repNode = c.addRepo('node-versatiles', 2).addLink(depNode);
 
 	let repVSpe = c.addRepo('versatiles-spec', 1)
 		.addLink(repRust)
-		.addLink(repNode, { endDir: 'S' });
+		.addLink(repNode, { endDir: 'S' })
 
 	let repFFon = c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset: 15 });
 	let repFSpr = c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 20 });
 	let repFSty = c.addRepo('versatiles-styles', 3).addLink(depFSty, { startDir: 'W', endDir: 'W', offset: 25 });
 	let repFFro = c.addRepo('versatiles-frontend', 3).addLink(depFFro, { startDir: 'W', endDir: 'W', offset: 30, endContactShift: 10 });
 
+	let repVWeb = c.addRepo('versatiles-website', 0, [], { dy: 60 });
+	let repVDoc = c.addRepo('versatiles-docs', 1, [], { dy: 60 });
+
+	/*
 	c.addHover([covDocM, depDocM], [depDoc0, repDoc0, repTile]);
 	c.addHover([covDocS, depDocS], [depDoc0, repDoc0]);
 	c.addHover([covDoc0, depDoc0], [depDocM, depDocS, depRust, repDoc0]);
@@ -108,6 +117,7 @@ export default function () {
 	c.addHover([repVDoc]);
 
 	c.addHover([repVSpe], [repRust, repNode]);
+	*/
 
 	return c.asSVG();
 }

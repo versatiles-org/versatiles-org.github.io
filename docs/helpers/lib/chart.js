@@ -71,7 +71,7 @@ export class Chart {
 			});
 			rect[0] += this.boxHeight / 3;
 			group.drawText(rect, text, { fill: color, fontFamily, fontSize: '13px' });
-			
+
 			x0 += width;
 			colIndex++;
 
@@ -277,13 +277,14 @@ function getConnectionPath(box0, box1, opt = {}) {
 		point1: contact1, dir1
 	};
 
-	// Enden zeigen aufeinander
+
 	if (dir0.isOpposite(dir1)) {
+		// Enden zeigen aufeinander
 		if (contact0.getDirection(contact1).isEqual(dir0)) {
 			// direkte Linie
 			return { ...result, d: makePath(start0, start1) }
 		} else {
-			// Linie, mit zwei Knicks
+			// Linie, mit zwei Knicks, macht also Zick-Zack
 			let m = contact0.getMiddle(contact1);
 			if (opt.endOffset) m = contact1.clone().addScaled(dir1, opt.endOffset);
 			if (dir0.isHorizontal()) {
@@ -297,6 +298,8 @@ function getConnectionPath(box0, box1, opt = {}) {
 	}
 
 	if (dir0.isEqual(dir1)) {
+		// Enden zeigen gegeneinander, Pfad macht also einen 180° Bogen.
+
 		if (dir0.isHorizontal()) {
 			let x;
 			if (dir0.x > 0) {

@@ -8,7 +8,7 @@
     "preview": "node src/cms.js serve",
     "watch": "node src/cms.js watch"
   },
-  "author": "Michael Kreil <github@michael-kreil.de> (https://github.com/MichaelKreil)",
+  "author": "Michael Kreil <versatiles@michael-kreil.de>",
   "license": "MIT",
   "type": "module",
   "dependencies": {

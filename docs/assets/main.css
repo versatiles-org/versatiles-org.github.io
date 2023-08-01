@@ -88,7 +88,6 @@ section {
 	display: flex;
 	flex-flow: column wrap;
 	width: 100%;
-	max-width: 800px;
 	margin: 0;
 	padding: 0;
 	gap: 2rem;
@@ -97,27 +96,29 @@ section {
 	color: #eee;
 }
 
-section hero {
+hero {
 	color: #eee;
 	text-align: center;
 	font-size: 1.3em;
 }
 
-section h1,
-section h2,
-section h3,
-section h4,
-section h5,
-section h6,
-section hero,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hero,
 section p,
 section ol,
 section ul {
 	display: block;
 	width: 100%;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0 1rem;
 	box-sizing: border-box;
+	width: 100%;
+	max-width: 800px;
 }
 
 section ol,
