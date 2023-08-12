@@ -42,61 +42,61 @@ export default function () {
 
 	c.addHeadline('How do containers, packages or files build on each other?');
 
-	let depDoc0 = c.addDependency('docker', 'versatiles', 1, covDoc0, { dy: 60 });
+	let depDoc0 = c.addDependency('docker', 'versatiles', 1, covDoc0 /*, { dy: 60 }*/);
 
-	let depDocM = c.addDependency('docker', 'versatiles-maker', 0, covDocM, { dy: 60 });
+	let depDocM = c.addDependency('docker', 'versatiles-maker', 0, covDocM /*, { dy: 60 }*/);
 	c.addDepDep(depDoc0, depDocM);
 
 	let depDocN = c.addDependency('docker', 'versatiles-nginx', 2, covDocN);
 
-	let depDocF = c.addDependency('docker', 'versatiles-frontend', 2, covDocF, { startDir: 'E', endDir: 'W', startContactShift: 10, endContactShift: 10, endOffset: 45 });
+	let depDocF = c.addDependency('docker', 'versatiles-frontend', 2, covDocF /*, { startDir: 'E', endDir: 'W', startContactShift: 10, endContactShift: 10, endOffset: 45 }*/);
 	c.addDepDep(depDoc0, depDocF);
 	c.addDepDep(depDocF, depDocN);
 
-	let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust, { startDir: 'W', endDir: 'W', dy: 20, endContactShift: 10 });
+	let depRust = c.addDependency('rust', 'versatiles-rs', 1, covRust /*, { startDir: 'W', endDir: 'W', dy: 20, endContactShift: 10 }*/);
 	c.addDepDep(depRust, depDoc0);
 
-	let depNode = c.addDependency('node', 'node-versatiles', 2, covNode, { startDir: 'W', endDir: 'W', dy: 20 });
+	let depNode = c.addDependency('node', 'node-versatiles', 2, covNode /*, { startDir: 'W', endDir: 'W', dy: 20 }*/);
 
-	let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro, { dy: 60 });
+	let depFFro = c.addDependency('file', 'frontend.tar', 3, covFFro /*, { dy: 60 }*/);
 	c.addDepDep(depFFro, depDocF);
 	c.addDepDep(depFFro, depDocN);
 
 	let depFSty = c.addDependency('file', 'styles.tar', 3);
-	c.addDepDep(depFSty, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
+	c.addDepDep(depFSty, depFFro /*, { startDir: 'E', endDir: 'E', offset: 25 }*/);
 
 	let depFSpr = c.addDependency('file', 'sprites.tar', 3);
-	c.addDepDep(depFSpr, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
+	c.addDepDep(depFSpr, depFFro /*, { startDir: 'E', endDir: 'E', offset: 25 }*/);
 
 	let depFFon = c.addDependency('file', 'fonts.tar', 3);
-	c.addDepDep(depFFon, depFFro, { startDir: 'E', endDir: 'E', offset: 25 });
+	c.addDepDep(depFFon, depFFro /*, { startDir: 'E', endDir: 'E', offset: 25 }*/);
 
 
 
 	c.addHeadline('Which repositories produce which containers, packages or files?');
 
 	let repDoc0 = c.addRepo('versatiles-docker', 0)
-		.addLink(depDocM, { startDir: 'N', endDir: 'S' })
-		.addLink(depDoc0, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 })
-		.addLink(depDocF, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 })
-		//.addLink(depDocN, { startDir: 'N', endDir: 'W', endOffset: 230 })
+		.addLink(depDocM/*, { startDir: 'N', endDir: 'S' }*/)
+		.addLink(depDoc0/*, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 }*/)
+		.addLink(depDocF/*, { startDir: 'N', endDir: 'S', endOffset: 20, endContactShift: -20 }*/)
+	//.addLink(depDocN/*, { startDir: 'N', endDir: 'W', endOffset: 230 }*/)
 
-	let repTile = c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0, { endArrow: true });
+	let repTile = c.addRepo('shortbread-tilemaker', 0).addLink(repDoc0/*, { endArrow: true }*/);
 
 	let repRust = c.addRepo('versatiles-rs', 1).addLink(depRust);
 	let repNode = c.addRepo('node-versatiles', 2).addLink(depNode);
 
 	let repVSpe = c.addRepo('versatiles-spec', 1)
 		.addLink(repRust)
-		.addLink(repNode, { endDir: 'S' })
+		.addLink(repNode/*, { endDir: 'S' }*/)
 
-	let repFFon = c.addRepo('versatiles-fonts', 3).addLink(depFFon, { startDir: 'W', endDir: 'W', offset: 15 });
-	let repFSpr = c.addRepo('versatiles-sprites', 3).addLink(depFSpr, { startDir: 'W', endDir: 'W', offset: 20 });
-	let repFSty = c.addRepo('versatiles-styles', 3).addLink(depFSty, { startDir: 'W', endDir: 'W', offset: 25 });
-	let repFFro = c.addRepo('versatiles-frontend', 3).addLink(depFFro, { startDir: 'W', endDir: 'W', offset: 30, endContactShift: 10 });
+	let repFFon = c.addRepo('versatiles-fonts', 3).addLink(depFFon/*, { startDir: 'W', endDir: 'W', offset: 15 }*/);
+	let repFSpr = c.addRepo('versatiles-sprites', 3).addLink(depFSpr/*, { startDir: 'W', endDir: 'W', offset: 20 }*/);
+	let repFSty = c.addRepo('versatiles-styles', 3).addLink(depFSty/*, { startDir: 'W', endDir: 'W', offset: 25 }*/);
+	let repFFro = c.addRepo('versatiles-frontend', 3).addLink(depFFro/*, { startDir: 'W', endDir: 'W', offset: 30, endContactShift: 10 }*/);
 
-	let repVWeb = c.addRepo('versatiles-website', 0, [], { dy: 60 });
-	let repVDoc = c.addRepo('versatiles-docs', 1, [], { dy: 60 });
+	let repVWeb = c.addRepo('versatiles-website', 0, []/*, { dy: 60 }*/);
+	let repVDoc = c.addRepo('versatiles-docs', 1, []/*, { dy: 60 }*/);
 
 	/*
 	c.addHover([covDocM, depDocM], [depDoc0, repDoc0, repTile]);

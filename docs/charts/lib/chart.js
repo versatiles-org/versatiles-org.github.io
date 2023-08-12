@@ -243,10 +243,10 @@ export class Chart {
 }
 
 function getConnectionPath(box0, box1, opt = {}) {
-	opt.shortenStart ??= 0;
-	opt.shortenEnd ??= 0;
-	opt.offset ??= 15;
-	opt.radius ??= 10;
+	//opt.shortenStart ??= 0;
+	//opt.shortenEnd ??= 0;
+	opt.boxConnector ??= 25;
+	opt.edgeRadius ??= 10;
 
 	let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
 	let size1 = new Vec(box1.rect[2], box1.rect[3]).scale(0.5);
@@ -257,26 +257,34 @@ function getConnectionPath(box0, box1, opt = {}) {
 	let dir0 = center0.getDirection(center1).snapToAxis().normalize();
 	let dir1 = dir0.clone().scale(-1);
 
-	if (opt.startDir) dir0 = Vec.fromChar(opt.startDir);
-	if (opt.endDir) dir1 = Vec.fromChar(opt.endDir);
+	if (opt.dir0) dir0 = Vec.fromChar(opt.dir0);
+	if (opt.dir1) dir1 = Vec.fromChar(opt.dir1);
 
-	let distance0 = Math.abs(dir0.scalar(size0));
-	let distance1 = Math.abs(dir1.scalar(size1));
+	let contact0 = center0.clone().addScaled(dir0, Math.abs(dir0.scalar(size0)));
+	let contact1 = center1.clone().addScaled(dir1, Math.abs(dir1.scalar(size1)));
 
-	let contact0 = center0.clone().addScaled(dir0, distance0);
-	let contact1 = center1.clone().addScaled(dir1, distance1);
+	if (opt.contactShift0) contact0.addScaled(dir0.getRotated90(), opt.contactShift0);
+	if (opt.contactShift1) contact1.addScaled(dir1.getRotated90(), opt.contactShift1);
 
-	if (opt.startContactShift) contact0.addScaled(dir0.getRotated90(), opt.startContactShift);
-	if (opt.endContactShift) contact1.addScaled(dir1.getRotated90(), opt.endContactShift);
+	let start0 = contact0.clone().addScaled(dir0, opt.boxConnector);
+	let start1 = contact1.clone().addScaled(dir1, opt.boxConnector);
 
-	let start0 = contact0.clone().addScaled(dir0, opt.shortenStart || 0);
-	let start1 = contact1.clone().addScaled(dir1, opt.shortenEnd || 0);
+	let pointDirs = [];
+	pointDirs.push([contact0, dir0], [start0, dir0]);
+	if (opt.points) opt.points.forEach(p => pointDirs.push(p));
+	pointDirs.push([start1, dir1], [contact1, dir1]);
 
-	let result = {
+	let points = addMissingPoints(pointDirs);
+	points = deleteUselessPoints(points);
+
+
+	return {
 		point0: contact0, dir0,
-		point1: contact1, dir1
+		point1: contact1, dir1,
+		d: makePath(points)
 	};
 
+	/*
 
 	if (dir0.isOpposite(dir1)) {
 		// Enden zeigen aufeinander
@@ -330,9 +338,10 @@ function getConnectionPath(box0, box1, opt = {}) {
 
 	console.log({ dir0, dir1, contact0, contact1 })
 	throw Error();
+	*/
 
-	function makePath(...points) {
-		let radius = opt.radius;
+	function makePath(points) {
+		let radius = opt.edgeRadius;
 		return points.map((p1, i) => {
 			if (i === 0) return 'M' + p1.str();
 			if (i === points.length - 1) return 'L' + p1.str();
@@ -351,5 +360,46 @@ function getConnectionPath(box0, box1, opt = {}) {
 				'A' + [radius, radius, 0, 0, angle > 0 ? 0 : 1, c2.str()].join(',')
 			].join('')
 		}).join('');
+	}
+
+	function addMissingPoints(pointDirs) {
+		if (pointDirs.length < 4) throw Error();
+		let points = [];
+		for (let i = 0; i < pointDirs.length; i++) {
+			points.push(pointDirs[i][0]);
+			if (i < pointDirs.length - 1) {
+				checkForMissingPoints(
+					pointDirs[i][0], pointDirs[i][1],
+					pointDirs[i + 1][0], pointDirs[i + 1][1]
+				)
+			}
+		}
+		return points;
+
+		function checkForMissingPoints(p0, d0, p1, d1) {
+			if (p0.x === p1.x) return;
+			if (p0.y === p1.y) return;
+			if (d0.isVertical() && d1.isVertical() && d0.isOpposite(d1)) {
+				let y = (p0.y + p1.y) / 2;
+				return points.push(p0.getWithY(y), p1.getWithY(y));
+			}
+			if (d0.isHorizontal() && d1.isHorizontal() && d0.isOpposite(d1)) {
+				let x = (p0.x + p1.x) / 2;
+				return points.push(p0.getWithX(x), p1.getWithX(x));
+			}
+			console.log({ p0, d0, p1, d1 });
+			throw Error();
+		}
+	}
+
+	function deleteUselessPoints(points) {
+		for (let i = 1; i < points.length - 1; i++) {
+			let p0 = points[i - 1];
+			let p1 = points[i];
+			let p2 = points[i + 1];
+			if ((p0.x === p1.x) && (p1.x === p2.x)) p1.useless = true;
+			if ((p0.y === p1.y) && (p1.y === p2.y)) p1.useless = true;
+		}
+		return points.filter(p => !p.useless);
 	}
 }
