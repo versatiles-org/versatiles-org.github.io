@@ -7,7 +7,7 @@ export async function build(config, handlebars) {
 	await register('charts');
 
 	async function register(name) {
-		let path = resolve(config.src.root, name);
+		let path = resolve(config.srcPath, name);
 
 		for (let filename of readdirSync(path)) {
 			if (!filename.endsWith('.js')) continue;

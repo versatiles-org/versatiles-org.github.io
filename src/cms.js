@@ -8,22 +8,14 @@ const PORT = 8080;
 const PROJECT_PATH = resolve(fileURLToPath(import.meta.url), '../../');
 
 const CONFIG = {
-	src: {
-		root: resolve(PROJECT_PATH, 'docs'),
-		pages: resolve(PROJECT_PATH, 'docs/pages'),
-		assets: resolve(PROJECT_PATH, 'docs/assets'),
-		partials: resolve(PROJECT_PATH, 'docs/partials'),
-	},
-	dst: {
-		root: resolve(PROJECT_PATH, 'dist'),
-		assets: resolve(PROJECT_PATH, 'dist/assets'),
-	}
+	srcPath: resolve(PROJECT_PATH, 'docs'),
+	dstPath: resolve(PROJECT_PATH, 'dist'),
 }
 
-process.chdir(CONFIG.src.root);
+process.chdir(CONFIG.srcPath);
 
-if (existsSync(CONFIG.dst.root)) rmSync(CONFIG.dst.root, { recursive: true });
-mkdirSync(CONFIG.dst.root);
+if (existsSync(CONFIG.dstPath)) rmSync(CONFIG.dstPath, { recursive: true });
+mkdirSync(CONFIG.dstPath);
 
 let options = process.argv.slice(2).map(a => a.toLowerCase());
 
@@ -33,7 +25,7 @@ await build();
 
 if (options.some(o => o.includes('watch'))) {
 	watch(
-		CONFIG.src.root,
+		CONFIG.srcPath,
 		{ recursive: true },
 		(event, filename) => build()
 	);
@@ -62,6 +54,6 @@ async function build() {
 async function startServer() {
 	const express = (await import('express')).default;
 	const app = new express();
-	app.use(express.static(CONFIG.dst.root))
+	app.use(express.static(CONFIG.dstPath))
 	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
 }

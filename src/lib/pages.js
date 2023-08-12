@@ -4,12 +4,14 @@ import { resolve } from 'node:path';
 import colors from 'colors';
 
 export function build(config, handlebars) {
-	readdirSync(config.src.pages).forEach(filename => {
+	let path = resolve(config.srcPath, 'pages');
+
+	readdirSync(path).forEach(filename => {
 		if (!filename.endsWith('.html')) return;
 
 		let pagename = filename.replace(/\..*?$/, '');
 
-		let page = readFileSync(resolve(config.src.pages, filename), 'utf8');
+		let page = readFileSync(resolve(path, filename), 'utf8');
 		try {
 			page = handlebars.compile(page, { strict: true });
 			page = page({ pagename, filename });
@@ -17,6 +19,6 @@ export function build(config, handlebars) {
 			console.error(colors.red.bold('Error in ' + filename));
 			throw err;
 		}
-		writeFileSync(resolve(config.dst.root, filename), page);
+		writeFileSync(resolve(config.dstPath, filename), page);
 	})
 }
