@@ -42,25 +42,25 @@ export default function () {
 
 	c.addHeadline('How do containers, packages or files build on each other?');
 
-	let depDoc0 = c.addDependency('docker', 'versatiles', 1, { dy: 60 })
-		.linkCov(covDoc0);
-
 	let depDocT = c.addDependency('docker', 'versatiles-tilemaker', 0, { dy: 60 })
-		.linkCov(covDocT)
-		.linkDep(depDoc0);
+		.linkCov(covDocT);
 
 	let depDocN = c.addDependency('docker', 'versatiles-nginx', 2)
 		.linkCov(covDocN)
 
 	let depDocF = c.addDependency('docker', 'versatiles-frontend', 2)
 		.linkCov(covDocF, { dir0: 'E', dir1: 'W', contactShift0: 10, contactShift1: 10, offset: 15, points: ['x1,yc,0,-1'] })
-		.linkDep(depDoc0)
 		.linkDep(depDocN);
+
+	let depDoc0 = c.addDependency('docker', 'versatiles', 1, { dy: 60 })
+		.linkCov(covDoc0)
+		.linkDep(depDocT)
+		.linkDep(depDocF);
 
 	let depRust = c.addDependency('rust', 'versatiles-rs', 1, { dy: 20 })
 		.linkCov(covRust, { dir0: 'W', dir1: 'W', contactShift1: 10, offset: 15 })
 		.linkDep(depDoc0);
-
+		
 	let depNode = c.addDependency('node', 'node-versatiles', 2, { dy: 20 })
 		.linkCov(covNode, { dir0: 'W', dir1: 'W', offset: 15 })
 
