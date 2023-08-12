@@ -137,7 +137,7 @@ export class Chart {
 		}
 	}
 
-	addDependency(type, name, col, ref, options = {}) {
+	addDependency(type, name, col, options = {}) {
 		this.depColY ??= Array.from({ length: 4 }, i => this.y0);;
 
 		if (options.dy) this.depColY[col] += options.dy;
@@ -146,26 +146,28 @@ export class Chart {
 		this.depColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
-		if (ref) {
-			let path = getConnectionPath(box, ref, options);
+		box.linkCov = (cov, options = {}) => {
+			let path = getConnectionPath(box, cov, options);
 			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 2 })
+			return box
+		}
+
+		box.linkDep = (dep, options = {}) => {
+			options.shortenEnd = 5;
+			let path = getConnectionPath(box, dep, options);
+			this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 2 })
+			this.layers.linesFront.drawArrowHead(
+				path.point1.array(),
+				path.dir1.scale(10).array(),
+				{ fill: box.color }
+			)
+			return box
 		}
 
 		return box;
 	}
 
-	addDepDep(dep0, dep1, options = {}) {
-		options.shortenEnd = 5;
-		let path = getConnectionPath(dep0, dep1, options);
-		let node1 = this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: dep0.color, strokeWidth: 2 })
-		let node2 = this.layers.linesFront.drawArrowHead(
-			path.point1.array(),
-			path.dir1.scale(10).array(),
-			{ fill: dep0.color }
-		)
-	}
-
-	addRepo(name, col, refs = [], options = {}) {
+	addRepo(name, col, options = {}) {
 		this.repoColY ??= Array.from({ length: 4 }, i => this.y0);;
 
 		if (options.dy) this.repoColY[col] += options.dy;
@@ -176,7 +178,7 @@ export class Chart {
 
 		let color = this.#fadeColor(box.color);
 
-		box.addLink = (ref, opt = {}) => {
+		box.link = (ref, opt = {}) => {
 			opt.endArrow ??= true;
 
 			if (opt.endArrow) opt.shortenEnd = 4;
@@ -245,7 +247,7 @@ export class Chart {
 function getConnectionPath(box0, box1, opt = {}) {
 	//opt.shortenStart ??= 0;
 	//opt.shortenEnd ??= 0;
-	opt.boxConnector ??= 25;
+	opt.offset ??= 20;
 	opt.edgeRadius ??= 10;
 
 	let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
@@ -266,79 +268,36 @@ function getConnectionPath(box0, box1, opt = {}) {
 	if (opt.contactShift0) contact0.addScaled(dir0.getRotated90(), opt.contactShift0);
 	if (opt.contactShift1) contact1.addScaled(dir1.getRotated90(), opt.contactShift1);
 
-	let start0 = contact0.clone().addScaled(dir0, opt.boxConnector);
-	let start1 = contact1.clone().addScaled(dir1, opt.boxConnector);
+	let start0 = contact0.clone().addScaled(dir0, opt.offset0 || opt.offset);
+	let start1 = contact1.clone().addScaled(dir1, opt.offset1 || opt.offset);
 
 	let pointDirs = [];
 	pointDirs.push([contact0, dir0], [start0, dir0]);
-	if (opt.points) opt.points.forEach(p => pointDirs.push(p));
+	if (opt.points) opt.points.forEach(p => pointDirs.push(processPoint(p, start0, start1)));
 	pointDirs.push([start1, dir1], [contact1, dir1]);
 
 	let points = addMissingPoints(pointDirs);
 	points = deleteUselessPoints(points);
 
+	let path = makePath(points);
 
 	return {
 		point0: contact0, dir0,
 		point1: contact1, dir1,
-		d: makePath(points)
-	};
-
-	/*
-
-	if (dir0.isOpposite(dir1)) {
-		// Enden zeigen aufeinander
-		if (contact0.getDirection(contact1).isEqual(dir0)) {
-			// direkte Linie
-			return { ...result, d: makePath(start0, start1) }
-		} else {
-			// Linie, mit zwei Knicks, macht also Zick-Zack
-			let m = contact0.getMiddle(contact1);
-			if (opt.endOffset) m = contact1.clone().addScaled(dir1, opt.endOffset);
-			if (dir0.isHorizontal()) {
-				return { ...result, d: makePath(start0, start0.getWithX(m.x), start1.getWithX(m.x), start1) }
-			} else if (dir0.isVertical()) {
-				return { ...result, d: makePath(start0, start0.getWithY(m.y), start1.getWithY(m.y), start1) }
-			} else {
-				throw Error();
-			}
-		}
+		d: path,
 	}
 
-	if (dir0.isEqual(dir1)) {
-		// Enden zeigen gegeneinander, Pfad macht also einen 180° Bogen.
-
-		if (dir0.isHorizontal()) {
-			let x;
-			if (dir0.x > 0) {
-				x = Math.max(contact0.x, contact1.x) + opt.offset;
-			} else {
-				x = Math.min(contact0.x, contact1.x) - opt.offset;
-			}
-			return { ...result, d: makePath(start0, start0.getWithX(x), start1.getWithX(x), start1) }
-		} else if (dir0.isVertical()) {
-			let y;
-			if (dir0.y > 0) {
-				y = Math.max(contact0.y, contact1.y) + opt.offset;
-			} else {
-				y = Math.min(contact0.y, contact1.y) - opt.offset;
-			}
-			return { ...result, d: makePath(start0, start0.getWithY(y), start1.getWithY(y), start1) }
-		} else {
-			throw Error();
-		}
+	function processPoint(s, p0, p1) {
+		s = s.replace(/x0/g, p0.x);
+		s = s.replace(/y0/g, p0.y);
+		s = s.replace(/x1/g, p1.x);
+		s = s.replace(/y1/g, p1.y);
+		s = s.replace(/xc/g, (p0.x + p1.x) / 2);
+		s = s.replace(/yc/g, (p0.y + p1.y) / 2);
+		s = eval('[' + s + ']');
+		if (s.length !== 4) throw Error();
+		return [new Vec(s[0], s[1]), new Vec(s[2], s[3])];
 	}
-
-	if (dir0.isOrthogonal(dir1)) {
-		let k = dir0.x * dir1.y - dir0.y * dir1.x;
-		let l = dir1.y * (contact1.x - contact0.x) - dir1.x * (contact1.y - contact0.y);
-		let corner = new Vec(contact0.x * k + dir0.x * l, contact0.y * k + dir0.y * l);
-		return { ...result, d: makePath(start0, corner, start1) };
-	}
-
-	console.log({ dir0, dir1, contact0, contact1 })
-	throw Error();
-	*/
 
 	function makePath(points) {
 		let radius = opt.edgeRadius;
@@ -379,13 +338,42 @@ function getConnectionPath(box0, box1, opt = {}) {
 		function checkForMissingPoints(p0, d0, p1, d1) {
 			if (p0.x === p1.x) return;
 			if (p0.y === p1.y) return;
-			if (d0.isVertical() && d1.isVertical() && d0.isOpposite(d1)) {
-				let y = (p0.y + p1.y) / 2;
-				return points.push(p0.getWithY(y), p1.getWithY(y));
+			if (d0.isOpposite(d1)) {
+				if (d0.isVertical() && d1.isVertical()) {
+					let y = (p0.y + p1.y) / 2;
+					return points.push(p0.getWithY(y), p1.getWithY(y));
+				}
+				if (d0.isHorizontal() && d1.isHorizontal()) {
+					let x = (p0.x + p1.x) / 2;
+					return points.push(p0.getWithX(x), p1.getWithX(x));
+				}
 			}
-			if (d0.isHorizontal() && d1.isHorizontal() && d0.isOpposite(d1)) {
-				let x = (p0.x + p1.x) / 2;
-				return points.push(p0.getWithX(x), p1.getWithX(x));
+			if (d0.isOrthogonal(d1)) {
+				if (d0.isHorizontal()) {
+					return points.push(p0.getWithX(p1.x));
+				} else {
+					return points.push(p0.getWithY(p1.y));
+				}
+			}
+			if (d0.isEqual(d1)) {
+				switch (d0.getChar()) {
+					case 'N': {
+						let y = Math.min(p0.y, p1.y);
+						return points.push(p0.getWithY(y), p1.getWithY(y));
+					}
+					case 'S': {
+						let y = Math.max(p0.y, p1.y);
+						return points.push(p0.getWithY(y), p1.getWithY(y));
+					}
+					case 'W': {
+						let x = Math.min(p0.x, p1.x);
+						return points.push(p0.getWithX(x), p1.getWithX(x));
+					}
+					case 'E': {
+						let x = Math.max(p0.x, p1.x);
+						return points.push(p0.getWithX(x), p1.getWithX(x));
+					}
+				}
 			}
 			console.log({ p0, d0, p1, d1 });
 			throw Error();
@@ -397,9 +385,11 @@ function getConnectionPath(box0, box1, opt = {}) {
 			let p0 = points[i - 1];
 			let p1 = points[i];
 			let p2 = points[i + 1];
-			if ((p0.x === p1.x) && (p1.x === p2.x)) p1.useless = true;
-			if ((p0.y === p1.y) && (p1.y === p2.y)) p1.useless = true;
+			if (((p0.x === p1.x) && (p1.x === p2.x)) || ((p0.y === p1.y) && (p1.y === p2.y))) {
+				points.splice(i, 1);
+				i--;
+			}
 		}
-		return points.filter(p => !p.useless);
+		return points;
 	}
 }

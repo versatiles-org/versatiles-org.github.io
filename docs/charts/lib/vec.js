@@ -1,3 +1,5 @@
+const TINY = 1e-10;
+
 export class Vec {
 	constructor(x, y) {
 		this.x = x;
@@ -47,7 +49,7 @@ export class Vec {
 		return this;
 	}
 	isParallelToAxis() {
-		return (Math.abs(this.x) < 1e-10) || (Math.abs(this.y) < 1e-10)
+		return (Math.abs(this.x) < TINY) || (Math.abs(this.y) < TINY)
 	}
 	str() {
 		return this.x + ',' + this.y
@@ -58,21 +60,42 @@ export class Vec {
 	isOpposite(vec) {
 		let dx = this.x + vec.x;
 		let dy = this.y + vec.y;
-		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
+		return Math.sqrt(dx * dx + dy * dy) < TINY;
 	}
 	isOrthogonal(vec) {
-		return Math.abs(this.clone().scalar(vec)) < 1e-10;
+		return Math.abs(this.clone().scalar(vec)) < TINY;
 	}
 	isEqual(vec) {
 		let dx = this.x - vec.x;
 		let dy = this.y - vec.y;
 		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
 	}
+	getChar() {
+		if (Math.abs(this.x) < TINY) {
+			if (Math.abs(this.y - 1) < TINY) {
+				return 'S';
+			} else if (Math.abs(this.y + 1) < TINY) {
+				return 'N';
+			} else {
+				throw Error();
+			}
+		} else if (Math.abs(this.y) < TINY) {
+			if (Math.abs(this.x - 1) < TINY) {
+				return 'E';
+			} else if (Math.abs(this.x + 1) < TINY) {
+				return 'W';
+			} else {
+				throw Error();
+			}
+		} else {
+			throw Error();
+		}
+	}
 	isHorizontal() {
-		return Math.abs(this.y) < 1e-10;
+		return Math.abs(this.y) < TINY;
 	}
 	isVertical() {
-		return Math.abs(this.x) < 1e-10;
+		return Math.abs(this.x) < TINY;
 	}
 	setX(x) {
 		this.x = x;
