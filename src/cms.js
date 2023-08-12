@@ -12,8 +12,6 @@ const CONFIG = {
 		root: resolve(PROJECT_PATH, 'docs'),
 		pages: resolve(PROJECT_PATH, 'docs/pages'),
 		assets: resolve(PROJECT_PATH, 'docs/assets'),
-		graphics: resolve(PROJECT_PATH, 'docs/graphics'),
-		helpers: resolve(PROJECT_PATH, 'docs/helpers'),
 		partials: resolve(PROJECT_PATH, 'docs/partials'),
 	},
 	dst: {
