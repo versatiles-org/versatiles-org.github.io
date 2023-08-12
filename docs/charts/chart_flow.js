@@ -12,7 +12,7 @@ export default function (a, b) {
 	});
 
 	const steps = [
-		['OSM data', false, true],
+		['OSM', false, true],
 		['1. Generator', true],
 		['.mbtiles', false],
 		['2. Converter', true],
@@ -22,7 +22,7 @@ export default function (a, b) {
 		['4. Proxy', true],
 		['HTTPS', false],
 		['5. Frontend', true],
-		['web map', false, true],
+		['Web', false, true],
 	];
 
 	let f = c.addFlow();

@@ -5,7 +5,7 @@ export default function () {
 	let c = new Chart({
 		backgroundColor: '#000',
 		colWidth: 200,
-		colStart: 180,
+		colStart: 120,
 		boxWidth: 140,
 		boxHeight: 40,
 		gapHeight: 40,
@@ -14,7 +14,7 @@ export default function () {
 	c.addHeadline('How does VersaTiles process OpenStreetMap data to create an interactive web map?');
 
 	c.addFlow()
-		.add('OSM data', null, true)
+		.add('OSM', null, true)
 		.add('1. Generator')
 		.add('.mbtiles')
 		.add('2. Converter')
@@ -24,7 +24,7 @@ export default function () {
 		.add('4. Proxy')
 		.add('HTTPS')
 		.add('5. Frontend')
-		.add('web map', null, true);
+		.add('Web', null, true);
 
 	c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
 
@@ -60,7 +60,7 @@ export default function () {
 	let depRust = c.addDependency('rust', 'versatiles-rs', 1, { dy: 20 })
 		.linkCov(covRust, { dir0: 'W', dir1: 'W', contactShift1: 10, offset: 15 })
 		.linkDep(depDoc0);
-		
+
 	let depNode = c.addDependency('node', 'node-versatiles', 2, { dy: 20 })
 		.linkCov(covNode, { dir0: 'W', dir1: 'W', offset: 15 })
 
