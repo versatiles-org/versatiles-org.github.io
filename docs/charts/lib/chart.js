@@ -10,7 +10,7 @@ const fontFamily = 'sans-serif';
 export class Chart {
 	constructor(opt = {}) {
 		this.canvas = new Canvas();
-		this.id = 'svg'+Math.random().toString(36).slice(2);
+		this.id = 'svg' + Math.random().toString(36).slice(2);
 
 		this.y0 = 0;
 		this.layers = Object.fromEntries(
@@ -112,18 +112,20 @@ export class Chart {
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
 		let box = this.#drawBox([x, boxY], type, name);
 
+		let conBox = this.layers.linesFront.appendGroup();
+
 		connections.forEach(c => {
 			let x = this.colStart + c * this.colWidth;
-			this.layers.linesFront.drawCircle([x, conY], 5, { fill: color });
+			conBox.drawCircle([x, conY], 5, { fill: color });
 		})
 
 		let cx0 = Math.min(...connections) * this.colWidth + this.colStart;
 		let cx1 = Math.max(...connections) * this.colWidth + this.colStart;
-		if (cx0 <= x) this.layers.linesFront.drawLine([cx0, conY], [x, conY], { stroke: color, strokeWidth: 2 });
-		if (cx1 > x) this.layers.linesFront.drawLine([x + this.boxWidth, conY], [cx1, conY], { stroke: color, strokeWidth: 2 });
+		if (cx0 <= x) conBox.drawLine([cx0, conY], [x, conY], { stroke: color, strokeWidth: 2 });
+		if (cx1 > x) conBox.drawLine([x + this.boxWidth, conY], [cx1, conY], { stroke: color, strokeWidth: 2 });
 
 		this.y0 = Math.max(this.y0, boxY + this.boxHeight);
-
+		box.connections.push([box, conBox]);
 		return box;
 	}
 
@@ -149,19 +151,23 @@ export class Chart {
 
 		box.linkCov = (cov, options = {}) => {
 			let path = getConnectionPath(box, cov, options);
-			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 2 })
+			let conBox = this.layers.linesBack.appendGroup();
+			conBox.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 2 })
+			box.connections.push([cov, conBox]);
 			return box
 		}
 
 		box.linkDep = (dep, options = {}) => {
 			options.shortenEnd = 5;
 			let path = getConnectionPath(box, dep, options);
-			this.layers.linesFront.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 2 })
-			this.layers.linesFront.drawArrowHead(
+			let conBox = this.layers.linesFront.appendGroup();
+			conBox.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 2 })
+			conBox.drawArrowHead(
 				path.point1.array(),
 				path.dir1.scale(10).array(),
 				{ fill: box.color }
 			)
+			box.connections.push([dep, conBox]);
 			return box
 		}
 
@@ -185,21 +191,23 @@ export class Chart {
 			if (opt.endArrow) opt.shortenEnd = 4;
 
 			let path = getConnectionPath(box, ref, opt);
-			this.layers.linesBack.drawPath(path.d, { fill: 'none', stroke: color, strokeWidth: 1 })
+			let conBox = this.layers.linesBack.appendGroup();
+			conBox.drawPath(path.d, { fill: 'none', stroke: color, strokeWidth: 1 })
 			if (opt.endArrow) {
-				this.layers.linesFront.drawArrowHead(
+				conBox.drawArrowHead(
 					path.point1.array(),
 					path.dir1.scale(8).array(),
 					{ fill: color }
 				)
-			};
+			}
+			box.connections.push([ref, conBox]);
 			return box;
 		}
 
 		return box;
 	}
 
-	addHover(groupHov, groupRef) {
+	addHover(listHov, listRef) {
 		this.hoverCount ??= 1;
 
 		const idx = this.hoverCount
@@ -215,14 +223,20 @@ export class Chart {
 		this.canvas.addStyle(`#${this.id}.show .obj { opacity:0.3; }`);
 		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity:1 !important; }`);
 
-		groupHov.forEach(box => {
+		listHov.forEach(box => {
 			if (box.node.onmouseover) throw Error('event already exists');
 			box.node.setAttribute('onmouseover', `show(${idx})`);
 			box.node.setAttribute('onmouseout', `hide(${idx})`);
 		});
 
-		let highlightGroup = [].concat(groupHov, groupRef || []);
-		highlightGroup.forEach(box => box.node.classList.add(`obj${idx}`));
+		let highlightList = [].concat(listHov, listRef || []);
+		let highlightSet = new Set(highlightList)
+		highlightList.forEach(box => {
+			box.node.classList.add('obj', `obj${idx}`)
+			box.connections.forEach(([ref, conBox]) => {
+				if (highlightSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
+			})
+		});
 		this.hoverCount++;
 	}
 
@@ -242,7 +256,6 @@ export class Chart {
 		const group = this.layers.boxes.appendGroup();
 		let [color, title] = this.#getType(type);
 		let darkColor = this.#fadeColor(color);
-		group.node.classList.add(`obj`);
 
 		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
 		const rectText = [pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight];
@@ -252,7 +265,7 @@ export class Chart {
 		group.drawRect(rectHead, { fill: color, pointerEvents: 'none' });
 		group.drawText(rectHead, title, { fill: darkColor, fontWeight: 'bold', fontFamily, fontSize: '10px', pointerEvents: 'none' });
 
-		let box = { rect, color, node: group.node };
+		let box = { rect, color, node: group.node, connections: [] };
 
 		return box;
 	}
