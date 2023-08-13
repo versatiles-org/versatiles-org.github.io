@@ -158,7 +158,7 @@ export class Chart {
 		}
 
 		box.linkDep = (dep, options = {}) => {
-			options.shortenEnd = 5;
+			options.gap1 = 5;
 			let path = getConnectionPath(box, dep, options);
 			let conBox = this.layers.linesFront.appendGroup();
 			conBox.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 2 })
@@ -188,7 +188,7 @@ export class Chart {
 		box.link = (ref, opt = {}) => {
 			opt.endArrow ??= true;
 
-			if (opt.endArrow) opt.shortenEnd = 4;
+			if (opt.endArrow) opt.gap1 = 4;
 
 			let path = getConnectionPath(box, ref, opt);
 			let conBox = this.layers.linesBack.appendGroup();
@@ -276,8 +276,9 @@ export class Chart {
 }
 
 function getConnectionPath(box0, box1, opt = {}) {
-	//opt.shortenStart ??= 0;
-	//opt.shortenEnd ??= 0;
+	opt.gap0 ??= 0;
+	opt.gap1 ??= 0;
+
 	opt.offset ??= 20;
 	opt.edgeRadius ??= 10;
 
@@ -302,6 +303,11 @@ function getConnectionPath(box0, box1, opt = {}) {
 	let start0 = contact0.clone().addScaled(dir0, opt.offset0 || opt.offset);
 	let start1 = contact1.clone().addScaled(dir1, opt.offset1 || opt.offset);
 
+	let point0 = contact0.clone();
+	let point1 = contact1.clone();
+	if (opt.gap0) contact0.addScaled(dir0, opt.gap0);
+	if (opt.gap1) contact1.addScaled(dir1, opt.gap1);
+
 	let pointDirs = [];
 	pointDirs.push([contact0, dir0], [start0, dir0]);
 	if (opt.points) opt.points.forEach(p => pointDirs.push(processPoint(p, start0, start1)));
@@ -310,12 +316,12 @@ function getConnectionPath(box0, box1, opt = {}) {
 	let points = addMissingPoints(pointDirs);
 	points = deleteUselessPoints(points);
 
-	let path = makePath(points);
+	let d = makePath(points);
 
 	return {
-		point0: contact0, dir0,
-		point1: contact1, dir1,
-		d: path,
+		point0, dir0,
+		point1, dir1,
+		d,
 	}
 
 	function processPoint(s, p0, p1) {
