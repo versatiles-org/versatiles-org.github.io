@@ -10,6 +10,7 @@ const fontFamily = 'sans-serif';
 export class Chart {
 	constructor(opt = {}) {
 		this.canvas = new Canvas();
+		this.id = 'svg' + Math.random().toString(36).slice(2);
 
 		this.y0 = 0;
 		this.layers = Object.fromEntries(
@@ -26,7 +27,7 @@ export class Chart {
 	}
 
 	asSVG(padding) {
-		return this.canvas.asSVG(padding);
+		return this.canvas.asSVG(padding, this.id);
 	}
 
 	addHeadline(text) {
@@ -109,7 +110,7 @@ export class Chart {
 		for (let i = con0; i <= con1; i++) this.coverConY[i] = Math.max(this.coverConY[i], conY + 30);
 
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer([x, boxY], type, name);
+		let box = this.#drawBox([x, boxY], type, name);
 
 		connections.forEach(c => {
 			let x = this.colStart + c * this.colWidth;
@@ -142,7 +143,7 @@ export class Chart {
 
 		if (options.dy) this.depColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer([x, this.depColY[col]], type, name);
+		let box = this.#drawBox([x, this.depColY[col]], type, name);
 		this.depColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
@@ -172,7 +173,7 @@ export class Chart {
 
 		if (options.dy) this.repoColY[col] += options.dy;
 		let x = this.colStart + (col + 0.5) * this.colWidth - this.boxWidth / 2;
-		let box = this.#drawContainer([x, this.repoColY[col]], 'repo', name);
+		let box = this.#drawBox([x, this.repoColY[col]], 'repo', name);
 		this.repoColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
@@ -198,8 +199,31 @@ export class Chart {
 		return box;
 	}
 
-	addHover(groupEvent, groupRef) {
+	addHover(groupHov, groupRef) {
+		this.hoverCount ??= 1;
+		const id = this.id + '_' + this.hoverCount;
 
+		if (this.hoverCount === 1) {
+			this.canvas.addScript(`
+			const g = document.getElementById('${this.id}');
+			console.log({g});
+			function show(id) { g.classList.add('show'+id) }
+			function hide(id) { g.classList.remove('show'+id) }
+			`)
+			this.canvas.addStyle(`.box { transition: opacity 0.1s; }`);
+		}
+		this.canvas.addStyle(`.show${id} .box { opacity:0.3; }`);
+		this.canvas.addStyle(`.show${id} .box${id} { opacity:1 !important; }`);
+
+		groupHov.forEach(box => {
+			if (box.node.onmouseover) throw Error('event already exists');
+			box.node.setAttribute('onmouseover', `show('${id}')`);
+			box.node.setAttribute('onmouseout', `hide('${id}')`);
+		});
+
+		let highlightGroup = [].concat(groupHov, groupRef || []);
+		highlightGroup.forEach(box => box.node.classList.add(`box${id}`));
+		this.hoverCount++;
 	}
 
 	#getType(type) {
@@ -213,11 +237,12 @@ export class Chart {
 		}
 	}
 
-	#drawContainer(pos, type, name) {
+	#drawBox(pos, type, name) {
 		const headerHeight = 13;
 		const group = this.layers.boxes.appendGroup();
 		let [color, title] = this.#getType(type);
 		let darkColor = this.#fadeColor(color);
+		group.node.classList.add('box');
 
 		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
 		const rectText = [pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight];
@@ -227,16 +252,9 @@ export class Chart {
 		group.drawRect(rectHead, { fill: color, pointerEvents: 'none' });
 		group.drawText(rectHead, title, { fill: darkColor, fontWeight: 'bold', fontFamily, fontSize: '10px', pointerEvents: 'none' });
 
-		const overlay = [];
-		group.node.addEventListener('mouseover', () => {
-			console.log(neighborhood);
-			neighborhood.forEach(n => n.setAttribute('filter', 'url(#highlight)'))
-		});
-		group.node.addEventListener('mouseout', () => {
-			neighborhood.forEach(n => n.setAttribute('filter', ''))
-		});
+		let box = { rect, color, node: group.node };
 
-		return { rect, color, overlay };
+		return box;
 	}
 
 	#fadeColor(color) {

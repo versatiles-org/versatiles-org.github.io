@@ -102,29 +102,29 @@ export default function () {
 	let repFSty = c.addRepo('versatiles-styles', 3).link(depFSty, { dir0: 'W', dir1: 'W', offset: 25 });
 	let repFFro = c.addRepo('versatiles-frontend', 3).link(depFFro, { dir0: 'W', dir1: 'W', offset: 30, contactShift1: 10 });
 
-	let repVWeb = c.addRepo('versatiles-website', 0, []/*, { dy: 60 }*/);
-	let repVDoc = c.addRepo('versatiles-docs', 1, []/*, { dy: 60 }*/);
+	let repVWeb = c.addRepo('versatiles-website', 0, { dy: 60 });
+	let repVDoc = c.addRepo('versatiles-docs', 1, { dy: 60 });
 
-	/*
+
 	c.addHover([covDocT, depDocT], [depDoc0, repDoc0, repTile]);
-	c.addHover([covDocS, depDocS], [depDoc0, repDoc0]);
-	c.addHover([covDoc0, depDoc0], [depDocT, depDocS, depRust, repDoc0]);
+	c.addHover([covDocN, depDocN], [depDocF, depFFro, repDoc0]);
+	c.addHover([covDocF, depDocF], [depDoc0, depFFro, repDoc0, depDocN]);
+	c.addHover([covDoc0, depDoc0], [depDoc0, depRust, repDoc0]);
 
 	c.addHover([covRust, depRust, repRust], [depDoc0]);
 	c.addHover([covNode, depNode, repNode]);
 
-	c.addHover([covFFro, depFFro], [depDocS, depFSty, depFSpr, depFFon, repFFro]);
-	c.addHover([depFSty, repFSty], [depFFon]);
-	c.addHover([depFSpr, repFSpr], [depFFon]);
-	c.addHover([depFFon, repFFon], [depFFon]);
+	c.addHover([covFFro, depFFro, repFFro], [depDocF, depDocN, depFSty, depFSpr, depFFon]);
+	c.addHover([depFSty, repFSty], [depFFro]);
+	c.addHover([depFSpr, repFSpr], [depFFro]);
+	c.addHover([depFFon, repFFon], [depFFro]);
 
-	c.addHover([repDoc0], [repTile, depDocT, depDoc0, depDocS]);
+	c.addHover([repDoc0], [repTile, depDocT, depDoc0, depDocN]);
 	c.addHover([repTile], [repDoc0, depDocT]);
 	c.addHover([repVWeb]);
 	c.addHover([repVDoc]);
 
 	c.addHover([repVSpe], [repRust, repNode]);
-	*/
 
 	return c.asSVG();
 }

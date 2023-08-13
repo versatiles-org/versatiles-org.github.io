@@ -14,7 +14,8 @@ export class Canvas {
 		this.subGroups.forEach(g => bbox.includeBBox(g.getBBox()));
 		return bbox;
 	}
-	asSVG(padding = 5) {
+	asSVG(padding = 5, id) {
+		if (id) setAttributes(this.node, { id });
 		let svg = getElement('svg');
 		let bbox = this.getBBox();
 		bbox.addPadding(padding);
@@ -26,15 +27,26 @@ export class Canvas {
 				0 0 0 1 0"
 			/>
 		</filter>`)
+
+		if (this.style) svg.insertAdjacentHTML('afterbegin', `<style>\n${this.style.join('\n')}\n</style>`);
 		svg.append(this.node);
+		if (this.script) svg.insertAdjacentHTML('beforeend', `<script>\n${this.script.join('\n')}\n</script>`);
+		
 		setAttributes(svg, {
 			style: `width:100%; height:auto; max-width:${bbox.width}px;`,
-			//preserveAspectRatio: 'xMidYMid meet',
 			version: '1.1',
-			xmlns: 'http://www.w3.org/2000/svg',
+			xmlns: 'http://www.w3.org/2000/svg'
 		});
 		svg.setAttribute('viewBox', bbox.viewBox);
 		return svg.outerHTML;
+	}
+	addScript(...scripts) {
+		this.script ??= [];
+		this.script.push(...scripts);
+	}
+	addStyle(...styles) {
+		this.style ??= [];
+		this.style.push(...styles);
 	}
 	appendGroup() {
 		let group = new Canvas();
