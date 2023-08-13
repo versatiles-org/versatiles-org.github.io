@@ -10,7 +10,7 @@ const fontFamily = 'sans-serif';
 export class Chart {
 	constructor(opt = {}) {
 		this.canvas = new Canvas();
-		this.id = 'svg' + Math.random().toString(36).slice(2);
+		this.id = 'svg'+Math.random().toString(36).slice(2);
 
 		this.y0 = 0;
 		this.layers = Object.fromEntries(
@@ -201,28 +201,28 @@ export class Chart {
 
 	addHover(groupHov, groupRef) {
 		this.hoverCount ??= 1;
-		const id = this.id + '_' + this.hoverCount;
 
-		if (this.hoverCount === 1) {
+		const idx = this.hoverCount
+
+		if (idx === 1) {
 			this.canvas.addScript(`
 			const g = document.getElementById('${this.id}');
-			console.log({g});
-			function show(id) { g.classList.add('show'+id) }
-			function hide(id) { g.classList.remove('show'+id) }
+			function show(id) { g.classList.add('show', 'show'+id) }
+			function hide(id) { g.classList.remove('show', 'show'+id) }
 			`)
-			this.canvas.addStyle(`.box { transition: opacity 0.1s; }`);
+			this.canvas.addStyle(`.o${this.id} { transition: opacity 0.1s; }`);
 		}
-		this.canvas.addStyle(`.show${id} .box { opacity:0.3; }`);
-		this.canvas.addStyle(`.show${id} .box${id} { opacity:1 !important; }`);
+		this.canvas.addStyle(`#${this.id}.show .obj { opacity:0.3; }`);
+		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity:1 !important; }`);
 
 		groupHov.forEach(box => {
 			if (box.node.onmouseover) throw Error('event already exists');
-			box.node.setAttribute('onmouseover', `show('${id}')`);
-			box.node.setAttribute('onmouseout', `hide('${id}')`);
+			box.node.setAttribute('onmouseover', `show(${idx})`);
+			box.node.setAttribute('onmouseout', `hide(${idx})`);
 		});
 
 		let highlightGroup = [].concat(groupHov, groupRef || []);
-		highlightGroup.forEach(box => box.node.classList.add(`box${id}`));
+		highlightGroup.forEach(box => box.node.classList.add(`obj${idx}`));
 		this.hoverCount++;
 	}
 
@@ -242,7 +242,7 @@ export class Chart {
 		const group = this.layers.boxes.appendGroup();
 		let [color, title] = this.#getType(type);
 		let darkColor = this.#fadeColor(color);
-		group.node.classList.add('box');
+		group.node.classList.add(`obj`);
 
 		const rect = [pos[0], pos[1], this.boxWidth, this.boxHeight];
 		const rectText = [pos[0], pos[1] + headerHeight, this.boxWidth, this.boxHeight - headerHeight];
