@@ -110,15 +110,15 @@ h5,
 h6,
 hero,
 section p,
+section pre,
 section ol,
 section ul {
-	display: block;
-	width: 100%;
-	margin: 0 auto;
-	padding: 0 1rem;
 	box-sizing: border-box;
-	width: 100%;
+	display: block;
+	margin: 0 auto;
 	max-width: 800px;
+	padding: 0 1rem;
+	width: 100%;
 }
 
 section ol,

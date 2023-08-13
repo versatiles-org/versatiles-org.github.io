@@ -1,71 +1,48 @@
 {{> header title="How To Use" }}
 <section>
 	<h1>How to use VersaTiles?</h1>
-	<p>use url</p>
-	<p>+ simple, + free, - unstable, maybe more reliable in the future</p>
+	<p>There are different ways to use VersaTiles.</p>
 </section>
 <section>
-	<h2 id="use_url"></h2>
-	<p>use url</p>
-	<p>+ simple, + free, - unstable, maybe more reliable in the future</p>
-</section>
-<section>
-	<h2 id="use_cdn"></h2>
-	<p>cache via CDN</p>
-	<p>faster and more reliable</p>
-</section>
-<section>
-	<h2 id="use_server"></h2>
-	<p>setup server</p>
-	<p>be independent</p>
-</section>
-<section>
-	<h2 id="use_cloud"></h2>
-	<p>build scalable infrasture</p>
-	<p>be independent</p>
-</section>
-<section>
-	<h2>How to use VersaTiles?</h2>
+	<h2 id="use_url">Use our map server</h2>
+	<p>Just copy & paste the following code into your website.</p>
+	{{#code}}
+	<!-- add MapLibre JavaScript and CSS -->
+	<script src="https://tiles.versatiles.org/assets/maplibre/maplibre-gl.js"></script>
+	<link href="https://tiles.versatiles.org/assets/maplibre/maplibre-gl.css" rel="stylesheet" />
+
+	<!-- add container for the map -->
+	<div id="map" style="width:100vw;height:100vh"></div>
+
+	<!-- start map -->
+	<script>
+		new maplibregl.Map({
+			container: 'map',
+			style: 'https://tiles.versatiles.org/assets/colorful.json',
+		});
+	</script>
+	{{/code}}
 	<p>
-		The flexibility of VersaTiles means that there are <a href="how_to_use.html">simple solutions for every use
-			case</a>:
+		<b>Pros:</b> simple, free<br>
+		<b>Cons:</b> we can't garantee 24/7 availability and maximum performance, yet
 	</p>
-	<style scoped>
-		ul#use_cases {
-			max-width: 25em;
-			margin: auto;
-			padding-inline: 2rem;
-		}
-
-		ul#use_cases li {
-			margin-bottom: 2em;
-			font-weight: 100;
-			list-style-type: none;
-		}
-
-		ul#use_cases li em {
-			display: block;
-			text-align: right;
-			margin-top: 0.3em;
-		}
-	</style>
-	<ul id="use_cases">
-		<li>
-			Need a quick and easy map?
-			<em><a href="how_to_use.html#use_url">Use our server.</a></em>
-		</li>
-		<li>
-			Do you expect a lot of traffic?
-			<em><a href="how_to_use.html#use_cdn">Put a CDN in between.</a></em>
-		</li>
-		<li>
-			Do you want to be independent?
-			<em><a href="how_to_use.html#use_server">Set up your own server.</a></em>
-		</li>
-		<li>
-			Do you want maximum reliability and scalability?
-			<em><a href="how_to_use.html#use_cloud">Set up your own cloud solution.</a></em>
-		</li>
-	</ul>
+</section>
+<section>
+	<h2 id="use_cdn">Use a CDN in front of our map server</h2>
+	<p>Commercial providers prohibit the caching of map tiles to ensure that you always have to pay for the full traffic.</p>
+	<p>However, our map tiles are free and not subject to any additional conditions. We even encourage you to cache tiles in your own CDN. This takes the load off our servers and improves the performance and stability of your map applications.</p>
+	<p>You can use a CDN like <a href="https://bunny.net/">bunny.net</a></p>
+	<p>
+		<b>Pros:</b> relative simple, greatly improves availability and performance<br>
+		<b>Cons:</b> Costs around 10€ per month
+	</p>
+</section>
+<section>
+	<h2 id="use_server">Run your own server</h2>
+	<p>You can <a href="https://download.versatiles.org/">download</a> the latest planet and serve it using your own server. We are still testing this approach and working on a documention.</p>
+</section>
+<section>
+	<h2 id="use_cloud">Run your own cloud service</h2>
+	<p>You can <a href="https://download.versatiles.org/">download</a> the latest planet and serve it using your own cloud service. We are still testing this approach and working on a documention.</p>
 </section>
 {{> footer }}
