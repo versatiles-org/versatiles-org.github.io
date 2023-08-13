@@ -12,12 +12,13 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "csso": "^5.0.5"
+  },
+  "devDependencies": {
     "colors": "^1.4.0",
+    "express": "^4.18.2",
     "handlebars": "^4.7.7",
     "highlight.js": "^11.8.0",
     "jsdom": "^22.1.0"
-  },
-  "devDependencies": {
-    "express": "^4.18.2"
   }
 }

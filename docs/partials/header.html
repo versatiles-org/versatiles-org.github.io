@@ -11,8 +11,10 @@
 	<link rel="icon" type="image/png" href="assets/logo/versatiles.48.png" sizes="48x48" />
 	<link rel="icon" type="image/png" href="assets/logo/versatiles.64.png" sizes="64x64" />
 	<link rel="icon" type="image/png" href="assets/logo/versatiles.96.png" sizes="96x96" />
-	<link rel="stylesheet" type="text/css" href="assets/main.css" />
-	<link rel="stylesheet" type="text/css" href="assets/stackoverflow-dark.min.css" />
+	{{#merge_css "assets/style.css"}}
+	<link rel="stylesheet" href="assets/main.css" />
+	<link rel="stylesheet" href="assets/stackoverflow-dark.min.css" />
+	{{/merge_css}}
 </head>
 
 <body>
