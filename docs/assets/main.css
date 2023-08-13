@@ -12,15 +12,12 @@ body {
 a {
 	color: inherit;
 	text-decoration: underline;
-	text-decoration-color: #fff0;
+	text-decoration-color: inherit;
+	text-decoration-thickness: 1px;
 }
 
 a:hover {
-	text-decoration-color: #ffff;
-}
-
-section a {
-	text-decoration-color: #fff5;
+	text-decoration-thickness: 2px;
 }
 
 h1,
@@ -136,12 +133,14 @@ img {
 }
 
 footer {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
 	align-items: center;
 	border-top: 1px solid #444;
 	display: flex;
-	padding: 2rem;
+	display: flex;
+	flex-direction: row;
+	font-size: 0.9rem;
 	gap: 2rem;
+	justify-content: center;
+	color: #888;
+	padding: 2rem;
 }
