@@ -216,8 +216,8 @@ export class Chart {
 			function show(id) { g.classList.add('show', 'show'+id) }
 			function hide(id) { g.classList.remove('show', 'show'+id) }
 			`)
-			this.canvas.addStyle(`#${this.id} .obj { transition: opacity 0.1s; }`);
-			this.canvas.addStyle(`#${this.id}.show .obj { opacity: 0.3; }`);
+			this.canvas.addStyle(`#${this.id} .obj { transition: opacity 0.1s 0.1s; }`);
+			this.canvas.addStyle(`#${this.id}.show .obj { transition: opacity 0.1s; opacity: 0.3; }`);
 		}
 		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity: 1 !important; }`);
 
