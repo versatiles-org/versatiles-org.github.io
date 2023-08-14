@@ -128,8 +128,18 @@ section p {
 	text-align: justify;
 }
 
-section > svg {
+section > figure {
 	margin: 0px auto;
+	padding: 0 2rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+figure figcaption {
+	font-size: 0.8rem;
+	text-align: center;
+	opacity: 0.7;
+	margin: 1rem 0 2rem;
 }
 
 img {

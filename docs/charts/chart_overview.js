@@ -15,15 +15,15 @@ export default function () {
 
 	c.addFlow()
 		.add('OSM', null, true)
-		.add('1. Generator')
+		.add('Generator')
 		.add('.mbtiles')
-		.add('2. Converter')
+		.add('Converter')
 		.add('.versatiles')
-		.add('3. Server')
+		.add('Server')
 		.add('HTTP')
-		.add('4. Proxy')
+		.add('Proxy')
 		.add('HTTPS')
-		.add('5. Frontend')
+		.add('Frontend')
 		.add('Web', null, true);
 
 	c.addHeadline('Which containers, packages or files can cover which part of this process chain?');

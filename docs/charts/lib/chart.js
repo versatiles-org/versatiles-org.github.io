@@ -1,6 +1,4 @@
 
-Array.prototype.isIndexInner = function (index) { return (index > 0) && (index < this.length - 1) }
-
 import { Canvas } from "./canvas.js";
 import { Color } from "./color.js";
 import { Vec } from "./vec.js";
@@ -218,10 +216,10 @@ export class Chart {
 			function show(id) { g.classList.add('show', 'show'+id) }
 			function hide(id) { g.classList.remove('show', 'show'+id) }
 			`)
-			this.canvas.addStyle(`.o${this.id} { transition: opacity 0.1s; }`);
+			this.canvas.addStyle(`#${this.id} .obj { transition: opacity 0.1s; }`);
+			this.canvas.addStyle(`#${this.id}.show .obj { opacity: 0.3; }`);
 		}
-		this.canvas.addStyle(`#${this.id}.show .obj { opacity:0.3; }`);
-		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity:1 !important; }`);
+		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity: 1 !important; }`);
 
 		listHov.forEach(box => {
 			if (box.node.onmouseover) throw Error('event already exists');
