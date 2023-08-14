@@ -1,11 +1,11 @@
 
 import { Chart } from './lib/chart.js'
 
-export default function (a, b) {
+export default function (index) {
 	const c = new Chart({
 		backgroundColor: '#000',
 		colWidth: 200,
-		colStart: 180,
+		colStart: 120,
 		boxWidth: 140,
 		boxHeight: 40,
 		gapHeight: 40,
@@ -13,21 +13,21 @@ export default function (a, b) {
 
 	const steps = [
 		['OSM', false, true],
-		['1. Generator', true],
+		['Generator', true],
 		['.mbtiles', false],
-		['2. Converter', true],
+		['Converter', true],
 		['.versatiles', false],
-		['3. Server', true],
+		['Server', true],
 		['HTTP', false],
-		['4. Proxy', true],
+		['Proxy', true],
 		['HTTPS', false],
-		['5. Frontend', true],
+		['Frontend', true],
 		['Web', false, true],
 	];
 
 	let f = c.addFlow();
-	if (typeof a === 'number') {
-		f.add(...(steps[a].slice(0, 2)));
+	if (typeof index === 'number') {
+		f.add(...(steps[index].slice(0, 2)));
 	} else {
 		steps.forEach(s => f.add(...s));
 	}

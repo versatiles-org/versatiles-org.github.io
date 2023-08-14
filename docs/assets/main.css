@@ -113,7 +113,7 @@ section ul {
 	box-sizing: border-box;
 	display: block;
 	margin: 0 auto;
-	max-width: 800px;
+	max-width: 40rem;
 	padding: 0 1rem;
 	width: 100%;
 }
@@ -126,6 +126,10 @@ section ul {
 section p {
 	font-weight: 400;
 	text-align: justify;
+}
+
+section > svg {
+	margin: 0px auto;
 }
 
 img {

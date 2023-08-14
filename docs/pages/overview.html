@@ -1,40 +1,31 @@
 {{> header title="Overview" }}
 <section>
-	<h2>What is the idea behind VersaTiles?</h2>
-	<p>
-		There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But in the
-		end you have to build a complete tech stack combining multiple solutions to serve maps. That takes a lot of
-		effort.
-	</p>
-	<p>
-		VersaTiles tackles this by defining a 5-step process chain to OpenStreetMap data and serve maps. It also provides
-		a reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your
-		preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you
-		can just replace that part but can still use the other layers.
-	</p>
-	<p>
-		{{{chart_flow}}}
-	</p>
-	<p>
-		The 5 layers are:
-		<style scoped>
-			table {
-				max-width: 600px;
-				margin: auto;
-				font-size: 0.8rem;
-				color: #fffa;
-			}
+	<h2>How does VersaTiles work?</h2>
+	<p>There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But in the end you have to combining multiple solutions and build a complete tech stack to generate and serve maps. That takes a lot of effort.</p>
+	<p>VersaTiles tackles this by defining a 5-step process chain defining how to process OpenStreetMap data and serve it as an interactive web map. It also provides a reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you can just replace the relevant part and still use the other layers.</p>
+</section>
+<section>{{{chart_flow}}}</section>
+<section>
+	<style scoped>
+		table {
+			max-width: 600px;
+			margin: auto;
+			font-size: 1rem;
+			color: #fffa;
+			border-spacing: 1em 1em;
+		}
 
-			table tr th {
-				width: 130px;
-				line-height: 0;
-			}
+		table tr th {
+			width: 130px;
+			line-height: 0;
+		}
 
-			table em {
-				font-size: 1rem;
-				color: #fff;
-			}
-		</style>
+		table em {
+			font-size: 1.2rem;
+			color: #fff;
+		}
+	</style>
+	<p>The 5 layers are:
 	<table>
 		<tr>
 			<th>{{{chart_flow 0}}}</th>
@@ -43,9 +34,9 @@
 		<tr>
 			<th>{{{chart_flow 1}}}</th>
 			<td>
-				<em>Generator produces vector tiles.</em><br>
-				We are using <a href="https://tilemaker.org/" rel="follow">tilemaker</a> to generate vector tiles in <a
-					href="https://shortbread.geofabrik.de/schema/" rel="follow">shortbread scheme</a>.
+				<em>Generator produces vector tiles.</em><br> We are using <a href="https://tilemaker.org/"
+					rel="follow">tilemaker</a> to generate vector tiles in <a href="https://shortbread.geofabrik.de/schema/"
+					rel="follow">shortbread scheme</a>.
 			</td>
 		</tr>
 		<tr>
@@ -55,8 +46,8 @@
 		<tr>
 			<th>{{{chart_flow 3}}}</th>
 			<td>
-				<em>Converter prepares these tiles for the server</em><br>
-				by precompressing, cleaning and converting them to …
+				<em>Converter prepares these tiles for the server</em><br>by precompressing, cleaning and converting them to
+				…
 			</td>
 		</tr>
 		<tr>
@@ -77,8 +68,7 @@
 		<tr>
 			<th>{{{chart_flow 7}}}</th>
 			<td>
-				<em>Proxy is handling network stuff</em><br>
-				like TLS certificates, caching, load balancing etc.
+				<em>Proxy is handling network stuff</em><br>like TLS certificates, caching, load balancing etc.
 			</td>
 		</tr>
 		<tr>
@@ -89,7 +79,6 @@
 			<th>{{{chart_flow 9}}}</th>
 			<td>
 				<em>Frontend loads and renders the vector tiles.</em><br>
-
 			</td>
 		</tr>
 		<tr>
@@ -98,20 +87,8 @@
 		</tr>
 	</table>
 	</p>
-	<p>
-		We combined permissively licensed open source software, data, schemes and styles, such as
-		<a href="https://tilemaker.org/" rel="follow">tilemaker</a>,
-		<a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and
-		<a href="https://maplibre.org/" rel="follow">MapLibre</a>.
-	</p>
-	<p>
-		VersaTiles lets you use OpenStreetMap based vector tiles, without any restrictions, locked-in paid services or
-		attribution requirements beyond OpenStreetMap.
-		You can use the freely downloadable tilesets from VersaTiles on your own infrastructure, in any way you like.
-		Our open spec, royalty free and permissively licensed <a href="">conatainer format</a> works with virtually any
-		webserver or <abbr title="Content Delivery Network">CDN</abbr> — with no requirement to pay unreasonable prices
-		for "Tiles-as-a-Service".
-	</p>
+	<p>We combined permissively licensed open source software, data, schemes and styles, such as <a href="https://tilemaker.org/" rel="follow">tilemaker</a>, <a href="https://shortbread.geofabrik.de/schema/" rel="follow">Geofabrik Shortbread</a> and <a href="https://maplibre.org/" rel="follow">MapLibre</a>.</p>
+	<p>VersaTiles lets you use OpenStreetMap based vector tiles, without any restrictions, locked-in paid services or attribution requirements beyond OpenStreetMap. You can use the <a href="https://download.versatiles.org">freely downloadable tilesets from VersaTiles</a> on your own infrastructure, in any way you like. Our open spec, royalty free and permissively licensed <a href="">conatainer format</a> works with virtually any webserver or <abbr title="Content Delivery Network">CDN</abbr> — with no requirement to pay unreasonable prices for "Tiles-as-a-Service".</p>
 	<p>
 	</p>
 </section>
@@ -156,8 +133,6 @@
 -->
 <section>
 	<h2>How is it build?</h2>
-	<div id="chart_overview" style="text-align: center;width: 100%">
-		{{{chart_overview}}}
-	</div>
+	{{{chart_overview}}}
 </section>
 {{> footer }}
