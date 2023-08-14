@@ -31,7 +31,7 @@ export class Canvas {
 		if (this.style) svg.insertAdjacentHTML('afterbegin', `<style>\n${this.style.join('\n')}\n</style>`);
 		svg.append(this.node);
 		if (this.script) svg.insertAdjacentHTML('beforeend', `<script>\n${this.script.join('\n')}\n</script>`);
-		
+
 		setAttributes(svg, {
 			style: `width:100%; height:auto; max-width:${bbox.width}px;`,
 			version: '1.1',
@@ -119,6 +119,9 @@ export class Canvas {
 		function p(cb) {
 			return [0, 1].map(i => cb(i)).join(',');
 		}
+	}
+	setOpacity(opacity) {
+		setStyle(this.node, { opacity });
 	}
 	#append(node) {
 		this.node.append(node);

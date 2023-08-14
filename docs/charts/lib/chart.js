@@ -150,7 +150,8 @@ export class Chart {
 		box.linkCov = (cov, options = {}) => {
 			let path = getConnectionPath(box, cov, options);
 			let conBox = this.layers.linesBack.appendGroup();
-			conBox.drawPath(path.d, { fill: 'none', stroke: this.#fadeColor(box.color), strokeWidth: 2 })
+			conBox.setOpacity(0.3);
+			conBox.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 2 })
 			box.connections.push([cov, conBox]);
 			return box
 		}
@@ -181,8 +182,6 @@ export class Chart {
 		this.repoColY[col] += this.boxHeight * 1.5;
 		this.y0 = Math.max(this.y0, this.depColY[col]);
 
-		let color = this.#fadeColor(box.color);
-
 		box.link = (ref, opt = {}) => {
 			opt.endArrow ??= true;
 
@@ -190,12 +189,13 @@ export class Chart {
 
 			let path = getConnectionPath(box, ref, opt);
 			let conBox = this.layers.linesBack.appendGroup();
-			conBox.drawPath(path.d, { fill: 'none', stroke: color, strokeWidth: 1 })
+			conBox.setOpacity(0.3);
+			conBox.drawPath(path.d, { fill: 'none', stroke: box.color, strokeWidth: 1 });
 			if (opt.endArrow) {
 				conBox.drawArrowHead(
 					path.point1.array(),
 					path.dir1.scale(8).array(),
-					{ fill: color }
+					{ fill: box.color }
 				)
 			}
 			box.connections.push([ref, conBox]);
@@ -205,7 +205,7 @@ export class Chart {
 		return box;
 	}
 
-	addHover(listHov, listRef) {
+	addHover(hoverList, refList) {
 		this.hoverCount ??= 1;
 
 		const idx = this.hoverCount
@@ -221,16 +221,22 @@ export class Chart {
 		}
 		this.canvas.addStyle(`#${this.id}.show${idx} .obj${idx} { opacity: 1 !important; }`);
 
-		listHov.forEach(box => {
+		hoverList.forEach(box => {
 			if (box.node.onmouseover) throw Error('event already exists');
 			box.node.setAttribute('onmouseover', `show(${idx})`);
 			box.node.setAttribute('onmouseout', `hide(${idx})`);
 		});
 
-		let highlightList = [].concat(listHov, listRef || []);
+		let highlightList = [].concat(hoverList, refList || []);
+		let hoverSet = new Set(hoverList)
 		let highlightSet = new Set(highlightList)
 		highlightList.forEach(box => {
 			box.node.classList.add('obj', `obj${idx}`)
+			box.connections.forEach(([ref, conBox]) => {
+				if (hoverSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
+			})
+		});
+		hoverList.forEach(box => {
 			box.connections.forEach(([ref, conBox]) => {
 				if (highlightSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
 			})
@@ -278,7 +284,7 @@ function getConnectionPath(box0, box1, opt = {}) {
 	opt.gap1 ??= 0;
 
 	opt.offset ??= 20;
-	opt.edgeRadius ??= 10;
+	opt.edgeRadius ??= 6;
 
 	let size0 = new Vec(box0.rect[2], box0.rect[3]).scale(0.5);
 	let size1 = new Vec(box1.rect[2], box1.rect[3]).scale(0.5);

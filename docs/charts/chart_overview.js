@@ -49,7 +49,7 @@ export default function () {
 		.linkCov(covDocN)
 
 	let depDocF = c.addDependency('docker', 'versatiles-frontend', 2)
-		.linkCov(covDocF, { dir0: 'E', dir1: 'W', contactShift0: 10, contactShift1: 10, offset: 15, points: ['x1,yc,0,-1'] })
+		.linkCov(covDocF, { dir0: 'E', dir1: 'W', contactShift0: 16, contactShift1: 10, offset: 15, points: ['x1,yc,0,-1'] })
 		.linkDep(depDocN);
 
 	let depDoc0 = c.addDependency('docker', 'versatiles', 1, { dy: 60 })
@@ -66,8 +66,8 @@ export default function () {
 
 	let depFFro = c.addDependency('file', 'frontend.tar', 3, { dy: 60 })
 		.linkCov(covFFro)
-		.linkDep(depDocF)
-		.linkDep(depDocN);
+		.linkDep(depDocN, { contactShift0: -8 })
+		.linkDep(depDocF);
 
 	let depFSty = c.addDependency('file', 'styles.tar', 3)
 		.linkDep(depFFro, { dir0: 'E', dir1: 'E', offset: 25 });
@@ -83,10 +83,10 @@ export default function () {
 	c.addHeadline('Which repositories produce which containers, packages or files?');
 
 	let repDoc0 = c.addRepo('versatiles-docker', 0)
-		.link(depDocT, { dir0: 'N', dir1: 'S' })
-		.link(depDoc0, { dir0: 'N', dir1: 'S', points: ['x0+10,y1+0,1,0'], contactShift1: -20 })
-		.link(depDocF, { dir0: 'N', dir1: 'S', points: ['x0+10,y1+0,1,0'] })
-		.link(depDocN, { dir0: 'N', dir1: 'W', points: ['x1-10,y1+100,1,0'] });
+		.link(depDocT, { dir0: 'N', dir1: 'S', contactShift0: 9, contactShift1: -9 })
+		.link(depDoc0, { dir0: 'N', dir1: 'S', contactShift0: 3, points: ['x0+10,y1-3,1,0'], contactShift1: -12 })
+		.link(depDocN, { dir0: 'N', dir1: 'W', contactShift0: -3, points: ['x1-10,y1+103,1,0'] })
+		.link(depDocF, { dir0: 'N', dir1: 'S', contactShift0: -9, points: ['x0+10,y1+9,1,0'] })
 
 	let repTile = c.addRepo('shortbread-tilemaker', 0).link(repDoc0, { endArrow: true });
 
@@ -100,7 +100,7 @@ export default function () {
 	let repFFon = c.addRepo('versatiles-fonts', 3).link(depFFon, { dir0: 'W', dir1: 'W', offset: 15 });
 	let repFSpr = c.addRepo('versatiles-sprites', 3).link(depFSpr, { dir0: 'W', dir1: 'W', offset: 20 });
 	let repFSty = c.addRepo('versatiles-styles', 3).link(depFSty, { dir0: 'W', dir1: 'W', offset: 25 });
-	let repFFro = c.addRepo('versatiles-frontend', 3).link(depFFro, { dir0: 'W', dir1: 'W', offset: 30, contactShift1: 10 });
+	let repFFro = c.addRepo('versatiles-frontend', 3).link(depFFro, { dir0: 'W', dir1: 'W', offset: 30, contactShift1: 8 });
 
 	let repVWeb = c.addRepo('versatiles-website', 0, { dy: 60 });
 	let repVDoc = c.addRepo('versatiles-docs', 1, { dy: 60 });
@@ -119,8 +119,8 @@ export default function () {
 	c.addHover([depFSpr, repFSpr], [depFFro]);
 	c.addHover([depFFon, repFFon], [depFFro]);
 
-	c.addHover([repDoc0], [repTile, depDocT, depDoc0, depDocN]);
-	c.addHover([repTile], [repDoc0, depDocT]);
+	c.addHover([repDoc0], [repTile, depDocT, depDoc0, depDocN, depDocF, covDocT, covDoc0, covDocN, covDocF]);
+	c.addHover([repTile], [repDoc0, depDocT, covDocT]);
 	c.addHover([repVWeb]);
 	c.addHover([repVDoc]);
 
