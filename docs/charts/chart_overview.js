@@ -26,7 +26,7 @@ export default function () {
 		.add('Frontend')
 		.add('Web', null, true);
 
-	c.addHeadline('Which containers, packages or files can cover which part of this process chain?');
+	c.addHeadline('Which container, package or binary can cover which part of this process chain?');
 
 	let covDocT = c.addCover('docker', 'versatiles-tilemaker', [0, 1, 2]);
 	let covRust = c.addCover('rust', 'versatiles-rs', [1, 2]);
@@ -40,7 +40,7 @@ export default function () {
 
 
 
-	c.addHeadline('How do containers, packages or files build on each other?');
+	c.addHeadline('How do container, package or binary build on each other?');
 
 	let depDocT = c.addDependency('docker', 'versatiles-tilemaker', 0, { dy: 60 })
 		.linkCov(covDocT);
@@ -80,7 +80,7 @@ export default function () {
 
 
 
-	c.addHeadline('Which repositories produce which containers, packages or files?');
+	c.addHeadline('Which repositories produce which container, package or binary?');
 
 	let repDoc0 = c.addRepo('versatiles-docker', 0)
 		.link(depDocT, { dir0: 'N', dir1: 'S', contactShift0: 9, contactShift1: -9 })

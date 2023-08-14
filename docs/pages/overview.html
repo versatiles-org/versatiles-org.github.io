@@ -2,7 +2,7 @@
 <section>
 	<h2>How does VersaTiles work?</h2>
 	<p>There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But in the end you have to combining multiple solutions and build a complete tech stack to generate and serve maps. That takes a lot of effort.</p>
-	<p>VersaTiles tackles this by defining a 5-step process chain defining how to process OpenStreetMap data and serve it as an interactive web map. It also provides a reference implementation of these 5 layers, but is flexible enough, so that every layer can be replaced by your preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you can just replace the relevant part and still use the other layers.</p>
+	<p>VersaTiles tackles this by defining a 5-step process chain defining how to process OpenStreetMap data and serve it as an interactive web map. It also provides a reference implementation of these 5 steps, but is flexible enough, so that every step can be replaced by your preferred solution. So if you want e.g. a different tile source, a different server or a different frontend, you can just replace the relevant part and still use the other steps.</p>
 </section>
 <section>
 	<style scoped>
@@ -24,10 +24,10 @@
 			color: #fff;
 		}
 	</style>
-	<h2>The 5 layers of VersaTiles</h2>
+	<h2>The 5 steps of VersaTiles</h2>
 	<figure>
 		{{{chart_flow}}}
-		<figcaption>The grey boxes represent data. Red boxes are steps/layers that process the data.<br>The whole process chain uses OSM data as input and generates a web map as output.</figcaption>
+		<figcaption>The grey boxes represent data. Red boxes are steps that process the data.<br>The whole process chain uses OSM data as input and generates a web map as output.</figcaption>
 	</figure>
 	<p>The process chain in more details:</p>
 	<table>
@@ -80,8 +80,10 @@
 	<p>VersaTiles lets you use OpenStreetMap based vector tiles, without any restrictions, locked-in paid services or attribution requirements beyond OpenStreetMap. You can use the <a href="https://download.versatiles.org">freely downloadable tilesets from VersaTiles</a> on your own infrastructure, in any way you like. Our open spec, royalty free and permissively licensed <a href="">container format</a> works with virtually any webserver or <abbr title="Content Delivery Network">CDN</abbr> — with no requirement to pay unreasonable prices for "Tiles-as-a-Service".</p>
 </section>
 <section>
-	<h2>How is it build?</h2>
-	<a href="https://github.com/versatiles-org"><i class="icon-github"></i> Github</a>
+	<h2>How is it constructed?</h2>
+	<p>To cover all 5 </p>
+	<p>We prepared multiple Docker Containers, packages and binaries to cover</p>
+	<p><a href="https://github.com/versatiles-org"><i class="icon-github"></i> Github</a></p>
 	<figure>{{{chart_overview}}}</figure>
 </section>
 {{> footer }}

@@ -233,14 +233,14 @@ export class Chart {
 		highlightList.forEach(box => {
 			box.node.classList.add('obj', `obj${idx}`)
 			box.connections.forEach(([ref, conBox]) => {
-				if (hoverSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
-			})
-		});
-		hoverList.forEach(box => {
-			box.connections.forEach(([ref, conBox]) => {
 				if (highlightSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
 			})
 		});
+		//hoverList.forEach(box => {
+		//	box.connections.forEach(([ref, conBox]) => {
+		//		if (highlightSet.has(ref)) conBox.node.classList.add('obj', `obj${idx}`)
+		//	})
+		//});
 		this.hoverCount++;
 	}
 
