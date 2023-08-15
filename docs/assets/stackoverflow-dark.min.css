@@ -9,6 +9,16 @@ code.hljs {
   padding: 3px 5px
 }
 
+code.hljs::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(27, 27, 27, 0) 90%, rgba(27, 27, 27, 1.0));
+}
+
 /*!
   Theme: StackOverflow Dark
   Description: Dark theme as used on stackoverflow.com
@@ -24,7 +34,7 @@ code.hljs {
 */
 .hljs {
   color: #fff;
-  background: #1c1b1b
+  background: #1b1b1b
 }
 
 .hljs-subst {

@@ -12,7 +12,7 @@
 	<link href="https://tiles.versatiles.org/assets/maplibre/maplibre-gl.css" rel="stylesheet" />
 
 	<!-- add container for the map -->
-	<div id="map" style="width:100vw;height:100vh"></div>
+	<div id="map" style="width:100%;aspect-ratio:16/9"></div>
 
 	<!-- start map -->
 	<script>
@@ -22,8 +22,9 @@
 		});
 	</script>
 	{{/code}}
+	<p><a target="_blank" href="https://jsfiddle.net/6sh7L4v8/2/">Try it at JSFiddle</a></p>
 	<p>
-		<b>Pros:</b> simple, free<br>
+		<b>Pros:</b> simple and free<br>
 		<b>Cons:</b> we can't garantee 24/7 availability and maximum performance, yet
 	</p>
 	<p>Please help us to improve the <a href="https://github.com/versatiles-org/versatiles-documentation">documention</a>.</p>
@@ -45,11 +46,21 @@
 </section>
 <section>
 	<h2 id="use_server">Run your own server</h2>
-	<p>You can <a href="https://download.versatiles.org/">download</a> the latest planet and serve it using your own server. We are still testing this approach and working on a <a href="https://github.com/versatiles-org/versatiles-documentation">documention</a>. But you can already use our <a href="https://github.com/versatiles-org/versatiles-rs">Rust server</a>, a <a href="https://github.com/versatiles-org/node-versatiles">Node.js implementation</a> or one of the <a href="https://github.com/versatiles-org/versatiles-docker">Docker Containers</a></p>
+	<p>You can <a href="https://download.versatiles.org/">download</a> the latest planet and serve it using your own server. We are still testing this approach and working on a <a href="https://github.com/versatiles-org/versatiles-documentation">documention</a>. But you can already use our <a href="https://github.com/versatiles-org/versatiles-rs">Rust server</a>, a <a href="https://github.com/versatiles-org/node-versatiles">Node.js implementation</a> or one of the <a href="https://github.com/versatiles-org/versatiles-docker">Docker containers</a></p>
 </section>
 <section>
 	<h2 id="use_cloud">Run your own cloud service</h2>
 	<p>You can <a href="https://download.versatiles.org/">download</a> the latest planet and serve it using your own cloud service on Google Cloud, AWS, Microsoft Azure, DigitalOcean, …</p>
 	<p>We are still testing this approach and working on a <a href="https://github.com/versatiles-org/versatiles-documentation">documention</a>.</p>
 </section>
+<script>
+	if (navigator.clipboard) {
+		document.querySelectorAll('code').forEach(block => {
+			let button = document.createElement('button');
+			button.innerText = 'Copy Code';
+			block.insertAdjacentElement('afterend', button);
+			button.addEventListener('click', () => navigator.clipboard.writeText(block.innerText));
+		});
+	}
+</script>
 {{> footer }}
