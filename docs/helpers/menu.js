@@ -7,14 +7,14 @@ export default function (arg) {
 		{ href: '', title: 'Demo' },
 		{ href: 'guide.html', title: 'Intro' },
 		{ href: 'overview.html', title: 'Overview' },
-		{ href: 'contribute.html', title: 'Help' },
+		{ href: 'contribute.html', title: 'Contribute' },
 	];
 
 	links.forEach(l => {
 		if (l.href === filename) l.add = ' class="selected"'
 	})
 
-	return '<nav><ul>' + links.map(
+	return links.map(
 		({ href, title, add }) => `<li${add || ''}><a href="/${href}">${title}</a></li>`
-	).join('') + '</ul></nav>'
+	).join('')
 }
