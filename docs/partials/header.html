@@ -12,8 +12,9 @@
 	<link rel="icon" type="image/png" href="assets/logo/versatiles.64.png" sizes="64x64" />
 	<link rel="icon" type="image/png" href="assets/logo/versatiles.96.png" sizes="96x96" />
 	{{#merge_css "assets/style.css"}}
-	<link rel="stylesheet" href="assets/main.css" />
-	<link rel="stylesheet" href="assets/stackoverflow-dark.min.css" />
+	<link rel="stylesheet" href="assets/style/main.css" />
+	<link rel="stylesheet" href="assets/style/header.css" />
+	<link rel="stylesheet" href="assets/style/stackoverflow-dark.min.css" />
 	{{/merge_css}}
 </head>
 
@@ -22,7 +23,11 @@
 		<nav>
 			<ul>
 				{{{menu}}}
-				<li><a href="https://github.com/versatiles-org/">GitHub</a></li>`
+				<li style="line-height: 1.3em;">
+					<a href="https://github.com/versatiles-org/" style="line-height: inherit; font-size: inherit;margin: 0; padding: 0;">
+						<img src="./assets/github.png" style="display: inline-block; height:1.3em; vertical-align: middle;">
+					</a>
+				</li>
 			</ul>
 		</nav>
 	</header>
