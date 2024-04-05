@@ -8,8 +8,8 @@
 	<p>Just copy & paste the following code into your website.</p>
 	{{#code}}
 	<!-- add MapLibre JavaScript and CSS -->
-	<script src="https://tiles.versatiles.org/assets/maplibre/maplibre-gl.js"></script>
-	<link href="https://tiles.versatiles.org/assets/maplibre/maplibre-gl.css" rel="stylesheet" />
+	<script src="https://tiles.versatiles.org/assets/maplibre-gl/maplibre-gl.js"></script>
+	<link href="https://tiles.versatiles.org/assets/maplibre-gl/maplibre-gl.css" rel="stylesheet" />
 
 	<!-- add container for the map -->
 	<div id="map" style="width:100%;aspect-ratio:16/9"></div>
@@ -18,7 +18,7 @@
 	<script>
 		new maplibregl.Map({
 			container: 'map',
-			style: 'https://tiles.versatiles.org/styles/colorful.json'
+			style: 'https://tiles.versatiles.org/assets/styles/colorful.json'
 		});
 	</script>
 	{{/code}}
