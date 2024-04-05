@@ -13,14 +13,14 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "csso": "^5.0.5"
-  },
-  "devDependencies": {
     "colors": "^1.4.0",
-    "express": "^4.19.2",
+    "csso": "^5.0.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
-    "jsdom": "^24.0.0",
+    "jsdom": "^24.0.0"
+  },
+  "devDependencies": {
+    "express": "^4.19.2",
     "npm-check-updates": "^16.14.18"
   }
 }
