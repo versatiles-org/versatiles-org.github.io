@@ -6,6 +6,7 @@
     "build": "node src/cms.js",
     "dev": "node src/cms.js watch serve",
     "preview": "node src/cms.js serve",
+    "upgrade": "npm-check-updates -u && rm -f package-lock.json; rm -rf node_modules; npm i && npm update",
     "watch": "node src/cms.js watch"
   },
   "author": "Michael Kreil <versatiles@michael-kreil.de>",
@@ -16,9 +17,10 @@
   },
   "devDependencies": {
     "colors": "^1.4.0",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "handlebars": "^4.7.8",
-    "highlight.js": "^11.8.0",
-    "jsdom": "^22.1.0"
+    "highlight.js": "^11.9.0",
+    "jsdom": "^24.0.0",
+    "npm-check-updates": "^16.14.18"
   }
 }
