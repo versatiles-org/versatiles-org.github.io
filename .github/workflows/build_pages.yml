@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm i
+      - run: npm i --production
       - run: npm run build
       - run: chmod -R +rX "dist"
       - uses: actions/upload-pages-artifact@v2
