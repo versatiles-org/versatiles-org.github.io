@@ -5,7 +5,7 @@ export default function (arg) {
 
 	let links = [
 		{ href: '', title: 'Demo' },
-		{ href: 'guide.html', title: 'Intro' },
+		{ href: 'intro.html', title: 'Intro' },
 		{ href: 'overview.html', title: 'Overview' },
 		{ href: 'contribute.html', title: 'Contribute' },
 	];
