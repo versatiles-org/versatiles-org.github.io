@@ -1,8 +1,8 @@
-
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { Configuration } from './config.ts';
 
-export function build(config, handlebars) {
+export function build(config: Configuration, handlebars: typeof Handlebars) {
 	let path = resolve(config.srcPath, 'partials');
 
 	for (let filename of readdirSync(path)) {

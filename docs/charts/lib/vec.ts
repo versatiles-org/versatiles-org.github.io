@@ -1,46 +1,50 @@
+import { PointType } from "./canvas.ts";
+
 const TINY = 1e-10;
 
 export class Vec {
-	constructor(x, y) {
+	private x: number;
+	private y: number;
+	constructor(x: number, y: number) {
 		this.x = x;
 		this.y = y;
 	}
-	clone() {
+	clone(): Vec {
 		return new Vec(this.x, this.y);
 	}
-	add(vec) {
+	add(vec: Vec): Vec {
 		this.x += vec.x;
 		this.y += vec.y;
 		return this;
 	}
-	scalar(vec) {
+	scalar(vec: Vec): number {
 		return this.x * vec.x + this.y * vec.y;
 	}
-	scale(v) {
+	scale(v: number): Vec {
 		this.x *= v;
 		this.y *= v;
 		return this;
 	}
-	multiply(vec) {
+	multiply(vec: Vec): Vec {
 		this.x *= vec.x;
 		this.y *= vec.y;
 		return this;
 	}
-	normalize() {
+	normalize(): Vec {
 		let r = Math.sqrt(this.x * this.x + this.y * this.y)
 		this.x /= r;
 		this.y /= r;
 		return this;
 	}
-	getDirection(vec) {
+	getDirection(vec: Vec): Vec {
 		return new Vec(vec.x - this.x, vec.y - this.y).normalize();
 	}
-	addScaled(vec, scale) {
+	addScaled(vec: Vec, scale: number): Vec {
 		this.x += vec.x * scale;
 		this.y += vec.y * scale;
 		return this;
 	}
-	snapToAxis() {
+	snapToAxis(): Vec {
 		if (Math.abs(this.x) < Math.abs(this.y)) {
 			this.x = 0;
 		} else {
@@ -48,29 +52,29 @@ export class Vec {
 		}
 		return this;
 	}
-	isParallelToAxis() {
+	isParallelToAxis(): boolean {
 		return (Math.abs(this.x) < TINY) || (Math.abs(this.y) < TINY)
 	}
-	str() {
+	str(): string {
 		return this.x + ',' + this.y
 	}
-	array() {
+	array(): PointType {
 		return [this.x, this.y]
 	}
-	isOpposite(vec) {
+	isOpposite(vec: Vec): boolean {
 		let dx = this.x + vec.x;
 		let dy = this.y + vec.y;
 		return Math.sqrt(dx * dx + dy * dy) < TINY;
 	}
-	isOrthogonal(vec) {
+	isOrthogonal(vec: Vec): boolean {
 		return Math.abs(this.clone().scalar(vec)) < TINY;
 	}
-	isEqual(vec) {
+	isEqual(vec: Vec): boolean {
 		let dx = this.x - vec.x;
 		let dy = this.y - vec.y;
 		return Math.sqrt(dx * dx + dy * dy) < 1e-10;
 	}
-	getChar() {
+	getChar(): string {
 		if (Math.abs(this.x) < TINY) {
 			if (Math.abs(this.y - 1) < TINY) {
 				return 'S';
@@ -91,45 +95,45 @@ export class Vec {
 			throw Error();
 		}
 	}
-	isHorizontal() {
+	isHorizontal(): boolean {
 		return Math.abs(this.y) < TINY;
 	}
-	isVertical() {
+	isVertical(): boolean {
 		return Math.abs(this.x) < TINY;
 	}
-	setX(x) {
+	setX(x: number): Vec {
 		this.x = x;
 		return this;
 	}
-	setY(y) {
+	setY(y: number): Vec {
 		this.y = y;
 		return this;
 	}
-	getWithX(x) {
+	getWithX(x: number): Vec {
 		return new Vec(x, this.y);
 	}
-	getWithY(y) {
+	getWithY(y: number): Vec {
 		return new Vec(this.x, y);
 	}
-	getMiddle(vec) {
+	getMiddle(vec: Vec): Vec {
 		return new Vec((this.x + vec.x) / 2, (this.y + vec.y) / 2);
 	}
-	getDistanceSquared(vec) {
+	getDistanceSquared(vec: Vec): number {
 		let dx = this.x - vec.x;
 		let dy = this.y - vec.y;
 		return dx * dx + dy * dy;
 	}
-	getTowards(vec, distance) {
+	getTowards(vec: Vec, distance: number): Vec {
 		let dir = this.getDirection(vec);
 		return this.clone().addScaled(dir, distance);
 	}
-	getRotated90() {
+	getRotated90(): Vec {
 		return new Vec(this.y, - this.x);
 	}
-	getAngleTo(vec) {
+	getAngleTo(vec: Vec): number {
 		return vec.x * this.y - vec.y * this.x;
 	}
-	static fromChar(char) {
+	static fromChar(char: string): Vec {
 		switch (char.toUpperCase()) {
 			case 'N': return new Vec(0, -1);
 			case 'S': return new Vec(0, 1);

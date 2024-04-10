@@ -1,16 +1,9 @@
 
 import Handlebars from 'handlebars';
-import { resolve } from 'node:path';
 import { existsSync, mkdirSync, rmSync, watch } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import CONFIG from './lib/config.ts';
 
 const PORT = 8080;
-const PROJECT_PATH = resolve(fileURLToPath(import.meta.url), '../../');
-
-const CONFIG = {
-	srcPath: resolve(PROJECT_PATH, 'docs'),
-	dstPath: resolve(PROJECT_PATH, 'dist'),
-}
 
 process.chdir(CONFIG.srcPath);
 
@@ -42,9 +35,8 @@ async function build() {
 		'pages',
 	]
 
-	for (let module of modules) {
-		module = `./lib/${module}.js`;
-		module = await import(module);
+	for (let moduleName of modules) {
+		const module = await import(`./lib/${moduleName}.js`);
 		await module.build(CONFIG, handlebars)
 	}
 
@@ -53,7 +45,7 @@ async function build() {
 
 async function startServer() {
 	const express = (await import('express')).default;
-	const app = new express();
+	const app = express();
 	app.use(express.static(CONFIG.dstPath))
 	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
 }

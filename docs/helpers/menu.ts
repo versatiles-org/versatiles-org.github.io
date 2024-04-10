@@ -1,6 +1,7 @@
+import { HelperOptions } from 'handlebars';
 
-export default function (arg) {
-	let { filename } = arg.data.root;
+export default function (opt: HelperOptions) {
+	let { filename } = opt.data.root;
 	if (filename === 'index.html') filename = '';
 
 	let links = [
@@ -10,11 +11,7 @@ export default function (arg) {
 		{ href: 'contribute.html', title: 'Contribute' },
 	];
 
-	links.forEach(l => {
-		if (l.href === filename) l.add = ' class="selected"'
-	})
-
 	return links.map(
-		({ href, title, add }) => `<li${add || ''}><a href="/${href}">${title}</a></li>`
+		({ href, title }) => `<li${href === filename ? ' class="selected"' : ''}><a href="/${href}">${title}</a></li>`
 	).join('')
 }

@@ -1,9 +1,20 @@
-import { BBox } from "./bbox.js";
+import { BBox } from './bbox.ts';
 import { JSDOM } from 'jsdom';
+
+export type BBoxType = [number, number, number, number];
+export type RectType = [number, number, number, number];
+export type PointType = [number, number];
+type Style = Partial<CSSStyleDeclaration>;
 
 const { document } = (new JSDOM('')).window;
 
 export class Canvas {
+	private readonly node: SVGElement;
+	private readonly bbox: BBox;
+	private readonly subGroups: Canvas[];
+	private readonly script: string[] = [];
+	private readonly style: string[] = [];
+
 	constructor() {
 		this.node = getElement('g');
 		this.bbox = new BBox();
@@ -14,7 +25,7 @@ export class Canvas {
 		this.subGroups.forEach(g => bbox.includeBBox(g.getBBox()));
 		return bbox;
 	}
-	asSVG(padding = 5, id) {
+	asSVG(padding = 5, id?: string) {
 		if (id) setAttributes(this.node, { id });
 		let svg = getElement('svg');
 		let bbox = this.getBBox();
@@ -40,12 +51,10 @@ export class Canvas {
 		svg.setAttribute('viewBox', bbox.viewBox);
 		return svg.outerHTML;
 	}
-	addScript(...scripts) {
-		this.script ??= [];
+	addScript(...scripts: string[]) {
 		this.script.push(...scripts);
 	}
-	addStyle(...styles) {
-		this.style ??= [];
+	addStyle(...styles: string[]) {
 		this.style.push(...styles);
 	}
 	appendGroup() {
@@ -54,21 +63,21 @@ export class Canvas {
 		this.subGroups.push(group);
 		return group;
 	}
-	drawRect(rect, style) {
+	drawRect(rect: RectType, style: Style): SVGElement {
 		let node = this.#appendElement('rect');
 		setAttributes(node, { x: rect[0], y: rect[1], width: rect[2], height: rect[3] });
 		setStyle(node, style);
 		this.bbox.includeRect(rect);
 		return node;
 	}
-	drawCircle(pos, radius, style) {
+	drawCircle(pos: PointType, radius: number, style: Style): SVGElement {
 		let node = this.#appendElement('circle');
 		setAttributes(node, { cx: pos[0], cy: pos[1], r: radius });
 		setStyle(node, style);
 		this.bbox.includeRect([pos[0] - radius, pos[1] - radius, radius * 2, radius * 2]);
 		return node;
 	}
-	drawText(rect, text, style) {
+	drawText(rect: RectType, text: string, style: Style): SVGElement {
 		let node = this.#appendElement('text');
 		setAttributes(node, { x: rect[0] + rect[2] / 2, y: rect[1] + rect[3] / 2 });
 		setStyle(node, style);
@@ -77,7 +86,7 @@ export class Canvas {
 		this.bbox.includeRect(rect);
 		return node;
 	}
-	drawLine(p1, p2, style) {
+	drawLine(p1: PointType, p2: PointType, style: Style): SVGElement {
 		let node = this.#appendElement('line');
 		setAttributes(node, { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1] });
 		setStyle(node, style);
@@ -85,69 +94,74 @@ export class Canvas {
 		this.bbox.includePoint(p2);
 		return node;
 	}
-	drawFlowBox(rect, style) {
+	drawFlowBox(rect: RectType, style: Style): SVGElement {
 		let node = this.#appendElement('path');
-		let coords = {
-			x: [rect[0], rect[0] + rect[3] / 2, rect[0] + rect[2], rect[0] + rect[2] + rect[3] / 2],
-			y: [rect[1], rect[1] + rect[3] / 2, rect[1] + rect[3]]
-		}
+		let x0 = rect[0];
+		let x1 = rect[0] + rect[3] / 2;
+		let x2 = rect[0] + rect[2];
+		let x3 = rect[0] + rect[2] + rect[3] / 2;
+		let y0 = rect[1];
+		let y1 = rect[1] + rect[3] / 2;
+		let y2 = rect[1] + rect[3];
 
-		let d = 'Mx0,y0Lx1,y1Lx0,y2Lx2,y2Lx3,y1Lx2,y0z'
-			.replace(/[xy][0-9]/g, key => coords[key[0]][parseInt(key[1], 10)]);
+		let d = `M${x0},${y0}L${x1},${y1}L${x0},${y2}L${x2},${y2}L${x3},${y1}L${x2},${y0}z`
 		setAttributes(node, { d });
 		setStyle(node, style);
 		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] / 2, rect[3]]);
 		return node;
 	}
-	drawPath(d, style) {
+	drawPath(d: string, style: Style): SVGElement {
 		let node = this.#appendElement('path');
 		setAttributes(node, { d });
 		setStyle(node, style);
 		return node;
 	}
-	drawArrowHead(point, dir, style) {
+	drawArrowHead(point: PointType, dir: PointType, style: Style): SVGElement {
 		let node = this.#appendElement('path');
 		let a = 0.4;
-		let d1 = [dir[0] - dir[1] * a, dir[1] + dir[0] * a];
-		let d2 = [dir[0] + dir[1] * a, dir[1] - dir[0] * a];
-		let d = `M${point.join(',')}L${p(i => point[i] + d1[i])}L${p(i => point[i] + d2[i])}z`;
+		let p1 = [point[0] + dir[0] - dir[1] * a, point[1] + dir[1] + dir[0] * a];
+		let p2 = [point[0] + dir[0] + dir[1] * a, point[1] + dir[1] - dir[0] * a];
+		let d = `M${point.join(',')}L${p1[0]},${p1[1]}L${p2[0]},${p2[1]}z`;
 
 		setAttributes(node, { d });
 		setStyle(node, style);
 		return node;
-
-		function p(cb) {
-			return [0, 1].map(i => cb(i)).join(',');
-		}
 	}
-	setOpacity(opacity) {
+	setOpacity(opacity: string) {
 		setStyle(this.node, { opacity });
 	}
-	#append(node) {
+	#append(node: SVGElement): SVGElement {
 		this.node.append(node);
 		return node;
 	}
-	#appendElement(tagName) {
+	#appendElement(tagName: string): SVGElement {
 		return this.#append(getElement(tagName));
 	}
 }
 
-function getElement(tagName) {
-	return document.createElementNS('http://www.w3.org/2000/svg', tagName);
+function getElement(tagName: string): SVGElement {
+	return document.createElementNS('http://www.w3.org/2000/svg', tagName) as SVGElement;
 }
 
-function setAttributes(node, attributeObj) {
+function setAttributes(node: SVGElement, attributeObj: Record<string, string | null | number>) {
 	for (let key in attributeObj) {
 		let name = key.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
 		let value = attributeObj[key];
-		if (value !== null) {
-			node.setAttribute(name, value);
-		} else {
+		if (value == null) {
 			node.removeAttribute(name);
+		} else {
+			node.setAttribute(name, String(value));
 		}
 	}
 }
 
-function setStyle(node, styleObj) {
-	for (let key in styleObj) node.style[key] = styleObj[key];
+function setStyle(node: SVGElement, styleObj: Style) {
+	for (let key in styleObj) {
+		const value = styleObj[key];
+		if (value == null) {
+			node.style.removeProperty(key);
+		} else {
+			node.style.setProperty(key, value);
+		}
+	}
 }
