@@ -16,9 +16,9 @@ export default function (filename: string, arg: HelperOptions) {
 		return href;
 	});
 	let css = links.map(filename => readFileSync(filename, 'utf8')).join('\n');
-	css = minify(content, { comments: false }).css;
+	css = minify(css, { comments: false }).css;
 
-	writeFileSync(resolve('../dist', filename), content);
+	writeFileSync(resolve('../dist', filename), css);
 
 	return `<link rel="stylesheet" href="${filename}" />`;
 }
