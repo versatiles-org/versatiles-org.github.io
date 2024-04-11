@@ -1,0 +1,49 @@
+#heroblock {
+	padding: 2em 0;
+	display: flex;
+	flex-direction: row;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 2em;
+	font-size: min(1em, 4vw);
+}
+
+#heroblock img {
+	display: flex;
+}
+
+#heroline {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#heroline h1 {
+	background-clip: text;
+	color: #fff;
+	font-family: sans-serif;
+	font-size: 4em;
+	font-weight: 400;
+	padding: 0;
+	margin: 0;
+}
+
+#heroline p {
+	color: #fff5;
+	display: flex;
+	flex-direction: row;
+	font-size: 1em;
+	font-weight: 400;
+	justify-content: space-between;
+	letter-spacing: 0.1em;
+	margin: 0.1em 0 0;
+	padding: 0;
+	text-transform: uppercase;
+	width: 100%;
+}
+
+#heroline p span {
+	margin: 0;
+}

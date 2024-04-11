@@ -2,15 +2,15 @@
 title: How to Help
 ---
 
-<section>
-	<h1>How to support VersaTiles?</h1>
-	<p>We need ...</p>
-		<p>… more examples on how to use MapLibre as a frontend in the <a href="https://github.com/versatiles-org/versatiles-documentation">documentation</a> (in HTML/JavaScript),</p>
-		<p>… a Docker container with VersaTiles, NGINX, Let's Encrypt (as Docker, <a href="https://github.com/versatiles-org/versatiles-docker">Repo</a>, <a href="https://github.com/versatiles-org/versatiles-docker/issues/5">Issue</a>),</p>
-		<p>… fixes, so the VersaTiles server runs on Windows (in Rust, <a href="https://github.com/versatiles-org/versatiles-rs">Repo</a>, <a href="https://github.com/versatiles-org/versatiles-rs/issues/31">Issue</a>),</p>
-		<p>… a way to install VersaTiles via Homebrew (<a href="https://github.com/versatiles-org/versatiles-rs">Repo</a>, <a href="https://github.com/versatiles-org/versatiles-rs/issues/30">Issue</a>),</p>
-		<p>… a worker pool for efficiently compressing tiles with Brotli (in Rust, <a href="https://github.com/versatiles-org/versatiles-rs">Repo</a>, <a href="https://github.com/versatiles-org/versatiles-rs/issues/41">Issue</a>),</p>
-		<p>… a good solution to improve the lower zoom levels (< 8 or so). They are quite empty. Maybe we need something like a vegetation layer? (<a href="https://github.com/versatiles-org/versatiles-generator/issues/2">Issue</a>),</p>
-		<p>Please help us to improve the <a href="https://github.com/versatiles-org/versatiles-documentation">documentation</a>.</p>
-</section>
-{{> footer }}
+# How to support VersaTiles?
+
+We need …
+
+- … more examples on how to use MapLibre as a frontend in the [documentation](https://github.com/versatiles-org/versatiles-documentation) (in HTML/JavaScript),
+- … a Docker container with VersaTiles, NGINX, Let's Encrypt (as Docker, [Repo](https://github.com/versatiles-org/versatiles-docker), [Issue](https://github.com/versatiles-org/versatiles-docker/issues/5)),
+- … fixes, so the VersaTiles server runs on Windows (in Rust, [Repo](https://github.com/versatiles-org/versatiles-rs), [Issue](https://github.com/versatiles-org/versatiles-rs/issues/31)),
+- … a way to install VersaTiles via Homebrew ([Repo](https://github.com/versatiles-org/versatiles-rs), [Issue](https://github.com/versatiles-org/versatiles-rs/issues/30)),
+- … a worker pool for efficiently compressing tiles with Brotli (in Rust, [Repo](https://github.com/versatiles-org/versatiles-rs), [Issue](https://github.com/versatiles-org/versatiles-rs/issues/41)),
+- … a good solution to improve the lower zoom levels (< 8 or so). They are quite empty. Maybe we need something like a vegetation layer? ([Issue](https://github.com/versatiles-org/versatiles-generator/issues/2)),
+
+Please help us to improve the [documentation](https://github.com/versatiles-org/versatiles-documentation).

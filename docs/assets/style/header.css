@@ -9,7 +9,6 @@ nav {
 nav ul {
 	text-align: right;
 	list-style: none;
-	display: flex;
 	justify-content: space-between;
 	display: flex;
 	justify-content: end;

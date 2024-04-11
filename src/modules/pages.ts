@@ -12,7 +12,9 @@ export async function build(context: Context) {
 
 	const filenames = (await readdir(path)).flatMap(filename => {
 		return filename.endsWith('.md') ? [filename] : []
-	});
+	}).filter(f => f.includes('index'));
+
+	const menuGenerator = await (await (await import(`../helpers/menu.ts${context.v}`)) as typeof import('../helpers/menu.ts')).default;
 
 	await Promise.all(filenames.map(async filename => {
 		const pagename = basename(filename, '.md');
@@ -24,7 +26,17 @@ export async function build(context: Context) {
 			if (typeof data !== 'object' || data == null) throw Error('missing data');
 			if (!('title' in data) || (typeof data.title !== 'string')) throw Error('missing title');
 
-			const html = header(data) + result.toString() + footer(data);
+			const handlebarData = {
+				...data,
+				menu: menuGenerator({ filename }),
+			};
+
+			const html = [
+				header(handlebarData),
+				result.toString(),
+				footer(handlebarData)
+			].join('\n');
+
 			await writeFile(resolve(context.dstPath, pagename + '.html'), html);
 		} catch (error) {
 			console.error('Error for page ' + pagename);

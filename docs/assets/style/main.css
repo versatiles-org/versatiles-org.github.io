@@ -48,25 +48,13 @@ abbr {
 }
 
 main {
-	display: flex;
 	flex-direction: column;
 	align-items: center;
 	background: rgba(0, 0, 0, 0.75);
+	color: #eee;
 	gap: 5rem;
 	padding: 5rem 0 10rem;
 	overflow-x: hidden;
-}
-
-section {
-	display: flex;
-	flex-flow: column wrap;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	gap: 2rem;
-	align-items: stretch;
-	align-content: stretch;
-	color: #eee;
 }
 
 hero {
@@ -82,29 +70,39 @@ h4,
 h5,
 h6,
 hero,
-section p,
-section pre,
-section ol,
-section ul {
+p,
+pre,
+ol,
+ul {
 	box-sizing: border-box;
 	display: block;
-	margin: 0 auto;
+	margin: 0 auto 1rem;
 	max-width: 40rem;
-	padding: 0 1rem;
+	padding: 0;
 	width: 100%;
 }
 
-section ol,
-section ul {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hero {
+	margin: 3rem auto 1rem;
+}
+
+ol,
+ul {
 	padding-inline: 3em;
 }
 
-section p {
+p {
 	font-weight: 400;
 	text-align: justify;
 }
 
-section>figure {
+figure {
 	margin: 0px auto;
 	padding: 0 2rem;
 	width: 100%;
@@ -126,7 +124,6 @@ img {
 footer {
 	align-items: center;
 	border-top: 1px solid #444;
-	display: flex;
 	display: flex;
 	flex-direction: row;
 	font-size: 0.9rem;

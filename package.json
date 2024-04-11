@@ -25,6 +25,7 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
+    "sass": "^1.74.1",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5",
     "unified": "^11.0.4",
