@@ -2,6 +2,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import Handlebars from 'handlebars';
 import Context from '../lib/context.ts';
+import menuGenerator from '../helpers/menu.ts';
 
 export async function build(context: Context) {
 	const path = resolve(context.srcPath, 'pages');
@@ -12,9 +13,7 @@ export async function build(context: Context) {
 
 	const filenames = (await readdir(path)).flatMap(filename => {
 		return filename.endsWith('.md') ? [filename] : []
-	}).filter(f => f.includes('index'));
-
-	const menuGenerator = await (await (await import(`../helpers/menu.ts${context.v}`)) as typeof import('../helpers/menu.ts')).default;
+	});
 
 	await Promise.all(filenames.map(async filename => {
 		const pagename = basename(filename, '.md');
@@ -29,6 +28,7 @@ export async function build(context: Context) {
 			const handlebarData = {
 				...data,
 				menu: menuGenerator({ filename }),
+				github_link: `https://github.com/versatiles-org/versatiles-website/blob/main/docs/pages/${filename}`,
 			};
 
 			const html = [
