@@ -1,14 +1,10 @@
 
-import Handlebars from 'handlebars';
 import { existsSync, mkdirSync, rmSync, watch } from 'node:fs';
-import CONFIG from './lib/config.ts';
+import Context from './lib/context.ts';
 
 const PORT = 8080;
-
-process.chdir(CONFIG.srcPath);
-
-if (existsSync(CONFIG.dstPath)) rmSync(CONFIG.dstPath, { recursive: true });
-mkdirSync(CONFIG.dstPath);
+const SRC_PATH = new URL('../docs', import.meta.url).pathname;
+const DST_PATH = new URL('../dist', import.meta.url).pathname;
 
 let options = process.argv.slice(2).map(a => a.toLowerCase());
 
@@ -18,7 +14,7 @@ await build();
 
 if (options.some(o => o.includes('watch'))) {
 	watch(
-		CONFIG.srcPath,
+		SRC_PATH,
 		{ recursive: true },
 		(event, filename) => build()
 	);
@@ -26,18 +22,19 @@ if (options.some(o => o.includes('watch'))) {
 
 async function build() {
 	let t = Date.now();
-	let handlebars = Handlebars.create();
 
-	let modules = [
-		'assets',
-		'helpers',
-		'partials',
-		'pages',
-	]
+	const context = new Context(SRC_PATH, DST_PATH);
 
-	for (let moduleName of modules) {
-		const module = await import(`./lib/${moduleName}.js`);
-		await module.build(CONFIG, handlebars)
+	if (existsSync(context.dstPath)) rmSync(context.dstPath, { recursive: true });
+	mkdirSync(context.dstPath);
+
+	(await load('assets') as typeof import('./modules/assets.ts')).build(context);
+	//(await load('helpers') as typeof import('./modules/helpers.ts')).build(context);
+	//(await load('partials') as typeof import('./modules/partials.ts')).build(context);
+	(await load('pages') as typeof import('./modules/pages.ts')).build(context);
+
+	async function load(name: string) {
+		return (await import(`./modules/${name}.ts?v=${Date.now()}`));
 	}
 
 	process.stderr.write((Date.now() - t) + 'ms ')
@@ -46,6 +43,6 @@ async function build() {
 async function startServer() {
 	const express = (await import('express')).default;
 	const app = express();
-	app.use(express.static(CONFIG.dstPath))
+	app.use(express.static(DST_PATH))
 	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
 }
