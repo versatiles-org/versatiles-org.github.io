@@ -1,4 +1,8 @@
-{{> header title="Intro" }}
+---
+title: VersaTiles
+---
+
+
 <section>
 	<style scoped>
 		#headblock {

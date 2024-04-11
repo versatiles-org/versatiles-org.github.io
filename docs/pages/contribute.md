@@ -1,4 +1,7 @@
-{{> header title="How to Help" }}
+---
+title: How to Help
+---
+
 <section>
 	<h1>How to support VersaTiles?</h1>
 	<p>We need ...</p>

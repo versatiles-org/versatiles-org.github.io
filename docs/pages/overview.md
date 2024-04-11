@@ -1,4 +1,6 @@
-{{> header title="Overview" }}
+---
+title: Overview
+---
 <section>
 	<h2>How does VersaTiles work?</h2>
 	<p>There are a lot of excellent FLOSS solutions for generating, processing, serving and rendering maps. But in the end you have to combining multiple solutions and build a complete tech stack. That takes a lot of effort.</p>

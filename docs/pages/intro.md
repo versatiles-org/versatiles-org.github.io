@@ -1,4 +1,6 @@
-{{> header title="How to Use" }}
+---
+title: How to Use
+---
 <section>
 	<h1>How to use VersaTiles?</h1>
 	<p>There are multiple ways to use VersaTiles:</p>
@@ -68,4 +70,3 @@
 		});
 	}
 </script>
-{{> footer }}

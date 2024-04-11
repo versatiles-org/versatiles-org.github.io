@@ -1,28 +1,28 @@
-import markdownit from 'markdown-it';
-import hljs from 'highlight.js';
+import { Processor, unified } from 'unified'
+import rehypeStringify from 'rehype-stringify'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import { matter } from 'vfile-matter'
 
 export default class Context {
 	public readonly srcPath: string;
 	public readonly dstPath: string;
-	public readonly md: markdownit;
+	public readonly v: string;
+	public readonly md: Processor;
 
 	constructor(srcPath: string, dstPath: string) {
 		this.srcPath = srcPath;
 		this.dstPath = dstPath;
-		const md: markdownit = this.md = markdownit({
-			html: true,
-			breaks: true,
-			linkify: true,
-			highlight: function (str, lang) {
-				let content: string | undefined;
-				if (lang && hljs.getLanguage(lang)) {
-					try {
-						content = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
-					} catch (_) { }
-				}
-				content ??= md.utils.escapeHtml(str);
-				return `<pre><code class="hljs">${content}</code></pre>`;
-			}
-		});
+		this.v = '?v=' + Date.now();
+		// @ts-ignore
+		this.md = unified()
+			.use(remarkParse)
+			.use(remarkFrontmatter, ['yaml'])
+			.use(() => (ast, vfile) => matter(vfile))
+			.use(remarkGfm)
+			.use(remarkRehype)
+			.use(rehypeStringify)
 	}
 }

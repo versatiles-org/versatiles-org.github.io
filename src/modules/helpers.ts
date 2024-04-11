@@ -1,32 +1,21 @@
-import type Handlebars from 'handlebars';
-import { readdirSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { Configuration } from './config.ts';
+import handlebars from 'handlebars';
 import { HelperDelegate } from 'handlebars';
+import Context from '../lib/context.ts';
 
-export async function build(config: Configuration, handlebars: typeof Handlebars) {
-	await register('helpers');
-	await register('charts');
+export async function build(context: Context) {
+	await register('../helpers/merge_css.ts');
 
-	async function register(name: string) {
-		let path = resolve(config.srcPath, name);
+	async function register(filename: string) {
+		const module = await import(filename + '?version=' + Date.now());
+		let fun: HelperDelegate = module.helper(context);
 
-		for (let filename of readdirSync(path)) {
-			if (!filename.endsWith('.ts')) continue;
-
-			let name = filename.replace(/\..*?$/, '');
-			let fullname = resolve(path, filename) + '?version=' + Date.now();
-
-			let fun: HelperDelegate = (await import(fullname)).default;
-
-			handlebars.registerHelper(name, (...args) => {
-				try {
-					return fun(...args)
-				} catch (err) {
-					console.error(err);
-					return '<h1 style="color:red">' + String(err) + '</h1>'
-				}
-			});
-		}
+		handlebars.registerHelper(module.name, (...args) => {
+			try {
+				return fun(...args)
+			} catch (err) {
+				console.error(err);
+				return '<h1 style="color:red">' + String(err) + '</h1>'
+			}
+		});
 	}
 }
