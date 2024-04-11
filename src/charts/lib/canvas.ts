@@ -46,7 +46,7 @@ export class Canvas {
 		setAttributes(svg, {
 			style: `width:100%; height:auto; max-width:${bbox.width}px;`,
 			version: '1.1',
-			xmlns: 'http://www.w3.org/2000/svg'
+			xmlns: 'http://www.w3.org/2000/svg',
 		});
 		svg.setAttribute('viewBox', bbox.viewBox);
 		return svg.outerHTML;
@@ -94,12 +94,12 @@ export class Canvas {
 		this.bbox.includePoint(p2);
 		return node;
 	}
-	drawFlowBox(rect: RectType, style: Style): SVGElement {
+	drawFlowBox(rect: RectType, strength: number, style: Style): SVGElement {
 		let node = this.#appendElement('path');
 		let x0 = rect[0];
-		let x1 = rect[0] + rect[3] / 2;
+		let x1 = rect[0] + rect[3] * strength;
 		let x2 = rect[0] + rect[2];
-		let x3 = rect[0] + rect[2] + rect[3] / 2;
+		let x3 = rect[0] + rect[2] + rect[3] * strength;
 		let y0 = rect[1];
 		let y1 = rect[1] + rect[3] / 2;
 		let y2 = rect[1] + rect[3];
@@ -107,7 +107,7 @@ export class Canvas {
 		let d = `M${x0},${y0}L${x1},${y1}L${x0},${y2}L${x2},${y2}L${x3},${y1}L${x2},${y0}z`
 		setAttributes(node, { d });
 		setStyle(node, style);
-		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] / 2, rect[3]]);
+		this.bbox.includeRect([rect[0], rect[1], rect[2] + rect[3] * strength, rect[3]]);
 		return node;
 	}
 	drawPath(d: string, style: Style): SVGElement {

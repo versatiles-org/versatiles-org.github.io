@@ -86,8 +86,8 @@ export class Chart {
 				: this.colWidth / 2;
 
 			let rect: RectType = [x0, y0, width, this.boxHeight];
-			group.drawFlowBox(rect, {
-				strokeWidth: highlight ? '1' : '0',
+			group.drawFlowBox(rect, 0.5, {
+				strokeWidth: highlight ? '2' : '0',
 				stroke: color.string(),
 				fill: color.fade(2 / 3).string(),
 			});

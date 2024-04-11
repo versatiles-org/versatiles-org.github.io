@@ -20,10 +20,10 @@ Just copy & paste the following code into your website.
 
 <!-- start map -->
 <script>
-    new maplibregl.Map({
-        container: 'map',
-        style: 'https://tiles.versatiles.org/assets/styles/colorful.json'
-    }).addControl(new maplibregl.NavigationControl());
+  new maplibregl.Map({
+    container: 'map',
+    style: 'https://tiles.versatiles.org/assets/styles/colorful.json'
+  }).addControl(new maplibregl.NavigationControl());
 </script>
 ```
 

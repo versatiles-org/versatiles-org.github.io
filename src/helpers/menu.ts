@@ -1,5 +1,3 @@
-import { HelperOptions } from 'handlebars';
-
 export default function (opt: { filename: string }) {
 	let { filename } = opt;
 	if (filename === 'index.html') filename = '';

@@ -3,7 +3,7 @@ import { basename, resolve } from 'node:path';
 import Handlebars from 'handlebars';
 import Context from '../lib/context.ts';
 import menuGenerator from '../helpers/menu.ts';
-import { Processor, unified } from 'unified'
+import { unified } from 'unified'
 import rehypeStringify from 'rehype-stringify'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
@@ -12,18 +12,14 @@ import remarkStringify from 'remark-stringify'
 import remarkRehype from 'remark-rehype'
 import rehypeHighlight from 'rehype-highlight'
 import { matter } from 'vfile-matter'
+import { readFileSync } from 'node:fs';
 
 export async function build(context: Context) {
 	const path = resolve(context.srcPath, 'pages');
 
-	const [header, footer] = await Promise.all(
-		['header', 'footer'].map(getPartial)
+	const [header, footer] = ['header', 'footer'].map((name) =>
+		readFileSync(resolve(context.srcPath, `partials/${name}.html`), 'utf8')
 	);
-
-	const filenames = (await readdir(path)).flatMap(filename => {
-		return filename.endsWith('.md') ? [filename] : []
-	});
-
 
 	const processor = unified()
 		.use(remarkParse)
@@ -33,12 +29,11 @@ export async function build(context: Context) {
 		.use(remarkGfm)
 		.use(remarkRehype, { allowDangerousHtml: true })
 		.use(rehypeStringify, { allowDangerousHtml: true })
-		.use(rehypeHighlight)
-	//.use(() => ast => {
-	//	console.dir(ast, { depth: 6 });
-	//	// @ts-ignore
-	//	//if (ast.children[0].value === 'title: VersaTiles') console.dir(ast)
-	//})
+		.use(rehypeHighlight);
+
+	const filenames = (await readdir(path)).flatMap(filename => {
+		return filename.endsWith('.md') ? [filename] : []
+	});
 
 	await Promise.all(filenames.map(async filename => {
 		const pagename = basename(filename, '.md');
@@ -50,17 +45,13 @@ export async function build(context: Context) {
 			if (typeof data !== 'object' || data == null) throw Error('missing data');
 			if (!('title' in data) || (typeof data.title !== 'string')) throw Error('missing title');
 
-			const handlebarData = {
+			let html = [header, result.toString(), footer].join('\n');
+
+			html = Handlebars.compile(html)({
 				...data,
 				menu: menuGenerator({ filename }),
 				github_link: `https://github.com/versatiles-org/versatiles-website/blob/main/docs/pages/${filename}`,
-			};
-
-			const html = [
-				header(handlebarData),
-				result.toString(),
-				footer(handlebarData)
-			].join('\n');
+			});
 
 			await writeFile(resolve(context.dstPath, pagename + '.html'), html);
 		} catch (error) {
@@ -68,10 +59,4 @@ export async function build(context: Context) {
 			throw error;
 		}
 	}))
-
-	async function getPartial(name: string): Promise<HandlebarsTemplateDelegate<any>> {
-		const filename = resolve(context.srcPath, `partials/${name}.html`);
-		const html = await readFile(filename, 'utf8');
-		return Handlebars.compile(html);
-	}
 }

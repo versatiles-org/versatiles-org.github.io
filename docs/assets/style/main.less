@@ -72,7 +72,8 @@ main {
    p,
    pre,
    ol,
-   ul {
+   ul,
+   table {
       box-sizing: border-box;
       display: block;
       margin: 0 auto 1rem;
@@ -156,5 +157,15 @@ pre {
    button:active {
       opacity: 1;
       transition: opacity 0s;
+   }
+}
+
+table.overview {
+   th {
+      min-width: 150px;
+   }
+
+   td {
+      vertical-align: middle;
    }
 }

@@ -4,6 +4,7 @@ import Context from '../lib/context.ts';
 
 export async function build(context: Context) {
 	await register('../helpers/merge_css.ts');
+	await register('../charts/chart_flow.ts');
 
 	async function register(filename: string) {
 		const module = await import(filename + '?version=' + Date.now());

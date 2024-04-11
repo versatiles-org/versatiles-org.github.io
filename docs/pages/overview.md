@@ -17,15 +17,44 @@ The whole process chain uses OSM data as input and generates a web map as output
 
 The process chain in more details:
 
-- {{{chart_flow 0}}}: We use the latest OSM dump.
-- {{{chart_flow 1}}}: _Generator produces vector tiles._ We are using [tilemaker](https://tilemaker.org/) to generate vector tiles in [shortbread schema](https://shortbread-tiles.org/schema/).
-- {{{chart_flow 2}}}: a [versatiles container](http://github.com/versatiles-org/versatiles-spec), a much more simpler and efficient tile storage format, than .mbtiles.
-- {{{chart_flow 3}}}: _Server is serving the vector tiles._
-- {{{chart_flow 4}}}: … but only speaks HTTP, because …
-- {{{chart_flow 5}}}: _The Network handles network stuff._ like TLS certificates, caching, load balancing etc.
-- {{{chart_flow 6}}}: Now we serve tiles to the internet …
-- {{{chart_flow 7}}}: _Frontend loads and renders the vector tiles._
-- {{{chart_flow 8}}}: Enjoy.
+<table class="overview">
+<tr><th>{{{chart_flow 0}}}</th><td>
+
+We use the latest OSM dump.
+</td></tr>
+<tr><th>{{{chart_flow 1}}}</th><td>
+
+_Generator produces vector tiles._ We are using [tilemaker](https://tilemaker.org/) to generate vector tiles in [shortbread schema](https://shortbread-tiles.org/schema/).
+</td></tr>
+<tr><th>{{{chart_flow 2}}}</th><td>
+
+a [versatiles container](http://github.com/versatiles-org/versatiles-spec), a much more simpler and efficient tile storage format, than .mbtiles.
+</td></tr>
+<tr><th>{{{chart_flow 3}}}</th><td>
+
+_Server is serving the vector tiles._
+</td></tr>
+<tr><th>{{{chart_flow 4}}}</th><td>
+
+… but only speaks HTTP, because …
+</td></tr>
+<tr><th>{{{chart_flow 5}}}</th><td>
+
+_The Network handles network stuff._ like TLS certificates, caching, load balancing etc.
+</td></tr>
+<tr><th>{{{chart_flow 6}}}</th><td>
+
+Now we serve tiles to the internet …
+</td></tr>
+<tr><th>{{{chart_flow 7}}}</th><td>
+
+_Frontend loads and renders the vector tiles._
+</td></tr>
+<tr><th>{{{chart_flow 8}}}</th><td>
+
+Enjoy.
+</td></tr>
+</table>
 
 We combined permissively licensed open source software, data, schema and styles, such as [tilemaker](https://tilemaker.org/), [Shortbread Tiles Schema](https://shortbread-tiles.org/schema/) and [MapLibre](https://maplibre.org/).
 
