@@ -9,7 +9,7 @@ export function build(context: Context) {
 	readdirSync(path).forEach(filename => {
 		if (!filename.endsWith('.md')) return;
 
-		let pagename = filename.replace(/\..*?$/, '');
+		let pagename = filename.slice(0, -3);
 
 		let page = readFileSync(resolve(path, filename), 'utf8');
 		try {
@@ -18,6 +18,6 @@ export function build(context: Context) {
 			console.error(colors.red.bold('Error in ' + filename));
 			throw err;
 		}
-		writeFileSync(resolve(context.dstPath, filename), page);
+		writeFileSync(resolve(context.dstPath, pagename + '.html'), page);
 	})
 }
