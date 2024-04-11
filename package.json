@@ -17,9 +17,8 @@
     "colors": "^1.4.0",
     "csso": "^5.0.5",
     "express": "^4.19.2",
-    "handlebars": "^4.7.8",
-    "highlight.js": "^11.9.0",
     "jsdom": "^24.0.0",
+    "markdown-it": "^14.1.0",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5"
   },
