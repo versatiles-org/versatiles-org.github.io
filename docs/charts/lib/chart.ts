@@ -1,7 +1,6 @@
 
-import { Canvas, PointType, RectType } from "./canvas.js";
-import { Color } from "./color.js";
-import { Vec } from "./vec.js";
+import { Canvas, RectType } from './canvas.ts';
+import Color from 'color';
 
 const fontFamily = 'sans-serif';
 
@@ -17,24 +16,19 @@ interface Layers {
 interface Options {
 	colWidth?: number;
 	colStart?: number;
-	boxWidth?: number;
 	boxHeight?: number;
 	gapHeight?: number;
-	backgroundColor?: string;
 }
 
 export class Chart {
 	private readonly canvas: Canvas;
 	private readonly id: string;
 	private y0: number = 0;
-	private flowYMax: number = 0;
 	private readonly layers: Layers;
 	private readonly colWidth: number;
 	private readonly colStart: number;
-	private readonly boxWidth: number;
 	private readonly boxHeight: number;
 	private readonly gapHeight: number;
-	private readonly backgroundColor: Color;
 
 	constructor(opt: Options = {}) {
 		this.canvas = new Canvas();
@@ -51,10 +45,8 @@ export class Chart {
 
 		this.colWidth = opt.colWidth || 200;
 		this.colStart = opt.colStart || 180;
-		this.boxWidth = opt.boxWidth || 140;
 		this.boxHeight = opt.boxHeight || 40;
 		this.gapHeight = opt.gapHeight || 40;
-		this.backgroundColor = new Color(opt.backgroundColor || '#000');
 	}
 
 	asSVG(padding: number): string {
@@ -84,25 +76,23 @@ export class Chart {
 		let x0 = 0, y0 = this.y0, colIndex = 0;
 
 		this.y0 += this.boxHeight;
-		this.flowYMax = this.y0;
 
 		let group = this.layers.boxes;
-		const add = (text: string, highlight: boolean = false, end: boolean = false) => {
+		const add = (text: string, colorString: string, highlight: boolean = false, end: boolean = false) => {
+			const color = Color(colorString).rgb();
+
 			let width = end
 				? this.colStart - this.colWidth / 4 - this.boxHeight / 4
 				: this.colWidth / 2;
 
-			highlight ??= (colIndex % 2 === 1);
-
-			let color = highlight ? '#F10' : '#666';
 			let rect: RectType = [x0, y0, width, this.boxHeight];
 			group.drawFlowBox(rect, {
 				strokeWidth: highlight ? '1' : '0',
-				stroke: color,
-				fill: color + '5',
+				stroke: color.string(),
+				fill: color.fade(2 / 3).string(),
 			});
 			rect[0] += this.boxHeight / 3;
-			group.drawText(rect, text, { fill: color, fontFamily, fontSize: '13px' });
+			group.drawText(rect, text, { fill: color.string(), fontFamily, fontSize: '16px' });
 
 			x0 += width;
 			colIndex++;

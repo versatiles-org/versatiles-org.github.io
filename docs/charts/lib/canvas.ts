@@ -161,7 +161,7 @@ function setStyle(node: SVGElement, styleObj: Style) {
 		if (value == null) {
 			node.style.removeProperty(key);
 		} else {
-			node.style.setProperty(key, value);
+			node.style[key] = value;
 		}
 	}
 }
