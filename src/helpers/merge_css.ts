@@ -4,12 +4,13 @@ import { JSDOM } from 'jsdom';
 import { minify } from 'csso';
 import { resolve } from 'node:path';
 import { HelperOptions } from 'handlebars';
+import less from 'less';
 import Context from '../lib/context.ts';
 
 export const name = 'merge_css';
 export function helper(context: Context) {
 	return function (filename: string, arg: HelperOptions) {
-		if (!filename.endsWith('.css')) throw Error();
+		if (!filename.match(/\.(c|le)ss$/)) throw Error();
 		const content = arg.fn(null);
 		const node = new JSDOM(content);
 		const nodes = node.window.document.querySelectorAll('link');
@@ -18,13 +19,18 @@ export function helper(context: Context) {
 			if (href == null) throw Error();
 			return href;
 		});
-		let css = links.map(filename => {
-			filename = resolve(context.srcPath, filename);
-			return readFileSync(filename, 'utf8')
-		}).join('\n');
-		css = minify(css, { comments: false }).css;
 
-		writeFileSync(resolve(context.dstPath, filename), css);
+		(async () => {
+			let css = (await Promise.all(links.map(async filename => {
+				filename = resolve(context.srcPath, filename);
+				let content = readFileSync(filename, 'utf8');
+				if (filename.endsWith('.less')) content = (await less.render(content)).css;
+				return content;
+			}))).join('\n');
+			css = minify(css, { comments: false }).css;
+
+			writeFileSync(resolve(context.dstPath, filename), css);
+		})()
 
 		return `<link rel="stylesheet" href="${filename}" />`;
 	}
