@@ -16,7 +16,7 @@ Just copy & paste the following code into your website.
 <link href="https://tiles.versatiles.org/assets/maplibre-gl/maplibre-gl.css" rel="stylesheet" />
 
 <!-- add container for the map -->
-<div id="map" style="width:90%;aspect-ratio:16/9;margin:auto"></div>
+<div id="map" style="width:100%;aspect-ratio:16/9"></div>
 
 <!-- start map -->
 <script>

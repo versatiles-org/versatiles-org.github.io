@@ -50,6 +50,6 @@ title: VersaTiles
 
 we explain here:
 
-- [how to use it](guide.html),
+- [how to use it](intro.html),
 - [how it works](overview.html) and
 - [how you can help.](contribute.html)
