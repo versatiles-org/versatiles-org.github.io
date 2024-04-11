@@ -21,6 +21,7 @@
     "highlight.js": "^11.9.0",
     "jsdom": "^24.0.0",
     "less": "^4.2.0",
+    "rehype-highlight": "^7.0.0",
     "rehype-stringify": "^10.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",

@@ -3,6 +3,15 @@ import { basename, resolve } from 'node:path';
 import Handlebars from 'handlebars';
 import Context from '../lib/context.ts';
 import menuGenerator from '../helpers/menu.ts';
+import { Processor, unified } from 'unified'
+import rehypeStringify from 'rehype-stringify'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
+import remarkStringify from 'remark-stringify'
+import remarkRehype from 'remark-rehype'
+import rehypeHighlight from 'rehype-highlight'
+import { matter } from 'vfile-matter'
 
 export async function build(context: Context) {
 	const path = resolve(context.srcPath, 'pages');
@@ -15,11 +24,27 @@ export async function build(context: Context) {
 		return filename.endsWith('.md') ? [filename] : []
 	});
 
+
+	const processor = unified()
+		.use(remarkParse)
+		.use(remarkStringify)
+		.use(remarkFrontmatter, ['yaml'])
+		.use(() => (ast, vfile) => matter(vfile))
+		.use(remarkGfm)
+		.use(remarkRehype, { allowDangerousHtml: true })
+		.use(rehypeStringify, { allowDangerousHtml: true })
+		.use(rehypeHighlight)
+	//.use(() => ast => {
+	//	console.dir(ast, { depth: 6 });
+	//	// @ts-ignore
+	//	//if (ast.children[0].value === 'title: VersaTiles') console.dir(ast)
+	//})
+
 	await Promise.all(filenames.map(async filename => {
 		const pagename = basename(filename, '.md');
 		try {
 			const content = await readFile(resolve(path, filename), 'utf8');
-			const result = await context.md.process(content);
+			const result = await processor.process(content);
 			const data = result.data.matter;
 
 			if (typeof data !== 'object' || data == null) throw Error('missing data');
