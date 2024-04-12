@@ -14,11 +14,8 @@
   "type": "module",
   "dependencies": {
     "color": "^4.2.3",
-    "colors": "^1.4.0",
     "csso": "^5.0.5",
-    "express": "^4.19.2",
     "handlebars": "^4.7.8",
-    "highlight.js": "^11.9.0",
     "jsdom": "^24.0.0",
     "less": "^4.2.0",
     "rehype-highlight": "^7.0.0",
@@ -27,7 +24,6 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
-    "sass": "^1.74.1",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5",
     "unified": "^11.0.4",
@@ -40,6 +36,7 @@
     "@types/jsdom": "^21.1.6",
     "@types/less": "^3.0.6",
     "@types/node": "^20.12.7",
+    "express": "^4.19.2",
     "npm-check-updates": "^16.14.18"
   }
 }

@@ -8,7 +8,6 @@ import rehypeStringify from 'rehype-stringify'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
-import remarkStringify from 'remark-stringify'
 import remarkRehype from 'remark-rehype'
 import rehypeHighlight from 'rehype-highlight'
 import { matter } from 'vfile-matter'
@@ -23,7 +22,6 @@ export async function build(context: Context) {
 
 	const processor = unified()
 		.use(remarkParse)
-		.use(remarkStringify)
 		.use(remarkFrontmatter, ['yaml'])
 		.use(() => (ast, vfile) => matter(vfile))
 		.use(remarkGfm)

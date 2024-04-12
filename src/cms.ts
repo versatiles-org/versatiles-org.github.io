@@ -1,4 +1,5 @@
 
+import  express from 'express';
 import { existsSync, mkdirSync, rmSync, watch } from 'node:fs';
 import Context from './lib/context.ts';
 
@@ -40,7 +41,6 @@ async function build() {
 }
 
 async function startServer() {
-	const express = (await import('express')).default;
 	const app = express();
 	app.use(express.static(DST_PATH))
 	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
