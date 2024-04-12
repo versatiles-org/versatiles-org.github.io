@@ -1,11 +1,13 @@
 import { cpSync } from 'node:fs';
 import { resolve } from 'node:path';
-import Context from '../lib/context.ts';
+import { AbstractModule } from './module.ts';
 
-export async function build(context: Context) {
-	cpSync(
-		resolve(context.srcPath, 'assets'),
-		resolve(context.dstPath, 'assets'),
-		{ recursive: true }
-	)
+export default class Assets extends AbstractModule {
+	async build() {
+		cpSync(
+			resolve(this.context.srcPath, 'assets'),
+			resolve(this.context.dstPath, 'assets'),
+			{ recursive: true }
+		)
+	}
 }

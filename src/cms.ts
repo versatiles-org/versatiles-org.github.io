@@ -29,13 +29,8 @@ async function build() {
 	if (existsSync(context.dstPath)) rmSync(context.dstPath, { recursive: true });
 	mkdirSync(context.dstPath);
 
-	await (await load('assets') as typeof import('./modules/assets.ts')).build(context);
-	await (await load('helpers') as typeof import('./modules/helpers.ts')).build(context);
-	await (await load('pages') as typeof import('./modules/pages.ts')).build(context);
-
-	async function load(name: string) {
-		return (await import(`./modules/${name}.ts${context.v}`));
-	}
+	new (await import('./modules/assets.ts')).default(context).build();
+	new (await import('./modules/pages.ts')).default(context).build();
 
 	process.stderr.write((Date.now() - t) + 'ms ')
 }
