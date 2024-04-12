@@ -45,7 +45,7 @@ export function getPartials(srcPath: string): Partials {
 export async function getHandlebars(srcPath: string, dstPath: string): Promise<typeof Handlebars> {
 	const handlebars = (await import('handlebars')).default;
 
-	register(await import('../helpers/merge_css.ts'));
+	register(await import('./merge_css.ts'));
 	register(await import('../charts/chart_flow.ts'));
 
 	return handlebars;

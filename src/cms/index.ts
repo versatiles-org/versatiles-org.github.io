@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { cp, mkdir, readdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { WrappedProcessor, getHandlebars, getPartials, getProcessor } from './modules.ts';
-import { generateMenu } from '../helpers/menu.ts';
+import { generateMenu } from './menu.ts';
 
 export default class CMS {
 	private readonly srcPath: string;
@@ -29,7 +29,7 @@ export default class CMS {
 	}
 
 	async copyAssets() {
-		cp(
+		await cp(
 			resolve(this.srcPath, 'assets'),
 			resolve(this.dstPath, 'assets'),
 			{ recursive: true }

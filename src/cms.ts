@@ -15,6 +15,7 @@ await getCMS().build();
 
 if (options.some(o => o.includes('watch'))) {
 	const cms = getCMS();
+	console.log('hi');
 	watch(
 		SRC_PATH,
 		{ recursive: true },
@@ -23,13 +24,30 @@ if (options.some(o => o.includes('watch'))) {
 }
 
 function getCMS() {
+	let running = false;
+	let queued = false;
+
 	const cms = new CMS(SRC_PATH, DST_PATH);
+
 	return {
 		build: async () => {
-			let t = Date.now();
-			await cms.build();
-			process.stderr.write((Date.now() - t) + 'ms ')
+			if (running) {
+				queued = true;
+				return;
+			}
+			do {
+				queued = false;
+				running = true;
+				await build();
+				running = false;
+			} while (queued);
 		}
+	}
+
+	async function build() {
+		let t = Date.now();
+		await cms.build();
+		process.stderr.write((Date.now() - t) + 'ms ')
 	}
 }
 

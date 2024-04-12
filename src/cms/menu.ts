@@ -1,6 +1,6 @@
 
 
-let menu = [
+const menu = [
 	{ href: '', title: 'Demo' },
 	{ href: 'intro.html', title: 'Intro' },
 	{ href: 'overview.html', title: 'Overview' },
