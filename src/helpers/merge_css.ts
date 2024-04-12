@@ -5,10 +5,9 @@ import { minify } from 'csso';
 import { resolve } from 'node:path';
 import { HelperOptions } from 'handlebars';
 import less from 'less';
-import Context from '../lib/context.ts';
 
 export const name = 'merge_css';
-export function helper(context: Context) {
+export function helper(srcPath: string, dstPath: string) {
 	return function (filename: string, arg: HelperOptions) {
 		if (!filename.match(/\.(c|le)ss$/)) throw Error();
 		const content = arg.fn(null);
@@ -22,14 +21,14 @@ export function helper(context: Context) {
 
 		(async () => {
 			let css = (await Promise.all(links.map(async filename => {
-				filename = resolve(context.srcPath, filename);
+				filename = resolve(srcPath, filename);
 				let content = readFileSync(filename, 'utf8');
 				if (filename.endsWith('.less')) content = (await less.render(content)).css;
 				return content;
 			}))).join('\n');
 			css = minify(css, { comments: false }).css;
 
-			writeFileSync(resolve(context.dstPath, filename), css);
+			writeFileSync(resolve(dstPath, filename), css);
 		})()
 
 		return `<link rel="stylesheet" href="${filename}" />`;

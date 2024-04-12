@@ -7,7 +7,7 @@ let menu = [
 	{ href: 'contribute.html', title: 'Contribute' },
 ];
 
-export default function (filename: string) {
+export function generateMenu (filename: string) {
 	if (filename === 'index.html') filename = '';
 
 	return menu.map(

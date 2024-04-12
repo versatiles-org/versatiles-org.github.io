@@ -1,7 +1,7 @@
 
-import  express from 'express';
-import { existsSync, mkdirSync, rmSync, watch } from 'node:fs';
-import Context from './lib/context.ts';
+import express from 'express';
+import { watch } from 'node:fs';
+import CMS from './cms/index.ts';
 
 const PORT = 8080;
 const SRC_PATH = new URL('../docs', import.meta.url).pathname;
@@ -11,28 +11,26 @@ let options = process.argv.slice(2).map(a => a.toLowerCase());
 
 if (options.some(o => o.includes('serve'))) startServer();
 
-await build();
+await getCMS().build();
 
 if (options.some(o => o.includes('watch'))) {
+	const cms = getCMS();
 	watch(
 		SRC_PATH,
 		{ recursive: true },
-		(event, filename) => build()
+		(event, filename) => cms.build()
 	);
 }
 
-async function build() {
-	let t = Date.now();
-
-	const context = new Context(SRC_PATH, DST_PATH);
-
-	if (existsSync(context.dstPath)) rmSync(context.dstPath, { recursive: true });
-	mkdirSync(context.dstPath);
-
-	new (await import('./modules/assets.ts')).default(context).build();
-	new (await import('./modules/pages.ts')).default(context).build();
-
-	process.stderr.write((Date.now() - t) + 'ms ')
+function getCMS() {
+	const cms = new CMS(SRC_PATH, DST_PATH);
+	return {
+		build: async () => {
+			let t = Date.now();
+			await cms.build();
+			process.stderr.write((Date.now() - t) + 'ms ')
+		}
+	}
 }
 
 async function startServer() {

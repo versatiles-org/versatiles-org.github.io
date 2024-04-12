@@ -1,11 +1,9 @@
 
-import { HelperOptions } from 'handlebars';
-import Context from '../lib/context.ts';
 import { Chart } from './lib/chart.ts'
 
 export const name = 'chart_flow';
 
-export function helper(context: Context) {
+export function helper(srcPath: string, dstPath: string) {
 	return function (index: number) {
 		const c = new Chart({
 			colWidth: 200,
