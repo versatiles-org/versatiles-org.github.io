@@ -49,7 +49,7 @@ export async function build(context: Context) {
 
 			html = Handlebars.compile(html)({
 				...data,
-				menu: menuGenerator({ filename }),
+				menu: menuGenerator(filename),
 				github_link: `https://github.com/versatiles-org/versatiles-website/blob/main/docs/pages/${filename}`,
 			});
 
