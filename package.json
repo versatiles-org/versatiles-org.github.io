@@ -15,6 +15,7 @@
   "dependencies": {
     "color": "^4.2.3",
     "csso": "^5.0.5",
+    "express": "^4.19.2",
     "handlebars": "^4.7.8",
     "jsdom": "^24.0.0",
     "less": "^4.2.0",
@@ -36,7 +37,6 @@
     "@types/jsdom": "^21.1.6",
     "@types/less": "^3.0.6",
     "@types/node": "^20.12.7",
-    "express": "^4.19.2",
     "npm-check-updates": "^16.14.18"
   }
 }
