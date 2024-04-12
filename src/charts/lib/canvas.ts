@@ -22,7 +22,7 @@ export class Canvas {
 	}
 	getBBox() {
 		let bbox = this.bbox.clone();
-		this.subGroups.forEach(g => bbox.includeBBox(g.getBBox()));
+		this.subGroups.forEach(g => bbox.include(g.getBBox()));
 		return bbox;
 	}
 	asSVG(padding = 5, id?: string) {
@@ -30,18 +30,8 @@ export class Canvas {
 		let svg = getElement('svg');
 		let bbox = this.getBBox();
 		bbox.addPadding(padding);
-		svg.insertAdjacentHTML('afterbegin', `<filter id="highlight">
-			<feColorMatrix in="SourceGraphic" type="matrix" values="
-				2 2 2 0 0
-				2 2 2 0 0
-				2 2 2 0 0
-				0 0 0 1 0"
-			/>
-		</filter>`)
-
 		if (this.style) svg.insertAdjacentHTML('afterbegin', `<style>\n${this.style.join('\n')}\n</style>`);
 		svg.append(this.node);
-		if (this.script) svg.insertAdjacentHTML('beforeend', `<script>\n${this.script.join('\n')}\n</script>`);
 
 		setAttributes(svg, {
 			style: `width:100%; height:auto; max-width:${bbox.width}px;`,
@@ -94,7 +84,9 @@ export class Canvas {
 		this.bbox.includePoint(p2);
 		return node;
 	}
-	drawFlowBox(rect: RectType, strength: number, style: Style): SVGElement {
+	drawFlowBox(rect: RectType,  style: Style): SVGElement {
+		const strength = 0.5;
+
 		let node = this.#appendElement('path');
 		let x0 = rect[0];
 		let x1 = rect[0] + rect[3] * strength;

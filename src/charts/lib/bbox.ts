@@ -30,19 +30,19 @@ export class BBox {
 		].join(' ');
 	}
 	includeRect(rect: RectType) {
-		this.#include([rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]])
+		this.includeBBox([rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]])
 	}
 	includePoint(p: PointType) {
-		this.#include([p[0], p[1], p[0], p[1]])
+		this.includeBBox([p[0], p[1], p[0], p[1]])
 	}
-	#include(bbox: BBoxType) {
+	includeBBox(bbox: BBoxType) {
 		if (this.bbox[0] > bbox[0]) this.bbox[0] = bbox[0];
 		if (this.bbox[1] > bbox[1]) this.bbox[1] = bbox[1];
 		if (this.bbox[2] < bbox[2]) this.bbox[2] = bbox[2];
 		if (this.bbox[3] < bbox[3]) this.bbox[3] = bbox[3];
 	}
-	includeBBox(other: BBox) {
-		this.#include(other.bbox);
+	include(other: BBox) {
+		this.includeBBox(other.bbox);
 	}
 	clone() {
 		return new BBox(this.bbox);
