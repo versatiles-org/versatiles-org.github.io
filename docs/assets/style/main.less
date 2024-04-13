@@ -49,11 +49,8 @@ abbr {
 }
 
 main {
-   flex-direction: column;
-   align-items: center;
    background: rgba(0, 0, 0, 0.75);
-   gap: 5rem;
-   padding: 5rem 0 10rem;
+   padding: 1rem 0 5rem;
    overflow-x: hidden;
 
    hero {
@@ -77,9 +74,8 @@ main {
       box-sizing: border-box;
       display: block;
       margin: 0 auto 1rem;
-      max-width: 40rem;
+      width: min(40rem, 90%);
       padding: 0;
-      width: 100%;
    }
 
    h1,
@@ -94,7 +90,10 @@ main {
 
    ol,
    ul {
-      padding-inline: 3em;
+      padding: 0 0 0 min(3em, 7%);
+      li {
+         margin: 0.7em 0;
+      }
    }
 
    p {
@@ -162,7 +161,7 @@ pre {
 
 table.overview {
    th {
-      min-width: 150px;
+      min-width: min(150px, 25vw);
    }
 
    td {
