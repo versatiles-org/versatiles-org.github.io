@@ -1,4 +1,4 @@
-import { PointType } from "./canvas.ts";
+import { PointType } from './svg.ts';
 
 const TINY = 1e-10;
 
