@@ -65,25 +65,25 @@ export class Chart {
 			let rect: RectType = [x0, y0, width, this.boxHeight];
 
 			this.layers.fill.drawFlowBox(rect, {
-				default: { fillOpacity: '0.4' },
-				light: { fill: color.string() },
-				dark: { fill: color.string() },
+				fillOpacity: '0.4',
+				fill: [color.string(), color.string()],
 			});
 
 			if (highlight) {
 				this.layers.line.drawFlowBox(rect, {
-					default: { fill: 'none', strokeWidth: '2' },
-					light: { stroke: color.string() },
-					dark: { stroke: color.string() },
+					fill: 'none',
+					strokeWidth: '2px',
+					stroke: [color.string(), color.string()],
 				});
 			}
 
 			rect[0] += this.boxHeight / 3;
 
 			this.layers.text.drawText(rect, text, {
-				default: { fontFamily, fontSize: '16px', stroke: 'none' },
-				light: { fill: color.string() },
-				dark: { fill: color.string() },
+				fontFamily,
+				fontSize: '16px',
+				stroke: 'none',
+				fill: [color.string(), color.string()],
 			});
 
 			x0 += width;

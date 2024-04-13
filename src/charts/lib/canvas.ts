@@ -6,14 +6,18 @@ export type RectType = [number, number, number, number];
 export type PointType = [number, number];
 
 type Style = Partial<CSSStyleDeclaration>;
+type MultiColor = string | [string, string];
 interface MultiStyle {
-	default?: Style,
-	light?: Style,
-	dark?: Style,
+	fontFamily?: string;
+	fontSize?: string;
+	strokeWidth?: string;
+	stroke?: MultiColor;
+	fill?: MultiColor;
+	fillOpacity?: string;
 }
 interface MultiStylesheet {
-	light: Map<string, Style>;
-	dark: Map<string, Style>;
+	light: GlobalStyle;
+	dark: GlobalStyle;
 }
 
 const { document } = (new JSDOM('')).window;
@@ -87,16 +91,46 @@ export class Group {
 	}
 
 	setMultiStyle(node: SVGElement, style: MultiStyle) {
-		if (style.default) setStyle(node, style.default);
-
-		if (!(style.light || style.dark)) return
-
-		if (!node.id) node.id = this.canvas.getNewId();
-
-		if (style.light) updateStyle(this.canvas.styles.light, node.id, style.light);
-		if (style.dark) updateStyle(this.canvas.styles.dark, node.id, style.dark);
+		let key: keyof MultiStyle;
+		for (key in style) {
+			const value = style[key];
+			if (value == null) {
+				node.style.removeProperty(key);
+			} else {
+				if (Array.isArray(value)) {
+					if (!node.id) node.id = this.canvas.getNewId();
+					this.canvas.styles.light.set(node.id, key, value[0]);
+					this.canvas.styles.dark.set(node.id, key, value[1]);
+				} else {
+					node.style[key] = String(value);
+				}
+			}
+		}
 	}
 
+}
+
+class GlobalStyle {
+	private readonly lookup = new Map<string, Style>()
+
+	asText(): string {
+		const styleSheet = new Array<string>();
+		for (const [key, style] of this.lookup.entries()) {
+			const node = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGElement;
+			setStyle(node, style);
+			styleSheet.push(`#${key} {${node.style.cssText}}`)
+		}
+		return styleSheet.join('\n');
+	}
+
+	set(nodeId: string, key: keyof MultiStyle, value: string) {
+		let item = this.lookup.get(nodeId);
+		if (item == null) {
+			this.lookup.set(nodeId, { [key]: value });
+		} else {
+			item[key] = value;
+		}
+	}
 }
 
 export class Canvas {
@@ -104,8 +138,8 @@ export class Canvas {
 	private idIndex: number = 0;
 	public readonly root: Group;
 
-	constructor(styles?: MultiStylesheet) {
-		this.styles = styles ?? { light: new Map(), dark: new Map() };
+	constructor() {
+		this.styles = { light: new GlobalStyle(), dark: new GlobalStyle() };
 		this.root = new Group(this);
 	}
 
@@ -120,8 +154,8 @@ export class Canvas {
 		bbox.addPadding(padding);
 		svg.insertAdjacentHTML('afterbegin', [
 			'<style>',
-			getStylesAsText(this.styles.light),
-			getStylesAsText(this.styles.dark),
+			this.styles.light.asText(),
+			this.styles.dark.asText(),
 			'</style>'
 		].join('\n'));
 		svg.append(root.node);
@@ -173,23 +207,4 @@ function setStyle(node: SVGElement, style: Style) {
 			node.style[key] = value;
 		}
 	}
-}
-
-function updateStyle(map: Map<string, Style>, id: string, style: Style) {
-	let item = map.get(id);
-	if (item == null) {
-		item = JSON.parse(JSON.stringify(style)) as Style;
-		map.set(id, item);
-	}
-	for (let key in style) item[key] = style[key];
-}
-
-function getStylesAsText(map: Map<string, Style>): string {
-	const styleSheet = new Array<string>();
-	for (const [key, style] of map.entries()) {
-		const node = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGElement;
-		setStyle(node, style);
-		styleSheet.push(`#${key} {${node.style.cssText}}`)
-	}
-	return styleSheet.join('\n');
 }
