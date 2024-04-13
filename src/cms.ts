@@ -7,7 +7,7 @@ const PORT = 8080;
 const SRC_PATH = new URL('../docs', import.meta.url).pathname;
 const DST_PATH = new URL('../dist', import.meta.url).pathname;
 
-let options = process.argv.slice(2).map(a => a.toLowerCase());
+const options = process.argv.slice(2).map(a => a.toLowerCase());
 
 if (options.some(o => o.includes('serve'))) startServer();
 
@@ -18,18 +18,20 @@ if (options.some(o => o.includes('watch'))) {
 	watch(
 		SRC_PATH,
 		{ recursive: true },
-		(event, filename) => cms.build()
+		() => {
+			void cms.build();
+		},
 	);
 }
 
-function getCMS() {
+function getCMS(): { build: () => Promise<void> } {
 	let running = false;
 	let queued = false;
 
 	const cms = new CMS(SRC_PATH, DST_PATH);
 
 	return {
-		build: async () => {
+		build: async (): Promise<void> => {
 			if (running) {
 				queued = true;
 				return;
@@ -39,19 +41,22 @@ function getCMS() {
 				running = true;
 				await build();
 				running = false;
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} while (queued);
-		}
-	}
+		},
+	};
 
-	async function build() {
-		let t = Date.now();
+	async function build(): Promise<void> {
+		const t = Date.now();
 		await cms.build();
-		process.stderr.write((Date.now() - t) + 'ms ')
+		process.stderr.write((Date.now() - t) + 'ms ');
 	}
 }
 
-async function startServer() {
+function startServer(): void {
 	const app = express();
-	app.use(express.static(DST_PATH))
-	app.listen(PORT, () => console.log('start http://127.0.0.1:' + PORT));
+	app.use(express.static(DST_PATH));
+	app.listen(PORT, () => {
+		console.log('start http://127.0.0.1:' + PORT);
+	});
 }

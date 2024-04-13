@@ -3,26 +3,26 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { minify } from 'csso';
 import { resolve } from 'node:path';
-import { HelperOptions } from 'handlebars';
+import type { HelperOptions } from 'handlebars';
 import less from 'less';
 
 export const name = 'merge_css';
 export function helper(srcPath: string, dstPath: string) {
 	const cache = new Set<string>();
 
-	return function (filename: string, arg: HelperOptions) {
-		if (!filename.match(/\.(c|le)ss$/)) throw Error();
+	return function (filename: string, arg: HelperOptions): string {
+		if (!/\.(c|le)ss$/.exec(filename)) throw Error();
 		const content = arg.fn(null);
 		const links = getLinks(content);
 
 		const key = [filename, ...links].join(';');
 		if (!cache.has(key)) {
 			cache.add(key);
-			buildCSS(filename, links);
+			void buildCSS(filename, links);
 		}
 
 		return `<link rel="stylesheet" href="${filename}" />`;
-	}
+	};
 
 	function getLinks(content: string): string[] {
 		const node = new JSDOM(content);
@@ -35,7 +35,7 @@ export function helper(srcPath: string, dstPath: string) {
 		return links;
 	}
 
-	async function buildCSS(filename: string, cssFilenames: string[]) {
+	async function buildCSS(filename: string, cssFilenames: string[]): Promise<void> {
 		const cssList = await Promise.all(cssFilenames.map(async cssFilename => {
 			cssFilename = resolve(srcPath, cssFilename);
 			let content = readFileSync(cssFilename, 'utf8');

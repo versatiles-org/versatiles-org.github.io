@@ -1,9 +1,10 @@
-import { BBoxType, PointType, RectType } from "./canvas.ts";
+/* eslint-disable @typescript-eslint/prefer-destructuring */
+import type { BBoxType, PointType, RectType } from './svg.ts';
 
 export class BBox {
 	private readonly bbox: BBoxType;
 
-	constructor(bbox?: BBoxType) {
+	public constructor(bbox?: BBoxType) {
 		if (bbox) {
 			this.bbox = bbox.slice() as BBoxType;
 		} else {
@@ -11,17 +12,20 @@ export class BBox {
 				Number.POSITIVE_INFINITY,
 				Number.POSITIVE_INFINITY,
 				Number.NEGATIVE_INFINITY,
-				Number.NEGATIVE_INFINITY
-			]
+				Number.NEGATIVE_INFINITY,
+			];
 		}
 	}
-	get width() {
-		return this.bbox[2] - this.bbox[0]
+
+	public get width(): number {
+		return this.bbox[2] - this.bbox[0];
 	}
-	get height() {
-		return this.bbox[3] - this.bbox[1]
+
+	public get height(): number {
+		return this.bbox[3] - this.bbox[1];
 	}
-	get viewBox() {
+
+	public get viewBox(): string {
 		return [
 			this.bbox[0],
 			this.bbox[1],
@@ -29,25 +33,31 @@ export class BBox {
 			this.bbox[3] - this.bbox[1],
 		].join(' ');
 	}
-	includeRect(rect: RectType) {
-		this.includeBBox([rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]])
+
+	public includeRect(rect: RectType): void {
+		this.includeBBox([rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]]);
 	}
-	includePoint(p: PointType) {
-		this.includeBBox([p[0], p[1], p[0], p[1]])
+
+	public includePoint(p: PointType): void {
+		this.includeBBox([p[0], p[1], p[0], p[1]]);
 	}
-	includeBBox(bbox: BBoxType) {
+
+	public includeBBox(bbox: BBoxType): void {
 		if (this.bbox[0] > bbox[0]) this.bbox[0] = bbox[0];
 		if (this.bbox[1] > bbox[1]) this.bbox[1] = bbox[1];
 		if (this.bbox[2] < bbox[2]) this.bbox[2] = bbox[2];
 		if (this.bbox[3] < bbox[3]) this.bbox[3] = bbox[3];
 	}
-	include(other: BBox) {
+
+	public include(other: BBox): void {
 		this.includeBBox(other.bbox);
 	}
-	clone() {
+
+	public clone(): BBox {
 		return new BBox(this.bbox);
 	}
-	addPadding(padding: number) {
+
+	public addPadding(padding: number): void {
 		this.bbox[0] -= padding;
 		this.bbox[1] -= padding;
 		this.bbox[2] += padding;

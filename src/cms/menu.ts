@@ -7,10 +7,10 @@ const menu = [
 	{ href: 'contribute.html', title: 'Contribute' },
 ];
 
-export function generateMenu (filename: string) {
+export function generateMenu(filename: string): string {
 	if (filename === 'index.html') filename = '';
 
 	return menu.map(
-		({ href, title }) => `<li${href === filename ? ' class="selected"' : ''}><a href="/${href}">${title}</a></li>`
-	).join('')
+		({ href, title }) => `<li${href === filename ? ' class="selected"' : ''}><a href="/${href}">${title}</a></li>`,
+	).join('');
 }

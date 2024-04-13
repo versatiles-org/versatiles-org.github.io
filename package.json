@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "build": "tsx src/cms.ts",
+    "check": "npm run lint && npm run build",
     "dev": "tsx src/cms.ts watch serve",
+    "lint": "eslint --color .",
     "preview": "tsx src/cms.ts serve",
     "upgrade": "npm-check-updates -u && rm -f package-lock.json; rm -rf node_modules; npm i && npm update",
     "watch": "tsx src/cms.ts watch"
@@ -37,6 +39,9 @@
     "@types/jsdom": "^21.1.6",
     "@types/less": "^3.0.6",
     "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "eslint": "^8.56.0",
     "npm-check-updates": "^16.14.18"
   }
 }

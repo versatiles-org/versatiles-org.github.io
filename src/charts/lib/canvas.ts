@@ -1,3 +1,4 @@
+import type { BBox } from './bbox.ts';
 import { GlobalStyle } from './style.ts';
 import { Group, createElement, setAttributes } from './svg.ts';
 
@@ -7,22 +8,25 @@ const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export class Canvas {
 	public readonly stylesDefault = new GlobalStyle();
+
 	public readonly stylesDark = new GlobalStyle();
-	private idIndex: number = 0;
+
 	public readonly root: Group;
 
-	constructor() {
+	private idIndex = 0;
+
+	public constructor() {
 		this.root = new Group(this);
 	}
 
-	getBBox() {
+	public getBBox(): BBox {
 		return this.root.getBBox();
 	}
 
-	asSVG(padding = 5): string {
+	public asSVG(padding = 5): string {
 		const { root } = this;
-		let svg = createElement('svg');
-		let bbox = root.getBBox();
+		const svg = createElement('svg');
+		const bbox = root.getBBox();
 		bbox.addPadding(padding);
 		svg.insertAdjacentHTML('afterbegin', [
 			'<style>',
@@ -30,7 +34,7 @@ export class Canvas {
 			'@media (prefers-color-scheme: dark) {',
 			this.stylesDark.asText(),
 			'}',
-			'</style>'
+			'</style>',
 		].join('\n'));
 		svg.append(root.node);
 
@@ -42,13 +46,13 @@ export class Canvas {
 		return svg.outerHTML;
 	}
 
-	getNewId(): string {
+	public getNewId(): string {
 		let i = this.idIndex++;
 		let id = '';
 		do {
 			id += chars[i % chars.length];
 			i = Math.floor(i / chars.length);
-		} while (i > 0)
+		} while (i > 0);
 		return id;
 	}
 }

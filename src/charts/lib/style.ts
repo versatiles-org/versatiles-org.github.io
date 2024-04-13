@@ -1,4 +1,4 @@
-import { createElement } from "./svg.ts";
+import { createElement } from './svg.ts';
 
 export type Style = Partial<CSSStyleDeclaration>;
 export type MultiColor = string | [string, string];
@@ -14,29 +14,29 @@ export interface MultiStyle {
 }
 
 export class GlobalStyle {
-	private readonly lookup = new Map<string, Style>()
+	private readonly lookup = new Map<string, Style>();
 
-	asText(): string {
+	public asText(): string {
 		const styleSheet = new Array<string>();
-		for (const [key, style] of this.lookup.entries()) {
+		for (const [nodeId, style] of this.lookup.entries()) {
 			const node = createElement('g');
 
-			for (let key in style) {
-				const value = style[key];
-				if (value == null) {
-					node.style.removeProperty(key);
+			for (const cssKey in style) {
+				const cssValue = style[cssKey];
+				if (cssValue == null) {
+					node.style.removeProperty(cssKey);
 				} else {
-					node.style[key] = value;
+					node.style[cssKey] = cssValue;
 				}
 			}
 
-			styleSheet.push(`#${key} {${node.style.cssText}}`)
+			styleSheet.push(`#${nodeId} {${node.style.cssText}}`);
 		}
 		return styleSheet.join('\n');
 	}
 
-	set(nodeId: string, key: keyof MultiStyle, value: string | undefined = undefined) {
-		let item = this.lookup.get(nodeId);
+	public set(nodeId: string, key: keyof MultiStyle, value: string | undefined = undefined): void {
+		const item = this.lookup.get(nodeId);
 		if (item == null) {
 			this.lookup.set(nodeId, { [key]: value });
 		} else {

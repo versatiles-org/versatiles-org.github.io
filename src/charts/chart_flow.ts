@@ -1,9 +1,9 @@
 
-import { Chart } from './lib/chart.ts'
+import { Chart } from './lib/chart.ts';
 
 export const name = 'chart_flow';
 
-export function helper(srcPath: string, dstPath: string) {
+export function helper(): (index: number) => string {
 	return function (index: number) {
 		const c = new Chart({
 			colWidth: 200,
@@ -12,7 +12,7 @@ export function helper(srcPath: string, dstPath: string) {
 			gapHeight: 40,
 		});
 
-		let steps: { hue: number, opacity: number, text: string, highlight: boolean, end?: boolean }[] = [
+		let steps: { hue: number; opacity: number; text: string; highlight: boolean; end?: boolean }[] = [
 			{ hue: 0, opacity: 0.5, text: 'Data', highlight: false, end: true },
 			{ hue: 10, opacity: 1.0, text: 'Generator', highlight: true },
 			{ hue: 30, opacity: 0.5, text: '.versatiles', highlight: false },
@@ -24,10 +24,12 @@ export function helper(srcPath: string, dstPath: string) {
 			{ hue: 230, opacity: 0.5, text: 'User', highlight: false, end: true },
 		];
 
-		let f = c.addFlow();
-		if (typeof index === 'number') steps = [steps[index]]
-		steps.forEach(s => f.add(s.text, s.hue, s.opacity, s.highlight, s.end));
+		const f = c.addFlow();
+		if (typeof index === 'number') steps = [steps[index]];
+		steps.forEach(s => {
+			f.add(s.text, s.hue, s.opacity, s.highlight, s.end); 
+		});
 
 		return c.asImg(2);
-	}
+	};
 }
