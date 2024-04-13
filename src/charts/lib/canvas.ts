@@ -117,7 +117,16 @@ class GlobalStyle {
 		const styleSheet = new Array<string>();
 		for (const [key, style] of this.lookup.entries()) {
 			const node = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGElement;
-			setStyle(node, style);
+
+			for (let key in style) {
+				const value = style[key];
+				if (value == null) {
+					node.style.removeProperty(key);
+				} else {
+					node.style[key] = value;
+				}
+			}
+
 			styleSheet.push(`#${key} {${node.style.cssText}}`)
 		}
 		return styleSheet.join('\n');
@@ -169,17 +178,14 @@ export class Canvas {
 	}
 
 	getNewId(): string {
-		return index2id(this.idIndex++);
+		let i = this.idIndex++;
+		let id = '';
+		do {
+			id += chars[i % chars.length];
+			i = Math.floor(i / chars.length);
+		} while (i > 0)
+		return id;
 	}
-}
-
-function index2id(i: number): string {
-	let id = '';
-	do {
-		id += chars[i % chars.length];
-		i = Math.floor(i / chars.length);
-	} while (i > 0)
-	return id;
 }
 
 function getElement(tagName: string): SVGElement {
@@ -194,17 +200,6 @@ function setAttributes(node: SVGElement, attributeObj: Record<string, string | n
 			node.removeAttribute(name);
 		} else {
 			node.setAttribute(name, String(value));
-		}
-	}
-}
-
-function setStyle(node: SVGElement, style: Style) {
-	for (let key in style) {
-		const value = style[key];
-		if (value == null) {
-			node.style.removeProperty(key);
-		} else {
-			node.style[key] = value;
 		}
 	}
 }
