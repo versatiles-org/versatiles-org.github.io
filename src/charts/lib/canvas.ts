@@ -14,6 +14,8 @@ interface MultiStyle {
 	stroke?: MultiColor;
 	fill?: MultiColor;
 	fillOpacity?: string;
+	dominantBaseline?: string;
+	textAnchor?: string;
 }
 interface MultiStylesheet {
 	light: GlobalStyle;
@@ -55,8 +57,7 @@ export class Group {
 			x: Math.round(rect[0] + rect[2] / 2),
 			y: Math.round(rect[1] + rect[3] / 2)
 		});
-		this.setMultiStyle(node, style);
-		setAttributes(node, { alignmentBaseline: 'central', textAnchor: 'middle' });
+		this.setMultiStyle(node, { dominantBaseline: 'central', textAnchor: 'middle', ...style });
 		node.textContent = text;
 		this.bbox.includeRect(rect);
 		return node;
