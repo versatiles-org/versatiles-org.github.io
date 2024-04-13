@@ -17,10 +17,6 @@ interface MultiStyle {
 	dominantBaseline?: string;
 	textAnchor?: string;
 }
-interface MultiStylesheet {
-	light: GlobalStyle;
-	dark: GlobalStyle;
-}
 
 const { document } = (new JSDOM('')).window;
 
@@ -92,18 +88,21 @@ export class Group {
 	}
 
 	setMultiStyle(node: SVGElement, style: MultiStyle) {
+		if (!node.id) node.id = this.canvas.getNewId();
+
 		let key: keyof MultiStyle;
 		for (key in style) {
 			const value = style[key];
 			if (value == null) {
-				node.style.removeProperty(key);
+				this.canvas.stylesDefault.set(node.id, key);
+				this.canvas.stylesDark.set(node.id, key);
 			} else {
 				if (Array.isArray(value)) {
-					if (!node.id) node.id = this.canvas.getNewId();
-					this.canvas.styles.light.set(node.id, key, value[0]);
-					this.canvas.styles.dark.set(node.id, key, value[1]);
+					this.canvas.stylesDefault.set(node.id, key, value[0]);
+					this.canvas.stylesDark.set(node.id, key, value[1]);
 				} else {
-					node.style[key] = String(value);
+					this.canvas.stylesDefault.set(node.id, key, value);
+					this.canvas.stylesDark.set(node.id, key);
 				}
 			}
 		}
@@ -133,7 +132,7 @@ class GlobalStyle {
 		return styleSheet.join('\n');
 	}
 
-	set(nodeId: string, key: keyof MultiStyle, value: string) {
+	set(nodeId: string, key: keyof MultiStyle, value: string | undefined = undefined) {
 		let item = this.lookup.get(nodeId);
 		if (item == null) {
 			this.lookup.set(nodeId, { [key]: value });
@@ -144,12 +143,12 @@ class GlobalStyle {
 }
 
 export class Canvas {
-	public readonly styles: MultiStylesheet;
+	public readonly stylesDefault = new GlobalStyle();
+	public readonly stylesDark = new GlobalStyle();
 	private idIndex: number = 0;
 	public readonly root: Group;
 
 	constructor() {
-		this.styles = { light: new GlobalStyle(), dark: new GlobalStyle() };
 		this.root = new Group(this);
 	}
 
@@ -164,9 +163,9 @@ export class Canvas {
 		bbox.addPadding(padding);
 		svg.insertAdjacentHTML('afterbegin', [
 			'<style>',
-			this.styles.light.asText(),
+			this.stylesDefault.asText(),
 			'@media (prefers-color-scheme: dark) {',
-			this.styles.dark.asText(),
+			this.stylesDark.asText(),
 			'}',
 			'</style>'
 		].join('\n'));
