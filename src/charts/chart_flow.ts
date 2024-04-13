@@ -12,22 +12,21 @@ export function helper(srcPath: string, dstPath: string) {
 			gapHeight: 40,
 		});
 
-		let steps: { color: string, text: string, highlight: boolean, end?: boolean }[] = [
-			{ color: 'hsla(  0, 100%, 50%, 0.5)', text: 'Data', highlight: false, end: true },
-			{ color: 'hsla( 10, 100%, 50%, 1.0)', text: 'Generator', highlight: true },
-			{ color: 'hsla( 30, 100%, 50%, 0.5)', text: '.versatiles', highlight: false },
-			{ color: 'hsla( 50, 100%, 50%, 1.0)', text: 'Server', highlight: true },
-			{ color: 'hsla( 80, 100%, 50%, 0.5)', text: 'HTTP', highlight: false },
-			{ color: 'hsla(120, 100%, 50%, 1.0)', text: 'Network', highlight: true },
-			{ color: 'hsla(150, 100%, 50%, 0.5)', text: 'HTTPS', highlight: false },
-			{ color: 'hsla(200, 100%, 50%, 1.0)', text: 'Frontend', highlight: true },
-			{ color: 'hsla(230, 100%, 50%, 0.5)', text: 'User', highlight: false, end: true },
+		let steps: { hue: number, opacity: number, text: string, highlight: boolean, end?: boolean }[] = [
+			{ hue: 0, opacity: 0.5, text: 'Data', highlight: false, end: true },
+			{ hue: 10, opacity: 1.0, text: 'Generator', highlight: true },
+			{ hue: 30, opacity: 0.5, text: '.versatiles', highlight: false },
+			{ hue: 50, opacity: 1.0, text: 'Server', highlight: true },
+			{ hue: 80, opacity: 0.5, text: 'HTTP', highlight: false },
+			{ hue: 120, opacity: 1.0, text: 'Network', highlight: true },
+			{ hue: 150, opacity: 0.5, text: 'HTTPS', highlight: false },
+			{ hue: 200, opacity: 1.0, text: 'Frontend', highlight: true },
+			{ hue: 230, opacity: 0.5, text: 'User', highlight: false, end: true },
 		];
 
 		let f = c.addFlow();
 		if (typeof index === 'number') steps = [steps[index]]
-		steps.forEach(s => f.add(s.text, s.color, s.highlight, s.end));
-		console.log(c.asSVG(2));
+		steps.forEach(s => f.add(s.text, s.hue, s.opacity, s.highlight, s.end));
 
 		return c.asImg(2);
 	}

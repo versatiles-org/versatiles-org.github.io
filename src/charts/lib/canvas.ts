@@ -6,7 +6,7 @@ export type RectType = [number, number, number, number];
 export type PointType = [number, number];
 
 type Style = Partial<CSSStyleDeclaration>;
-type MultiColor = string | [string, string];
+export type MultiColor = string | [string, string];
 interface MultiStyle {
 	fontFamily?: string;
 	fontSize?: string;
@@ -164,7 +164,9 @@ export class Canvas {
 		svg.insertAdjacentHTML('afterbegin', [
 			'<style>',
 			this.styles.light.asText(),
+			'@media (prefers-color-scheme: dark) {',
 			this.styles.dark.asText(),
+			'}',
 			'</style>'
 		].join('\n'));
 		svg.append(root.node);

@@ -1,5 +1,5 @@
 
-import { Canvas, Group, RectType } from './canvas.ts';
+import { Canvas, Group, MultiColor, RectType } from './canvas.ts';
 import Color from 'color';
 
 const fontFamily = 'sans-serif';
@@ -55,8 +55,10 @@ export class Chart {
 
 		this.y0 += this.boxHeight;
 
-		const add = (text: string, colorString: string, highlight: boolean = false, end: boolean = false) => {
-			const color = Color(colorString).rgb();
+		const add = (text: string, hue: number, alpha: number, highlight: boolean = false, end: boolean = false) => {
+			const colorLight = Color([hue, 100, 40, alpha], 'hsl').toString();
+			const colorDark = Color([hue, 100, 60, alpha], 'hsl').toString();
+			const color: MultiColor = [colorLight, colorDark];
 
 			let width = end
 				? this.colStart - this.colWidth / 4 - this.boxHeight / 4
@@ -66,14 +68,14 @@ export class Chart {
 
 			this.layers.fill.drawFlowBox(rect, {
 				fillOpacity: '0.4',
-				fill: [color.string(), color.string()],
+				fill: color,
 			});
 
 			if (highlight) {
 				this.layers.line.drawFlowBox(rect, {
 					fill: 'none',
 					strokeWidth: '2px',
-					stroke: [color.string(), color.string()],
+					stroke: color,
 				});
 			}
 
@@ -83,7 +85,7 @@ export class Chart {
 				fontFamily,
 				fontSize: '16px',
 				stroke: 'none',
-				fill: [color.string(), color.string()],
+				fill: color,
 			});
 
 			x0 += width;
