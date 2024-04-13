@@ -1,13 +1,13 @@
 
-import { Canvas, RectType } from './canvas.ts';
+import { Canvas, Group, RectType } from './canvas.ts';
 import Color from 'color';
 
 const fontFamily = 'sans-serif';
 
 interface Layers {
-	fill: Canvas;
-	line: Canvas;
-	text: Canvas;
+	fill: Group;
+	line: Group;
+	text: Group;
 }
 
 interface Options {
@@ -19,7 +19,6 @@ interface Options {
 
 export class Chart {
 	private readonly canvas: Canvas;
-	private readonly id: string;
 	private y0: number = 0;
 	private readonly layers: Layers;
 	private readonly colWidth: number;
@@ -28,12 +27,12 @@ export class Chart {
 
 	constructor(opt: Options = {}) {
 		this.canvas = new Canvas();
-		this.id = 'svg' + Math.random().toString(36).slice(2);
 
+		const { root } = this.canvas;
 		this.layers = {
-			fill: this.canvas.appendGroup(),
-			line: this.canvas.appendGroup(),
-			text: this.canvas.appendGroup(),
+			fill: root.appendGroup(),
+			line: root.appendGroup(),
+			text: root.appendGroup(),
 		}
 
 		this.colWidth = opt.colWidth || 200;
@@ -42,7 +41,13 @@ export class Chart {
 	}
 
 	asSVG(padding: number): string {
-		return this.canvas.asSVG(padding, this.id);
+		return this.canvas.asSVG(padding);
+	}
+
+	asImg(padding: number): string {
+		const svg = this.canvas.asSVG(padding);
+		const style = `width:100%; height:auto; max-width:${this.canvas.getBBox().width}px;`;
+		return `<img src="data:image/svg+xml;base64,${btoa(svg)}" style="${style}">`;
 	}
 
 	addFlow() {
@@ -58,18 +63,27 @@ export class Chart {
 				: this.colWidth / 2;
 
 			let rect: RectType = [x0, y0, width, this.boxHeight];
-			this.layers.fill.drawFlowBox(rect,{
-				fill: color.fade(2 / 3).string(),
+
+			this.layers.fill.drawFlowBox(rect, {
+				default: { fillOpacity: '0.4' },
+				light: { fill: color.string() },
+				dark: { fill: color.string() },
 			});
-			this.layers.line.drawFlowBox(rect,{
-				fill: 'none',
-				strokeWidth: highlight ? '2' : '0',
-				stroke: color.string(),
-			});
+
+			if (highlight) {
+				this.layers.line.drawFlowBox(rect, {
+					default: { fill: 'none', strokeWidth: '2' },
+					light: { stroke: color.string() },
+					dark: { stroke: color.string() },
+				});
+			}
+
 			rect[0] += this.boxHeight / 3;
+
 			this.layers.text.drawText(rect, text, {
-				fill: color.string(),
-				fontFamily, fontSize: '16px'
+				default: { fontFamily, fontSize: '16px', stroke: 'none' },
+				light: { fill: color.string() },
+				dark: { fill: color.string() },
 			});
 
 			x0 += width;

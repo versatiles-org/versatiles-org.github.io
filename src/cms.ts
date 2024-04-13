@@ -15,7 +15,6 @@ await getCMS().build();
 
 if (options.some(o => o.includes('watch'))) {
 	const cms = getCMS();
-	console.log('hi');
 	watch(
 		SRC_PATH,
 		{ recursive: true },

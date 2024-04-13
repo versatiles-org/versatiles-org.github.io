@@ -27,7 +27,8 @@ export function helper(srcPath: string, dstPath: string) {
 		let f = c.addFlow();
 		if (typeof index === 'number') steps = [steps[index]]
 		steps.forEach(s => f.add(s.text, s.color, s.highlight, s.end));
+		console.log(c.asSVG(2));
 
-		return c.asSVG(2);
+		return c.asImg(2);
 	}
 }
