@@ -15,6 +15,9 @@
 		"allowImportingTsExtensions": true,
 		"noEmit": true,
 	},
+	"exclude": [
+	  "node_modules/**/*",
+	],
 	"include": [
 		"docs/**/*.ts",
 		"src/**/*.ts",

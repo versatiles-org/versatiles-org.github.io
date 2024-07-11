@@ -20,7 +20,7 @@ export function getProcessor(): WrappedProcessor {
 	const processor = unified()
 		.use(remarkParse)
 		.use(remarkFrontmatter, ['yaml'])
-		.use(() => (ast, vfile) => {
+		.use(() => (ast, vfile): void => {
 			matter(vfile);
 		})
 		.use(remarkGfm)

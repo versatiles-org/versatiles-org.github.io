@@ -4,8 +4,9 @@ import eslint_plugin from '@typescript-eslint/eslint-plugin';
 export default [
 	{
 		ignores: [
-			'**/dist/**/*.*',
 			'**/coverage/**/*.*',
+			'**/dist/**/*.*',
+			'**/node_modules/**/*.*',
 		]
 	},
 	{
