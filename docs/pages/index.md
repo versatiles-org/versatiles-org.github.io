@@ -53,3 +53,11 @@ we explain here:
 - [how to use it](intro.html),
 - [how it works](overview.html) and
 - [how you can help.](contribute.html)
+
+
+## powered by
+
+
+<p style="text-align:center"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz-logo.png" width="281"></a></p>
+
+<small>MIZ-Babelsberg is funding the development of the "VersaTiles Editorial Tools", which are specifically designed for the use of maps in journalistic newsrooms.</small>
