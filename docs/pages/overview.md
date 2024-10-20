@@ -7,7 +7,7 @@ title: Overview
 
 There are many excellent FLOSS solutions for generating, processing, serving, and rendering maps. But in the end, you have to combine several solutions and build a complete tech stack. That takes a lot of effort.
 
-VersaTiles tackles this problem by defining a four-step process chain that defines how to process OpenStreetMap data and serve it as an interactive web map. It also provides a reference implementation of these four steps, but is flexible enough, so that any step can be replaced by your preferred solution. For exmaple, if you want to use a different tile source, server or frontend, you can simply replace the relevant part and still use the other steps.
+VersaTiles tackles this problem by defining a four-step process chain that defines how to process OpenStreetMap data and serve it as an interactive web map. It also provides a reference implementation of these four steps, but is flexible enough so that any step can be replaced by your preferred solution. For exanple, if you want to use a different tile source, server or frontend, you can simply replace the relevant part and still use the other steps.
 
 
 ## The 4 steps of VersaTiles
