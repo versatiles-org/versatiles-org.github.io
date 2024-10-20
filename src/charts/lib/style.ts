@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-destructuring */
+ 
 import { createElement } from './svg.ts';
 
 // Defines types for style properties and color configurations.

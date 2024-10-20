@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-destructuring */
+ 
 import type { BBoxType, PointType, RectType } from './svg.ts';
 
 export class BBox {

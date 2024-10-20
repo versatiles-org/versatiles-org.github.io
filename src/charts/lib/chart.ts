@@ -63,7 +63,7 @@ export class Chart {
 
 		this.y0 += this.boxHeight;
 
-		// eslint-disable-next-line @typescript-eslint/max-params
+		 
 		const add = (text: string, hue: number, alpha: number, highlight = false, end = false): void => {
 			const colorLight = Color([hue, 100, 40, alpha], 'hsl').toString();
 			const colorDark = Color([hue, 100, 60, alpha], 'hsl').toString();

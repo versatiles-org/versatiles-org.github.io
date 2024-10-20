@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-destructuring */
+ 
 import { BBox } from './bbox.ts';
 import { JSDOM } from 'jsdom';
 import type { Canvas } from './canvas.ts';

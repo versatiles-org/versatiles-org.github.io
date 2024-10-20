@@ -41,7 +41,7 @@ function getCMS(): { build: () => Promise<void> } {
 				running = true;
 				await build();
 				running = false;
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			 
 			} while (queued);
 		},
 	};
