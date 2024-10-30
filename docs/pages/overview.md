@@ -82,4 +82,4 @@ VersaTiles lets you use OpenStreetMap-based vector tiles, without any restrictio
 
 ## Need more information?
 
-We have collected some guides and explanations in our [documentation repository](https://github.com/versatiles-org/versatiles-documentation), including a [comprehensive compendium](https://github.com/versatiles-org/versatiles-documentation/blob/main/basics/compendium.md). Hopefully we will be able to integrate the documentation into the website in the near future.
+We have collected some guides and explanations in our [documentation repository](https://github.com/versatiles-org/versatiles-documentation), including a [comprehensive compendium](https://github.com/versatiles-org/versatiles-documentation/blob/main/compendium/index.md). Hopefully we will be able to integrate the documentation into the website in the near future.
