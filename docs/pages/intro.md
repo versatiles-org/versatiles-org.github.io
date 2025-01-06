@@ -58,6 +58,8 @@ Please help us to improve the [documentation](https://github.com/versatiles-org/
 
 You can [download](https://download.versatiles.org/) the latest planet and serve it using your own server. We are still testing this approach and working on a [documentation](https://github.com/versatiles-org/versatiles-documentation). But you can already use our [Rust server](https://github.com/versatiles-org/versatiles-rs), a [Node.js implementation](https://github.com/versatiles-org/node-versatiles) or one of the [Docker containers](https://github.com/versatiles-org/versatiles-docker).
 
+There is also a community-developed [Ansible Plabook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/versatiles.md).
+
 ## Run your own cloud service
 
 You can [download](https://download.versatiles.org/) the latest planet and serve it using your own cloud service on Google Cloud, AWS, Microsoft Azure, DigitalOcean, …
