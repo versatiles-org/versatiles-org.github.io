@@ -20,8 +20,8 @@ title: VersaTiles
 
 ## Try it out
 
-<link rel="stylesheet" type="text/css" href="https://tiles.versatiles.org/assets/maplibre-gl/maplibre-gl.css" />
-<script src="https://tiles.versatiles.org/assets/maplibre-gl/maplibre-gl.js"></script>
+<link rel="stylesheet" type="text/css" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" />
+<script src="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js"></script>
 <style scoped>
 	#map {
 		display: block;
@@ -36,7 +36,7 @@ title: VersaTiles
 <script>
 	const map = new maplibregl.Map({
 		container: 'map',
-		style: 'https://tiles.versatiles.org/assets/styles/colorful.json',
+		style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json',
 		bounds: [13.09, 52.33, 13.74, 52.68],
 		maxZoom: 18,
 		attributionControl: false,
