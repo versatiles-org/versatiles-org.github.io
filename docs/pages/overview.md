@@ -77,9 +77,9 @@ VersaTiles lets you use OpenStreetMap-based vector tiles, without any restrictio
 - [versatiles-fonts](https://github.com/versatiles-org/versatiles-fonts) generates glyphs.
 - [versatiles-frontend](https://github.com/versatiles-org/versatiles-frontend) builds frontend packages.
 - [versatiles-renderer](https://github.com/versatiles-org/versatiles-renderer) a preliminary tool to render maps in the backend as SVG or PNG.
-- [versatiles-documentation](https://github.com/versatiles-org/versatiles-documentation) contains all the documentation \o/.
+- [versatiles-documentation](https://github.com/versatiles-org/versatiles-documentation) contains all the [documentation](https://docs.versatiles.org/) \o/.
 
 
 ## Need more information?
 
-We have collected some guides and explanations in our [documentation repository](https://github.com/versatiles-org/versatiles-documentation), including a [comprehensive compendium](https://github.com/versatiles-org/versatiles-documentation/blob/main/compendium/index.md). Hopefully we will be able to integrate the documentation into the website in the near future.
+We have collected some guides and explanations in our [documentation](https://docs.versatiles.org/), including a [comprehensive compendium](https://docs.versatiles.org/compendium/). Hopefully we will be able to integrate the documentation into the website in the near future.
