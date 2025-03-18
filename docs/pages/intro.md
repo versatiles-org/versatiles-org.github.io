@@ -52,17 +52,17 @@ Use a CDN like:
 **Pros:** relatively simple, greatly improves availability and performance  
 **Cons:** Costs money
 
-Please help us to improve the [documentation](https://github.com/versatiles-org/versatiles-documentation).
+Please help us to improve the [documentation](https://docs.versatiles.org/).
 
 ## Run your own server
 
-You can [download](https://download.versatiles.org/) the latest planet and serve it using your own server. We are still testing this approach and working on a [documentation](https://github.com/versatiles-org/versatiles-documentation). But you can already use our [Rust server](https://github.com/versatiles-org/versatiles-rs), a [Node.js implementation](https://github.com/versatiles-org/node-versatiles) or one of the [Docker containers](https://github.com/versatiles-org/versatiles-docker).
+You can [download](https://download.versatiles.org/) the latest planet and serve it using your own server. We are still testing this approach and working on a [documentation](https://docs.versatiles.org/). But you can already use our [Rust server](https://github.com/versatiles-org/versatiles-rs), a [Node.js implementation](https://github.com/versatiles-org/node-versatiles) or one of the [Docker containers](https://github.com/versatiles-org/versatiles-docker).
 
 ## Run your own cloud service
 
 You can [download](https://download.versatiles.org/) the latest planet and serve it using your own cloud service on Google Cloud, AWS, Microsoft Azure, DigitalOcean, …
 
-We are still testing this approach and working on a [documentation](https://github.com/versatiles-org/versatiles-documentation).
+We are still testing this approach and working on a [documentation](https://docs.versatiles.org/).
 
 <script>
   if (navigator.clipboard) {
