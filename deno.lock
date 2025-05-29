@@ -3,21 +3,31 @@
   "specifiers": {
     "jsr:@deno/gfm@0.11": "0.11.0",
     "jsr:@denosaurs/emoji@~0.3.1": "0.3.1",
+    "jsr:@std/assert@^1.0.13": "1.0.13",
     "jsr:@std/cli@^1.0.18": "1.0.18",
     "jsr:@std/collections@^1.1.0": "1.1.0",
+    "jsr:@std/collections@^1.1.1": "1.1.1",
+    "jsr:@std/data-structures@^1.0.8": "1.0.8",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
+    "jsr:@std/expect@*": "1.0.16",
+    "jsr:@std/expect@^1.0.16": "1.0.16",
     "jsr:@std/fmt@^1.0.8": "1.0.8",
     "jsr:@std/front-matter@^1.0.9": "1.0.9",
     "jsr:@std/fs@^1.0.17": "1.0.17",
     "jsr:@std/html@^1.0.4": "1.0.4",
     "jsr:@std/http@^1.0.17": "1.0.17",
+    "jsr:@std/internal@^1.0.6": "1.0.8",
+    "jsr:@std/internal@^1.0.7": "1.0.8",
+    "jsr:@std/internal@^1.0.8": "1.0.8",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.0.9": "1.1.0",
     "jsr:@std/path@^1.1.0": "1.1.0",
     "jsr:@std/streams@^1.0.9": "1.0.9",
-    "jsr:@std/toml@^1.0.3": "1.0.6",
-    "jsr:@std/yaml@^1.0.5": "1.0.6",
+    "jsr:@std/testing@*": "1.0.13",
+    "jsr:@std/testing@^1.0.13": "1.0.13",
+    "jsr:@std/toml@^1.0.3": "1.0.7",
+    "jsr:@std/yaml@^1.0.5": "1.0.7",
     "npm:cheerio@*": "1.0.0",
     "npm:cheerio@1": "1.0.0",
     "npm:clean-css@*": "5.3.3",
@@ -52,14 +62,33 @@
     "@denosaurs/emoji@0.3.1": {
       "integrity": "b0aed5f55dec99e83da7c9637fe0a36d1d6252b7c99deaaa3fc5dea3fcf3da8b"
     },
+    "@std/assert@1.0.13": {
+      "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.6"
+      ]
+    },
     "@std/cli@1.0.18": {
       "integrity": "33846eab6a7cac52156cc105a798451df06965693606e4668adfe0436a155fd7"
     },
     "@std/collections@1.1.0": {
       "integrity": "2ee8761c84c3d203f7a4ecd376f9ca88a0c559817a4a54c9150f28c0b948027c"
     },
+    "@std/collections@1.1.1": {
+      "integrity": "eff6443fbd9d5a6697018fb39c5d13d5f662f0045f21392d640693d0008ab2af"
+    },
+    "@std/data-structures@1.0.8": {
+      "integrity": "2fb7219247e044c8fcd51341788547575653c82ae2c759ff209e0263ba7d9b66"
+    },
     "@std/encoding@1.0.10": {
       "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
+    },
+    "@std/expect@1.0.16": {
+      "integrity": "ceeef6dda21f256a5f0f083fcc0eaca175428b523359a9b1d9b3a1df11cc7391",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/internal@^1.0.7"
+      ]
     },
     "@std/fmt@1.0.8": {
       "integrity": "71e1fc498787e4434d213647a6e43e794af4fd393ef8f52062246e06f7e372b7"
@@ -93,6 +122,9 @@
         "jsr:@std/streams"
       ]
     },
+    "@std/internal@1.0.8": {
+      "integrity": "fc66e846d8d38a47cffd274d80d2ca3f0de71040f855783724bb6b87f60891f5"
+    },
     "@std/media-types@1.1.0": {
       "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
     },
@@ -105,14 +137,33 @@
     "@std/streams@1.0.9": {
       "integrity": "a9d26b1988cdd7aa7b1f4b51e1c36c1557f3f252880fa6cc5b9f37078b1a5035"
     },
+    "@std/testing@1.0.13": {
+      "integrity": "74418be16f627dfe996937ab0ffbdbda9c1f35534b78724658d981492f121e71",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/data-structures",
+        "jsr:@std/fs",
+        "jsr:@std/internal@^1.0.8",
+        "jsr:@std/path@^1.1.0"
+      ]
+    },
     "@std/toml@1.0.6": {
       "integrity": "da225502aecad66d8d778a635e9b78991997c2567ef8c6dbbd595c0cfce14c51",
       "dependencies": [
-        "jsr:@std/collections"
+        "jsr:@std/collections@^1.1.0"
+      ]
+    },
+    "@std/toml@1.0.7": {
+      "integrity": "3c86f8bbde31578da33d2fbe410b80e3cb672b66e008e06cf41afc4d7409921c",
+      "dependencies": [
+        "jsr:@std/collections@^1.1.1"
       ]
     },
     "@std/yaml@1.0.6": {
       "integrity": "c9a5a914e1d51c46756cb10e356710035cfa905e713c90d3b711413fd3aead27"
+    },
+    "@std/yaml@1.0.7": {
+      "integrity": "b4b9f6a625a6827ca2b75a3d240558b5ffd8b9a29945ec7614871be7b711a10a"
     }
   },
   "npm": {
@@ -437,10 +488,12 @@
   "workspace": {
     "dependencies": [
       "jsr:@deno/gfm@0.11",
+      "jsr:@std/expect@^1.0.16",
       "jsr:@std/front-matter@^1.0.9",
       "jsr:@std/fs@^1.0.17",
       "jsr:@std/http@^1.0.17",
       "jsr:@std/path@^1.1.0",
+      "jsr:@std/testing@^1.0.13",
       "npm:cheerio@1",
       "npm:clean-css@^5.3.3",
       "npm:less@^4.3.0"

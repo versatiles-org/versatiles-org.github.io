@@ -24,7 +24,6 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 	const css = new CleanCSS({ format: { breaks: { afterRuleEnds: true } } }).minify(
 		cssList.join('\n'),
 	);
-	console.log(css);
 
 	await Deno.writeTextFile(dstFilename, css.styles);
 }
