@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - "**"
+      - main
     tags:
       - "!**" # Don't run twice on commits with tags
   pull_request:
@@ -16,33 +16,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
       
-      - name: Cache Node Modules
-        id: npm-cache
-        uses: actions/cache@v4
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
         with:
-          path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-
-      - name: Install Dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
-
-      - name: Check Vulnerabilities
-        run: npm audit
+          deno-version: v2.x
+          cache: true
 
       - name: Lint
-        run: npm run lint
+        run: deno lint
+
+      - name: Test
+        run: deno test
         
       - name: Build
-        run: npm run build
+        run: deno task build
 
 #      - name: Run tests
 #        run: npm run test

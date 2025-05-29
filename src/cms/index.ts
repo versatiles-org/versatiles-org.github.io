@@ -62,15 +62,15 @@ export default class CMS {
 			const yaml = Deno.readTextFileSync(resolve(srcPath, filename));
 			const { html, attrs } = parseMarkdown(yaml);
 
-			const page = new Page(template);
-			page
+			const pageHTML = new Page(template)
 				.setMenu(menu)
 				.setTitle(attrs.title)
 				.setContent(html)
-				.setGithubLink(`https://github.com/versatiles-org/versatiles-website/blob/main/docs/pages/${filename}`);
+				.setGithubLink(`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${filename}`)
+				.render();
 
 			const pagename = basename(filename, '.md');
-			Deno.writeTextFileSync(resolve(dstPath, pagename + '.html'), page.render());
+			Deno.writeTextFileSync(resolve(dstPath, pagename + '.html'), pageHTML);
 		};
 	}
 

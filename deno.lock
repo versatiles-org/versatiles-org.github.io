@@ -20,6 +20,7 @@
     "jsr:@std/yaml@^1.0.5": "1.0.6",
     "npm:cheerio@*": "1.0.0",
     "npm:cheerio@1": "1.0.0",
+    "npm:clean-css@*": "5.3.3",
     "npm:clean-css@^5.3.3": "5.3.3",
     "npm:github-slugger@2": "2.0.0",
     "npm:he@^1.2.0": "1.2.0",

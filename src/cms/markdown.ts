@@ -11,6 +11,6 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 
 	return {
 		attrs: (attrs ?? {}) as Record<string, string>,
-		html: render(body),
+		html: render(body, { disableHtmlSanitization: true }),
 	};
 }
