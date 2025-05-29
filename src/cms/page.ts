@@ -1,4 +1,4 @@
-import { load, type CheerioAPI } from 'npm:cheerio';
+import { type CheerioAPI, load } from 'npm:cheerio';
 
 export interface MenuEntry {
 	title: string;
@@ -15,7 +15,7 @@ export class Page {
 	public setMenu(entries: MenuEntry[]): Page {
 		const menuList = this.$('nav ul');
 		menuList.empty();
-		entries.forEach(entry =>
+		entries.forEach((entry) =>
 			menuList.append(`<li><a href="${entry.url}">${entry.title}</a></li>`)
 		);
 		menuList.append([
@@ -49,7 +49,9 @@ export class Page {
 	public setGithubLink(url: string): Page {
 		if (typeof url !== 'string') throw new TypeError('url must be a string');
 		this.$('#github-link').remove();
-		this.$('footer').append(`<div id="github-link"><a target="_blank" href="${url}">Improve this page on GitHub</a></div>`);
+		this.$('footer').append(
+			`<div id="github-link"><a target="_blank" href="${url}">Improve this page on GitHub</a></div>`,
+		);
 		return this;
 	}
 

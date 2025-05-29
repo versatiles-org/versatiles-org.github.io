@@ -1,4 +1,3 @@
-
 import CMS from './cms/index.ts';
 
 const SRC_PATH = new URL('../docs', import.meta.url).pathname;

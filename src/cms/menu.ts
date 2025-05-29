@@ -1,5 +1,3 @@
-
-
 const menu = [
 	{ href: '', title: 'Demo' },
 	{ href: 'intro.html', title: 'Intro' },
@@ -11,6 +9,7 @@ export function generateMenu(filename: string): string {
 	if (filename === 'index.html') filename = '';
 
 	return menu.map(
-		({ href, title }) => `<li${href === filename ? ' class="selected"' : ''}><a href="/${href}">${title}</a></li>`,
+		({ href, title }) =>
+			`<li${href === filename ? ' class="selected"' : ''}><a href="/${href}">${title}</a></li>`,
 	).join('');
 }

@@ -1,5 +1,4 @@
-import { generateMenu } from './menu.ts';
-import { copySync, ensureDirSync, existsSync, walk, walkSync } from '@std/fs';
+import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
 import { resolve } from '@std/path/resolve';
 import { basename } from '@std/path/basename';
 import { buildCSS } from './css.ts';
@@ -12,7 +11,7 @@ const menu: MenuEntry[] = [
 	{ title: 'Overview', url: 'https://versatiles.org/overview.html' },
 	{ title: 'Playground', url: 'https://versatiles.org/playground/' },
 	{ title: 'Documentation', url: 'https://docs.versatiles.org/' },
-]
+];
 
 export default class CMS {
 	private readonly srcPath: string;
@@ -66,12 +65,14 @@ export default class CMS {
 				.setMenu(menu)
 				.setTitle(attrs.title)
 				.setContent(html)
-				.setGithubLink(`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${filename}`)
+				.setGithubLink(
+					`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${filename}`,
+				)
 				.render();
 
 			const pagename = basename(filename, '.md');
 			Deno.writeTextFileSync(resolve(dstPath, pagename + '.html'), pageHTML);
-		};
+		}
 	}
 
 	private cleanUp() {
