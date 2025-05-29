@@ -1,0 +1,32 @@
+{
+  "tasks": {
+    "check": "deno check && deno lint && deno fmt && deno test",
+    "build": "deno run --allow-all src/build.ts",
+    "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' --allow-all src/dev.ts"
+  },
+  "imports": {
+    "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
+    "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
+    "@std/fs": "jsr:@std/fs@^1.0.17",
+    "@std/http": "jsr:@std/http@^1.0.17",
+    "@std/path": "jsr:@std/path@^1.1.0",
+    "cheerio": "npm:cheerio@^1.0.0",
+    "clean-css": "npm:clean-css@^5.3.3",
+    "less": "npm:less@^4.3.0"
+  },
+  "fmt": {
+    "useTabs": true,
+    "lineWidth": 100,
+    "indentWidth": 3,
+    "semiColons": true,
+    "singleQuote": true,
+    "proseWrap": "preserve",
+    "include": [
+      "playground/",
+      "src/"
+    ],
+    "exclude": [
+      "docs/"
+    ]
+  }
+}
