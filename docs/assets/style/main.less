@@ -1,24 +1,24 @@
 body {
-   background-color: #111;
-   color: #ccc;
-   margin: 0;
-   padding: 0;
-   font-family: "Source Sans Pro", sans-serif;
-   font-weight: 500;
-   font-size: min(1.2rem, 5vmin);
-   line-height: 1.3;
-   color-scheme: dark;
+	background-color: #040404;
+	color: #ccc;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 1.3;
+	color-scheme: dark;
 }
 
 a {
-   color: inherit;
-   text-decoration: underline;
-   text-decoration-color: inherit;
-   text-decoration-thickness: 1px;
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-color: inherit;
+	text-decoration-thickness: 1px;
 }
 
 a:hover {
-   color: #fff;
+	color: #fff;
 }
 
 h1,
@@ -27,135 +27,134 @@ h3,
 h4,
 h5,
 h6 {
-   margin: 0;
-   padding: 0;
-   font-weight: 600;
-   color: #fff;
-   text-align: left;
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	color: #fff;
+	text-align: left;
 }
 
 h1,
 h2 {
-   text-align: center;
+	text-align: center;
 }
 
 em {
-   font-style: normal;
-   font-weight: 700;
+	font-style: normal;
+	font-weight: 700;
 }
 
 abbr {
-   text-decoration: none;
+	text-decoration: none;
 }
 
 main {
-   background: rgba(0, 0, 0, 0.75);
-   padding: 1rem 0 5rem;
-   overflow-x: hidden;
+	padding: 1rem 0 5rem;
+	overflow-x: hidden;
 
-   hero {
-      color: #eee;
-      text-align: center;
-      font-size: 1.3em;
-   }
+	hero {
+		color: #eee;
+		text-align: center;
+		font-size: 1.3em;
+	}
 
-   .content,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   h6,
-   hero,
-   p,
-   pre,
-   ol,
-   ul,
-   table {
-      box-sizing: border-box;
-      display: block;
-      margin: 0 auto 1rem;
-      width: min(40rem, 90%);
-      padding: 0;
-   }
+	.content,
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	hero,
+	p,
+	pre,
+	ol,
+	ul,
+	table {
+		box-sizing: border-box;
+		display: block;
+		margin: 0;
+		padding: 0;
+		width: min(40rem, 90%);
+		margin: 0 auto;
+	}
 
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   h6,
-   hero {
-      margin: 5rem auto 2rem;
-   }
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	hero {
+		margin: 5rem auto 2rem;
+	}
 
-   ol,
-   ul {
-      padding: 0 0 0 min(3em, 7%);
-      li {
-         margin: 0.7em 0;
-      }
-   }
+	ol,
+	ul {
+		padding: 0 0 0 min(3em, 7%);
+		li {
+			margin: 0.7em 0;
+		}
+	}
 
-   p {
-      font-weight: 400;
-      text-align: justify;
-   }
+	p {
+		font-weight: 400;
+		text-align: justify;
+	}
 
-   figure {
-      margin: 0px auto;
-      padding: 0 2rem;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-   }
+	figure {
+		margin: 0px auto;
+		padding: 0 2rem;
+		width: 100%;
+		box-sizing: border-box;
+		text-align: center;
+	}
 
-   figure figcaption {
-      font-size: 0.8rem;
-      text-align: center;
-      opacity: 0.7;
-      margin: 1rem 0 2rem;
-   }
+	figure figcaption {
+		font-size: 0.8rem;
+		text-align: center;
+		opacity: 0.7;
+		margin: 1rem 0 2rem;
+	}
 
-   img {
-      max-width: 100%;
-   }
-
+	img {
+		max-width: 100%;
+	}
 }
 
 footer {
-   align-items: center;
-   border-top: 1px solid #444;
-   display: flex;
-   flex-direction: row;
-   font-size: 0.9rem;
-   gap: 2rem;
-   justify-content: center;
-   color: #888;
-   padding: 2rem;
+	align-items: center;
+	border-top: 1px solid #444;
+	display: flex;
+	flex-direction: row;
+	font-size: 0.9rem;
+	gap: 2rem;
+	justify-content: center;
+	color: #888;
+	padding: 2rem;
 }
 
 pre {
-   position: relative;
-   overflow: auto;
-   margin: 0;
-   padding: 0 !important;
+	position: relative;
+	overflow: auto;
+	margin: 0;
+	padding: 0 !important;
 
-   button {
-      position: absolute;
-      top: 5px;
-      right: 5px;
+	button {
+		position: absolute;
+		top: 5px;
+		right: 5px;
 
-      font-size: 0.8rem;
-      padding: 0.15rem;
-      border-radius: 0.4rem;
-      opacity: 0.2;
-      transition: opacity 0.5s;
-      cursor: pointer;
-   }
+		font-size: 0.8rem;
+		padding: 0.15rem;
+		border-radius: 0.4rem;
+		opacity: 0.2;
+		transition: opacity 0.5s;
+		cursor: pointer;
+	}
 
-   button:active {
-      opacity: 1;
-      transition: opacity 0s;
-   }
+	button:active {
+		opacity: 1;
+		transition: opacity 0s;
+	}
 }

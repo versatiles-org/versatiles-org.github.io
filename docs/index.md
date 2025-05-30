@@ -1,10 +1,11 @@
 ---
 title: VersaTiles
+menuEntry: Overview
 ---
 
-<div id="heroblock">
+<div id="logoblock">
 	<img src="assets/logo/versatiles.svg">
-	<div id="heroline">
+	<div>
 		<h1>VersaTiles</h1>
 		<p>
 			<span>a</span>
@@ -17,6 +18,7 @@ title: VersaTiles
 </div>
 
 <hero>VersaTiles is a completely [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software "Free, Libre and Open Source Software") stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
+
 
 ## Try it out
 
@@ -46,6 +48,7 @@ title: VersaTiles
 	map.addControl(new maplibregl.AttributionControl({ compact: true }));
 </script>
 
+
 ## If you want to know more
 
 we explain here:
@@ -56,7 +59,6 @@ we explain here:
 
 
 ## powered by
-
 
 <p style="text-align:center"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz-logo.png" width="281"></a></p>
 

@@ -12,17 +12,16 @@ export class Page {
 		this.$ = load(template);
 	}
 
-	public setMenu(entries: MenuEntry[]): Page {
+	public setMenu(entries: MenuEntry[], menuEntry?: string): Page {
 		const menuList = this.$('nav ul');
 		menuList.empty();
-		entries.forEach((entry) =>
-			menuList.append(`<li><a href="${entry.url}">${entry.title}</a></li>`)
-		);
+		entries.forEach((entry) => {
+			const className = entry.title === menuEntry ? ' class="selected"' : '';
+			menuList.append(`<li${className}><a href="${entry.url}">${entry.title}</a></li>`);
+		});
 		menuList.append([
-			'<li style="line-height: 1.3em;">',
-			'<a href="https://github.com/versatiles-org/" style="line-height: inherit; font-size: inherit;margin: 0; padding: 0;">',
-			'<img src="https://versatiles.org/assets/github.png" style="display: inline-block; height:1.3em; vertical-align: middle;">',
-			'</a>',
+			'<li class="github-icon">',
+			'<a href="https://github.com/versatiles-org/"></a>',
 			'</li>',
 		].join(''));
 		return this;

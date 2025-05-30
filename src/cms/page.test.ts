@@ -63,11 +63,18 @@ describe('Page', () => {
 		];
 		page.setMenu(entries);
 		const html = page.render();
-		expect(html).toContain('<a href="/">Home</a>');
-		expect(html).toContain('<a href="/docs">Docs</a>');
-		expect(html).toContain('github.png');
-		// Should not contain the old menu entry
-		expect(html).not.toContain('<li>Old</li>');
+		expect(html).toBe([
+			'<!DOCTYPE html><html><head>',
+			'\t<title>Original Title</title>',
+			'</head>',
+			'<body>',
+			'\t<nav><ul><li><a href="/">Home</a></li><li><a href="/docs">Docs</a></li><li class="github-icon"><a href="https://github.com/versatiles-org/"></a></li></ul></nav>',
+			'\t<main>Old Content</main>',
+			'\t<footer></footer>',
+			'',
+			'',
+			'</body></html>',
+		].join('\n'));
 	});
 
 	it('setGithubLink adds a github link to the footer', () => {
