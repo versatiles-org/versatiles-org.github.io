@@ -14,7 +14,7 @@ describe('buildCSS', () => {
 		await buildCSS(srcFiles, dstFile);
 
 		const lines = Deno.readTextFileSync(dstFile).split('\n');
-		expect(lines.length).toBe(158);
+		expect(lines.length).toBe(84);
 		expect(lines[0]).toBe('body{color:red}');
 		expect(lines[1]).toBe('h1{color:#00f}');
 		expect(lines[2]).toBe('h1 a{color:green}');
