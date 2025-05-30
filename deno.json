@@ -4,6 +4,7 @@
     "build": "deno run --allow-all src/build.ts",
     "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' --allow-all src/dev.ts"
   },
+  "nodeModulesDir": "none",
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
     "@std/expect": "jsr:@std/expect@^1.0.16",

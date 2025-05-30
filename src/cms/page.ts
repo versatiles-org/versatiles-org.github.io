@@ -1,4 +1,4 @@
-import { type CheerioAPI, load } from 'npm:cheerio';
+import { type CheerioAPI, load } from 'cheerio';
 
 export interface MenuEntry {
 	title: string;

@@ -1,6 +1,6 @@
 import less from 'less';
 import { CSS } from '@deno/gfm';
-import CleanCSS from 'npm:clean-css';
+import CleanCSS from 'clean-css';
 
 /**
  * Builds a single minified CSS file from multiple source files.
