@@ -39,6 +39,18 @@ export class Page {
 		return this;
 	}
 
+	public setContentAttributes(attributes: Record<string, string>): Page {
+		if (typeof attributes !== 'object' || attributes === null) {
+			throw new TypeError('attributes must be an object');
+		}
+		const mainElement = this.$('main');
+		Object.entries(attributes).forEach(([key, value]) => {
+			if (typeof key !== 'string' || typeof value !== 'string') return;
+			mainElement.attr(key, value);
+		});
+		return this;
+	}
+
 	public addHead(head: string): Page {
 		if (typeof head !== 'string') throw new TypeError('head must be a string');
 		this.$('head').append(head);
