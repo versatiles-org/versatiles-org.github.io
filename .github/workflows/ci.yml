@@ -11,7 +11,7 @@ on:
 
 jobs:
    build:
-      name: Lint and test
+      name: Lint, Test, Build
       runs-on: ubuntu-latest
       steps:
          - name: Checkout
@@ -47,6 +47,7 @@ jobs:
               path: 'dist'
 
    deploy:
+      name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
 
       needs: build
