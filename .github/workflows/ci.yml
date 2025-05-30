@@ -27,7 +27,7 @@ jobs:
            run: deno lint
 
          - name: Test
-           run: deno test
+           run: deno test --allow-all
 
          - name: Build
            run: deno task build
