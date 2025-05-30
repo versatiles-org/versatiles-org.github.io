@@ -20,7 +20,7 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		return content;
 	}));
 
-	cssList.push(CSS);
+	cssList.push(CSS.replace(/\.markdown-body\{.*?\}/g, ''));
 
 	let css = new CleanCSS({ format: { breaks: { afterRuleEnds: true } } }).minify(
 		cssList.join('\n'),
@@ -28,8 +28,9 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 
 	css = css.split('\n').filter((line) => {
 		if (!line.startsWith('.markdown-body')) return true;
-		if (line.startsWith('.markdown-body .')) return true;
-		return false;
+		const part = line.split('{')[0].slice(14).trim();
+		if (!part) return false;
+		return !/^(:|>|h[123456]|a|a:hover|iframe)/.test(part);
 	}).join('\n');
 
 	await Deno.writeTextFile(dstFilename, css);
