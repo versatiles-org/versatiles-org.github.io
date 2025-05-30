@@ -103,4 +103,40 @@ describe('Page', () => {
 		expect(typeof html).toBe('string');
 		expect(html).toContain('<!DOCTYPE html>');
 	});
+
+	it('setMenu highlights the selected menu entry', () => {
+		const entries: MenuEntry[] = [
+			{ title: 'Home', url: '/' },
+			{ title: 'Docs', url: '/docs' },
+		];
+		page.setMenu(entries, 'Docs');
+		const html = page.render();
+		expect(html).toContain('<li><a href="/">Home</a></li>');
+		expect(html).toContain('<li class="selected"><a href="/docs">Docs</a></li>');
+	});
+
+	it('setBaseUrl upgrades href and src attributes to absolute URLs', () => {
+		const template = `
+		<!DOCTYPE html>
+		<html>
+		<head></head>
+		<body>
+			<a href="http://example.com/page">Link</a>
+			<img src="https://example.com/image.png">
+			<img src="./relative.png">
+			<a href="/absolute">absolute</a>
+		</body>
+		</html>
+		`;
+		const html = new Page(template).setBaseUrl('https://baseurl.com/path/').render();
+		expect(html).toContain('href="http://example.com/page"');
+		expect(html).toContain('src="https://example.com/image.png"');
+		expect(html).toContain('src="https://baseurl.com/path/relative.png"');
+		expect(html).toContain('href="https://baseurl.com/absolute"');
+	});
+
+	it('setBaseUrl throws if baseUrl is not a string', () => {
+		// @ts-expect-error: Testing type error
+		expect(() => page.setBaseUrl(123)).toThrow(TypeError);
+	});
 });

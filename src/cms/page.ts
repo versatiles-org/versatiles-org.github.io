@@ -54,6 +54,24 @@ export class Page {
 		return this;
 	}
 
+	public setBaseUrl(baseUrl: string): Page {
+		if (typeof baseUrl !== 'string') throw new TypeError('baseUrl must be a string');
+
+		const upgradeUrl = (attr: string) => {
+			this.$(`[${attr}]`).each((_, element) => {
+				const url = this.$(element).attr(attr);
+				if (url && !url.startsWith('http')) {
+					this.$(element).attr(attr, new URL(url, baseUrl).href);
+				}
+			});
+		};
+
+		upgradeUrl('href');
+		upgradeUrl('src');
+
+		return this;
+	}
+
 	public render(): string {
 		return this.$.html();
 	}
