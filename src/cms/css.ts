@@ -2,6 +2,10 @@ import less from 'less';
 import { CSS } from '@deno/gfm';
 import CleanCSS from 'clean-css';
 
+const gfmCSS = CSS
+	.replace(/\.markdown-body (a|a:hover|iframe){.*?}/g, '')
+	.replace(/\.markdown-body h1.*?}/g, '');
+
 /**
  * Builds a single minified CSS file from multiple source files.
  *
@@ -19,7 +23,7 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		if (cssFilename.endsWith('.less')) content = (await less.render(content)).css;
 		return content;
 	}));
-	cssList.push(CSS);
+	cssList.push(gfmCSS);
 
 	const css = new CleanCSS({ format: { breaks: { afterRuleEnds: true } } }).minify(
 		cssList.join('\n'),
