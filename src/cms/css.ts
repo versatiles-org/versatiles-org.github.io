@@ -26,6 +26,7 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		cssList.join('\n'),
 	).styles as string;
 
+	// Remove "markdown" rules that are not needed for the CMS
 	css = css.split('\n').filter((line) => {
 		if (!line.startsWith('.markdown-body')) return true;
 		const part = line.split('{')[0].slice(14).trim();
