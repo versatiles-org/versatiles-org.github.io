@@ -17,8 +17,7 @@ menuEntry: Overview
 	</div>
 </div>
 
-<hero>VersaTiles is a completely [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software "Free, Libre and Open Source Software") stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
-
+<hero>VersaTiles is a completely [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
 
 ## Try it out
 
@@ -48,8 +47,19 @@ menuEntry: Overview
 	map.addControl(new maplibregl.AttributionControl({ compact: true }));
 </script>
 
+## Interested?
+
+Read our small [introduction into VersaTiles](https://docs.versatiles.org/basics/versatiles.html) and dig deeper into the [documentation](https://docs.versatiles.org).
+
+Play with some frontend code examples in the [playground](https://versatiles.org/playground/).
+
+Try our [tools](https://versatiles.org/tools/), like our [installation tool](https://versatiles.org/tools/setup_server).
+
+Have a look at our [download server](https://download.versatiles.org/) and the free data we provide.
+
+Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodon](https://mastodon.social/@VersaTiles) or [Bluesky](https://bsky.app/profile/versatiles.bsky.social).
+
 ## Powered by
 
-<p style="text-align:center"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz-logo.png" width="281"></a></p>
-
-<small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
+<p style="text-align:center"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz-logo.png" width="281"></a><br><small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
+</p>
