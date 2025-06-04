@@ -9,8 +9,8 @@ const template = Deno.readTextFileSync('./docs/templates/page.html');
 
 const menu: MenuEntry[] = [
 	{ title: 'Overview', url: 'https://versatiles.org/' },
-	{ title: 'Tools', url: 'https://versatiles.org/tools/' },
 	{ title: 'Playground', url: 'https://versatiles.org/playground/' },
+	{ title: 'Tools', url: 'https://versatiles.org/tools/' },
 	{ title: 'Documentation', url: 'https://docs.versatiles.org/' },
 ];
 
