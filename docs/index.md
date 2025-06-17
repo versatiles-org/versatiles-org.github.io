@@ -1,5 +1,6 @@
 ---
 title: VersaTiles
+description: A completely FLOSS map stack.
 menuEntry: Overview
 ---
 
