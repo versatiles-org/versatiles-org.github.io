@@ -1,8 +1,10 @@
 {
   "tasks": {
     "check": "deno check && deno lint && deno fmt && deno test --allow-all",
+    "coverage": "deno test --allow-all --coverage=coverage",
     "build": "deno run --allow-all src/build.ts",
-    "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' --allow-all src/dev.ts"
+    "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' --allow-all src/dev.ts",
+    "test": "deno test --allow-all"
   },
   "nodeModulesDir": "none",
   "imports": {
