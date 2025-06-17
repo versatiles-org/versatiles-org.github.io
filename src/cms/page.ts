@@ -9,7 +9,18 @@ export class Page {
 	private $: CheerioAPI;
 
 	constructor(template: string) {
+		if (typeof template !== 'string') throw new TypeError('template must be a string');
 		this.$ = load(template);
+	}
+
+	static async fromURL(url: string): Promise<Page> {
+		if (typeof url !== 'string') throw new TypeError('url must be a string');
+		const content = await fetch(url).then((r) => r.text());
+		return new Page(content);
+	}
+
+	public clone(): Page {
+		return new Page(this.render());
 	}
 
 	public setMenu(entries: MenuEntry[], menuEntry?: string): Page {
@@ -27,9 +38,18 @@ export class Page {
 		return this;
 	}
 
-	public setTitle(title: string): Page {
+	public setTitle(title: string, description: string): Page {
 		if (typeof title !== 'string') throw new TypeError('title must be a string');
+		if (typeof description !== 'string') throw new TypeError('description must be a string');
+
 		this.$('title').text(title);
+		this.$('meta[name="og:title"]').attr('content', title);
+		this.$('meta[name="twitter:title"]').attr('content', title);
+
+		this.$('meta[name="description"]').attr('content', description);
+		this.$('meta[name="og:description"]').attr('content', description);
+		this.$('meta[name="twitter:description"]').attr('content', description);
+
 		return this;
 	}
 
@@ -48,6 +68,11 @@ export class Page {
 			if (typeof key !== 'string' || typeof value !== 'string') return;
 			mainElement.attr(key, value);
 		});
+		return this;
+	}
+
+	public setAsMarkdownPage(add: boolean): Page {
+		this.$('main').toggleClass('markdown-body', add);
 		return this;
 	}
 
@@ -85,6 +110,12 @@ export class Page {
 	}
 
 	public render(): string {
+		this.$('[class=""]').each((_, element) => {
+			this.$(element).removeAttr('class');
+		});
+		this.$('[style=""]').each((_, element) => {
+			this.$(element).removeAttr('style');
+		});
 		return this.$.html();
 	}
 }

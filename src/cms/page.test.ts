@@ -24,7 +24,7 @@ describe('Page', () => {
 	});
 
 	it('setTitle sets the document title', () => {
-		page.setTitle('New Title');
+		page.setTitle('New Title', 'New Description');
 		const html = page.render();
 		expect(html).toContain('<title>New Title</title>');
 	});
@@ -138,5 +138,106 @@ describe('Page', () => {
 	it('setBaseUrl throws if baseUrl is not a string', () => {
 		// @ts-expect-error: Testing type error
 		expect(() => page.setBaseUrl(123)).toThrow(TypeError);
+	});
+
+	it('clone returns a deep copy of the page', () => {
+		page.setTitle('Cloned Title', 'Cloned Description');
+		const cloned = page.clone();
+		expect(cloned).not.toBe(page);
+		expect(cloned.render()).toBe(page.render());
+		cloned.setTitle('Changed Title', 'Changed Description');
+		expect(cloned.render()).not.toBe(page.render());
+	});
+
+	it('setContentAttributes sets attributes on <main>', () => {
+		page.setContentAttributes({ id: 'main-content', 'data-test': 'value' });
+		const html = page.render();
+		expect(html).toContain('<main id="main-content" data-test="value">Old Content</main>');
+	});
+
+	it('setContentAttributes throws if not an object', () => {
+		// @ts-expect-error: Testing type error
+		expect(() => page.setContentAttributes(null)).toThrow(TypeError);
+		// @ts-expect-error: Testing type error
+		expect(() => page.setContentAttributes(123)).toThrow(TypeError);
+	});
+
+	it('setContentAttributes ignores non-string keys/values', () => {
+		// @ts-expect-error: Testing type error
+		page.setContentAttributes({ foo: 'bar', baz: 123, 42: 'num' });
+		const html = page.render();
+		expect(html).toContain('foo="bar"');
+		expect(html).not.toContain('baz="123"');
+	});
+
+	it('setAsMarkdownPage adds markdown-body class when true', () => {
+		page.setAsMarkdownPage(true);
+		const html = page.render();
+		expect(html).toContain('<main class="markdown-body">Old Content</main>');
+	});
+
+	it('setAsMarkdownPage removes markdown-body class when false', () => {
+		page.setAsMarkdownPage(true);
+		expect(page.render()).toContain('<main class="markdown-body">Old Content</main>');
+
+		page.setAsMarkdownPage(false);
+		expect(page.render()).toContain('<main>Old Content</main>');
+	});
+
+	it('setTitle sets og and twitter meta tags if present', () => {
+		const template = `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<title>Original Title</title>
+			<meta name="og:title" content="Original Title">
+			<meta name="twitter:title" content="Original Title">
+			<meta name="description" content="Original Description">
+			<meta name="og:description" content="Original Description">
+			<meta name="twitter:description" content="Original Description">
+		</head>
+		<body>
+			<main>Old Content</main>
+		</body>
+		</html>
+		`;
+		const p = new Page(template);
+		p.setTitle('Meta Title', 'Meta Desc');
+		const html = p.render();
+		expect(html).toContain('content="Meta Title"');
+		expect(html).toContain('content="Meta Desc"');
+	});
+
+	it('setTitle does not throw if meta tags are missing', () => {
+		const template = `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<title>Original Title</title>
+		</head>
+		<body>
+			<main>Old Content</main>
+		</body>
+		</html>
+		`;
+		const p = new Page(template);
+		expect(() => p.setTitle('No Meta', 'No Desc')).not.toThrow();
+	});
+
+	it('fromTemplate creates a Page instance from HTML string', () => {
+		const p = new Page('<html><body><main>Test</main></body></html>');
+		expect(p).toBeInstanceOf(Page);
+		expect(p.render()).toContain('Test');
+	});
+
+	it('fromURL creates a Page instance from a URL (mocked)', async () => {
+		const page = await Page.fromURL('https://versatiles.org');
+		expect(page).toBeInstanceOf(Page);
+		expect(page.render()).toContain('VersaTiles');
+	});
+
+	it('fromURL throws if url is not a string', async () => {
+		// @ts-expect-error: Testing type error
+		await expect(Page.fromURL(null)).rejects.toThrow();
 	});
 });

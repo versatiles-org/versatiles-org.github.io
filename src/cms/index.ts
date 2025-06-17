@@ -67,7 +67,7 @@ export default class CMS {
 
 			const pageHTML = new Page(template)
 				.setMenu(menu, attrs.menuEntry)
-				.setTitle(attrs.title)
+				.setTitle(attrs.title, attrs.description)
 				.setContent(html)
 				.setGithubLink(githubLink)
 				.render();
