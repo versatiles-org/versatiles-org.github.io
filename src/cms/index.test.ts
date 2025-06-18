@@ -15,7 +15,14 @@ describe('CMS builds site structure', () => {
 	Deno.writeTextFileSync(join(srcPath, 'assets', 'logo.png'), 'PNGDATA');
 	Deno.writeTextFileSync(
 		join(srcPath, 'test.md'),
-		'---\ntitle: Test Title\ndescription: Test Desc\n---\nHello World!',
+		[
+			'---',
+			'title: Test Title',
+			'description: Test Desc',
+			'menuEntry: test',
+			'---',
+			'Hello World!',
+		].join('\n'),
 	);
 
 	afterAll(() => {

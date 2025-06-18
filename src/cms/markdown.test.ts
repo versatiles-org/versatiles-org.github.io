@@ -8,6 +8,8 @@ describe('parseMarkdown', () => {
 			'---',
 			'title: Test Title',
 			'author: John Doe',
+			'description: some description',
+			'menuEntry: intro',
 			'---',
 			'# Hello World',
 			'',
@@ -18,7 +20,12 @@ describe('parseMarkdown', () => {
 
 		const result = parseMarkdown(input);
 
-		expect(result.attrs).toStrictEqual({ title: 'Test Title', author: 'John Doe' });
+		expect(result.attrs).toStrictEqual({
+			title: 'Test Title',
+			author: 'John Doe',
+			description: 'some description',
+			menuEntry: 'intro',
+		});
 		expect(result.html).toBe(
 			'<h1>Hello World</h1><p><span id="test">This is a test</span></p>\n<p>This is a <strong>test</strong>.</p>\n',
 		);

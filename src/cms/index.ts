@@ -3,7 +3,7 @@ import { resolve } from '@std/path/resolve';
 import { basename } from '@std/path/basename';
 import { buildCSS } from './css.ts';
 import { parseMarkdown } from './markdown.ts';
-import { MenuEntry, Page } from './page.ts';
+import { MenuEntry, Page } from 'npm:cheerio_cms';
 
 const template = Deno.readTextFileSync('./docs/templates/page.html');
 
@@ -59,21 +59,26 @@ export default class CMS {
 			if (!entry.isFile) continue;
 			const filename = entry.name;
 			if (!filename.endsWith('.md')) continue;
-			const yaml = Deno.readTextFileSync(resolve(srcPath, filename));
-			const { html, attrs } = parseMarkdown(yaml);
 
-			const githubLink = attrs.githubLink ||
-				`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${filename}`;
+			try {
+				const yaml = Deno.readTextFileSync(resolve(srcPath, filename));
+				const { html, attrs } = parseMarkdown(yaml);
 
-			const pageHTML = new Page(template)
-				.setMenu(menu, attrs.menuEntry)
-				.setTitle(attrs.title, attrs.description)
-				.setContent(html)
-				.setGithubLink(githubLink)
-				.render();
+				const githubLink = attrs.githubLink ||
+					`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${filename}`;
 
-			const pagename = basename(filename, '.md');
-			Deno.writeTextFileSync(resolve(dstPath, pagename + '.html'), pageHTML);
+				const pageHTML = new Page(template)
+					.setMenu(menu, attrs.menuEntry, 'https://github.com/versatiles-org/')
+					.setTitle(attrs.title, attrs.description)
+					.setContent(html)
+					.setGithubLink(githubLink)
+					.render();
+
+				const pagename = basename(filename, '.md');
+				Deno.writeTextFileSync(resolve(dstPath, pagename + '.html'), pageHTML);
+			} catch (cause) {
+				throw Error(`Error processing ${filename}:`, { cause });
+			}
 		}
 	}
 
