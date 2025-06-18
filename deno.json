@@ -4,7 +4,9 @@
     "coverage": "deno test --allow-all --coverage=coverage",
     "build": "deno run --allow-all src/build.ts",
     "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' --allow-all src/dev.ts",
-    "test": "deno test --allow-all"
+    "test": "deno test --allow-all",
+    "test-coverage": "deno test --allow-all --coverage=coverage",
+    "upgrade": "deno outdated --update --latest"
   },
   "nodeModulesDir": "none",
   "imports": {
@@ -12,9 +14,9 @@
     "@std/expect": "jsr:@std/expect@^1.0.16",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "@std/fs": "jsr:@std/fs@^1.0.17",
-    "@std/http": "jsr:@std/http@^1.0.17",
+    "@std/http": "jsr:@std/http@^1.0.18",
     "@std/path": "jsr:@std/path@^1.1.0",
-    "@std/testing": "jsr:@std/testing@^1.0.13",
+    "@std/testing": "jsr:@std/testing@^1.0.14",
     "cheerio_cms": "npm:cheerio_cms@^1.0.0",
     "clean-css": "npm:clean-css@^5.3.3",
     "less": "npm:less@^4.3.0"
