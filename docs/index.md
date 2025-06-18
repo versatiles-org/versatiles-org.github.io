@@ -5,7 +5,7 @@ menuEntry: Overview
 ---
 
 <div id="logoblock">
-	<img src="assets/logo/versatiles.svg" style="background-color: transparent;">
+	<img src="assets/logo/versatiles.svg" style="background-color: transparent;" width="118" height="136">
 	<div>
 		<h1>VersaTiles</h1>
 		<p>
