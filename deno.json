@@ -11,15 +11,15 @@
   "nodeModulesDir": "none",
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
-    "@std/expect": "jsr:@std/expect@^1.0.16",
+    "@std/expect": "jsr:@std/expect@^1.0.17",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "@std/fs": "jsr:@std/fs@^1.0.19",
     "@std/http": "jsr:@std/http@^1.0.20",
-    "@std/path": "jsr:@std/path@^1.1.1",
+    "@std/path": "jsr:@std/path@^1.1.2",
     "@std/testing": "jsr:@std/testing@^1.0.15",
     "cheerio_cms": "npm:cheerio_cms@^1.0.0",
     "clean-css": "npm:clean-css@^5.3.3",
-    "less": "npm:less@^4.4.0"
+    "less": "npm:less@^4.4.1"
   },
   "fmt": {
     "useTabs": true,
