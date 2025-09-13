@@ -1,6 +1,6 @@
 import { buildCSS } from './css.ts';
-import { describe, it } from 'jsr:@std/testing/bdd';
-import { expect } from 'jsr:@std/expect';
+import { describe, it } from '@std/testing/bdd';
+import { expect } from '@std/expect';
 
 describe('buildCSS', () => {
 	it('should build and minify CSS from multiple CSS files', async () => {

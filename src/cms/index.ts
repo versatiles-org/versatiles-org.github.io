@@ -3,7 +3,7 @@ import { resolve } from '@std/path/resolve';
 import { basename } from '@std/path/basename';
 import { buildCSS } from './css.ts';
 import { parseMarkdown } from './markdown.ts';
-import { MenuEntry, Page } from 'npm:cheerio_cms';
+import { MenuEntry, Page } from 'cheerio_cms';
 
 const template = Deno.readTextFileSync('./docs/templates/page.html');
 
