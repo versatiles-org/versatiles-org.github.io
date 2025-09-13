@@ -49,7 +49,7 @@ jobs:
            with:
               path: 'dist'
 
-   deploy:
+   gh-release:
       name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
 
@@ -68,3 +68,19 @@ jobs:
          - name: Deploy to GitHub Pages
            id: deployment
            uses: actions/deploy-pages@v4
+
+   update-tools-sites:
+      needs: gh-release
+      runs-on: ubuntu-latest
+      steps:
+         - name: Trigger tools site update
+           run: |
+              curl -XPOST -u "michaelkreil:${{ secrets.PAT_TOKEN }}" "https://api.github.com/repos/versatiles-org/tools/actions/workflows/gh-release.yml/dispatches" --data '{"ref":"main"}'
+
+   update-playground-sites:
+      needs: gh-release
+      runs-on: ubuntu-latest
+      steps:
+         - name: Trigger playground site update
+           run: |
+              curl -XPOST -u "michaelkreil:${{ secrets.PAT_TOKEN }}" "https://api.github.com/repos/versatiles-org/playground/actions/workflows/gh-release.yml/dispatches" --data '{"ref":"main"}'
