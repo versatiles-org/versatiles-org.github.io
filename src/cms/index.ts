@@ -37,10 +37,14 @@ export default class CMS {
 	}
 
 	private copyAssets() {
-		copySync(
-			resolve(this.srcPath, 'assets'),
-			resolve(this.dstPath, 'assets'),
-		);
+		for (const entry of walkSync(this.srcPath)) {
+			if (!entry.isFile) continue;
+			if (!entry.name.match(/\.(png|jpg|jpeg|gif|svg|webp|ico?)$/i)) continue;
+			const relativePath = relative(this.srcPath, entry.path);
+			const dstFileName = resolve(this.dstPath, relativePath);
+			ensureDirSync(dirname(dstFileName));
+			copySync(entry.path, dstFileName);
+		}
 	}
 
 	private async buildCSS(): Promise<void> {
