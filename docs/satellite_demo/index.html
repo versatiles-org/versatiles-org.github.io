@@ -8,24 +8,21 @@
 	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
 	<!-- Social / Open Graph -->
+	<meta property="og:url" content="https://versatiles.org/satellite_demo/">
 	<meta property="og:type" content="website">
-	<meta property="og:site_name" content="VersaTiles">
 	<meta property="og:title" content="VersaTiles Satellite Demo">
 	<meta property="og:description" content="Try the beta version of our free satellite map tiles.">
-	<meta property="og:image" content="https://versatiles-satellite.b-cdn.net/preview.jpg">
-	<meta property="og:image:alt" content="Satellite view of Europe with the VersaTiles logo">
+	<meta property="og:image" content="https://versatiles.org/satellite-demo/preview.jpg">
 
 	<!-- Twitter -->
-	<meta name="twitter:card" content="summary_large_image">
+ 	<meta name="twitter:card" content="summary_large_image">
+	<meta property="twitter:domain" content="versatiles.org">
+	<meta property="twitter:url" content="https://versatiles.org/satellite_demo/">
 	<meta name="twitter:title" content="VersaTiles Satellite Demo">
 	<meta name="twitter:description" content="Try the beta version of our free satellite map tiles.">
-	<meta name="twitter:image" content="https://versatiles-satellite.b-cdn.net/preview.jpg">
-	<meta name="twitter:image:alt" content="Satellite view of Europe with the VersaTiles logo">
+	<meta name="twitter:image" content="https://versatiles.org/satellite-demo/preview.jpg">
 
-	<!-- Optional UI color -->
-	<meta name="theme-color" content="#111111">
-
-	<link rel="icon" type="image/png" href="https://versatiles-satellite.b-cdn.net/assets/images/versatiles-logo.png">
+	<link rel="icon" type="image/png" href="https://versatiles.org/assets/logo/versatiles.96.png">
 
 	<script src="https://versatiles-satellite.b-cdn.net/assets/lib/maplibre-gl/maplibre-gl.js"></script>
 	<link href="https://versatiles-satellite.b-cdn.net/assets/lib/maplibre-gl/maplibre-gl.css" rel="stylesheet">
@@ -119,12 +116,12 @@
 	<div id="map" class="maplibregl-compact"></div>
 	<div id="banner">
 		<div>
-			<a href="https://versatiles.org"><img src="https://tiles.versatiles.org/assets/images/versatiles-logo.png"
+			<a href="https://versatiles.org"><img src="https://versatiles.org/assets/logo/versatiles.96.png"
 					alt="VersaTiles" width="32"></a>
 		</div>
 		<div id="text">
-			<p>This demo overlays orthophotos on top of data from <a href="https://s2gm.land.copernicus.eu/">Sentinel-2</a> and <a
-					href="https://visibleearth.nasa.gov/collection/1484/blue-marble">Blue Marble</a>.</p>
+			<p>This demo overlays orthophotos on top of data from <a href="https://s2gm.land.copernicus.eu/">Sentinel-2</a>
+				and <a href="https://visibleearth.nasa.gov/collection/1484/blue-marble">Blue Marble</a>.</p>
 			<p>Zoom in to explore details; zoom out to see metadata.</p>
 			<p>It is built and served with <a href="https://versatiles.org">VersaTiles</a> (<a
 					href="https://versatiles.org">Website</a>, <a href="https://github.com/versatiles-org">GitHub</a>). Once
@@ -136,7 +133,8 @@
 				<b>Please help to cover the infrastructure costs by becoming a <a
 						href="https://github.com/sponsors/MichaelKreil">GitHub Sponsor</a> or an <a
 						href="https://opencollective.com/versatiles">Open Collective backer</a>.</b><br>
-				The high-performance server I rent to process these terabytes of image material alone costs me €500 per month.
+				The high-performance server I rent to process these terabytes of image material alone costs me €500 per
+				month.
 			</p>
 		</div>
 		<div id="btn_close" onclick="close_banner()">&#x2715;</div>
