@@ -4,7 +4,7 @@ import { buildCSS } from './css.ts';
 import { parseMarkdown } from './markdown.ts';
 import { MenuEntry, Page } from 'cheerio_cms';
 
-const template = Deno.readTextFileSync('./docs/templates/page.html');
+const template = Deno.readTextFileSync('./templates/page.html');
 
 const menu: MenuEntry[] = [
 	{ title: 'Overview', url: 'https://versatiles.org/' },
