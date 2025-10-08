@@ -140,6 +140,8 @@
 		<div id="btn_close" onclick="close_banner()">&#x2715;</div>
 	</div>
 	<script>
+		maplibregl.setRTLTextPlugin('https://tiles.versatiles.org/assets/lib/mapbox-gl-rtl-text/mapbox-gl-rtl-text.js', true);
+
 		const style = VersaTilesStyle.graybeard({
 			baseUrl: 'https://tiles.versatiles.org',
 			colors: {
