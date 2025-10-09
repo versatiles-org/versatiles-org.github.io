@@ -60,6 +60,15 @@ Have a look at our [download server](https://download.versatiles.org/) and the f
 
 Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodon](https://mastodon.social/@VersaTiles) or [Bluesky](https://bsky.app/profile/versatiles.bsky.social).
 
+## Highlights
+
+- **2025-10-08** - We published a first global **imagery prototype**, combining free satellite and aerial orthophotos: [versatiles.org/satellite_demo](https://versatiles.org/satellite_demo/)
+- **2025-08-17** - Michael presented *[VersaTiles - finally maps for everyone](https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone)* at FrOSCon 2025
+- **2025-03-04** - Our documentation now lives on its own site: [docs.versatiles.org](https://docs.versatiles.org)
+- **2025-02-01** - We released our free [map editor](https://versatiles.org/node-versatiles-svelte/map-editor)
+- **2024-09-25** - German magazine [Heise](https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html) featured VersaTiles as an open alternative to commercial map providers
+- **2024-07-30** - Our handy [“setup server” tool](https://versatiles.org/tools/setup_server) went online
+- **2023-07-16** - [versatiles.org](https://versatiles.org) officially launched
 ## Powered by
 
 <p style="text-align:center; margin:3rem 0">
