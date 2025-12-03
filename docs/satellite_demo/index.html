@@ -77,6 +77,17 @@
 			cursor: pointer;
 		}
 
+		#banner.closed {
+			backdrop-filter: none;
+			background: none;
+		}
+		#banner.closed #text {
+			display: none;
+		}
+		#banner.closed #btn_close {
+			display: none;
+		}
+
 		a {
 			color: inherit !important;
 		}
@@ -102,12 +113,7 @@
 	</style>
 	<script>
 		function close_banner() {
-			console.log('close');
-			document.getElementById('text').style.display = 'none';
-			document.getElementById('btn_close').style.display = 'none';
-			const banner = document.getElementById('banner');
-			banner.style.backdropFilter = 'none';
-			banner.style.background = 'none';
+			document.getElementById('banner').classList.add('closed');
 		}
 	</script>
 </head>
