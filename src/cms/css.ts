@@ -3,6 +3,50 @@ import { CSS } from '@deno/gfm';
 import CleanCSS from 'clean-css';
 
 /**
+ * Selectors from @deno/gfm's markdown-body styles that should be excluded.
+ * These either conflict with custom styles or are unnecessary for this CMS.
+ */
+const EXCLUDED_MARKDOWN_SELECTORS = [
+	// Pseudo-elements and pseudo-classes
+	':',
+	// Direct child selectors
+	'>',
+	// Heading styles (handled by custom CSS)
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	// Link styles (handled by custom CSS)
+	'a',
+	// iframe styles (not used)
+	'iframe',
+];
+
+/**
+ * Check if a CSS rule line should be filtered out.
+ * Returns true if the line should be KEPT, false if it should be removed.
+ */
+function shouldKeepMarkdownRule(line: string): boolean {
+	// Keep non-markdown-body rules
+	if (!line.startsWith('.markdown-body')) return true;
+
+	// Extract the selector part after ".markdown-body"
+	const selectorPart = line.split('{')[0].slice('.markdown-body'.length).trim();
+
+	// Remove empty .markdown-body{} rules
+	if (!selectorPart) return false;
+
+	// Remove rules matching excluded selectors
+	for (const excluded of EXCLUDED_MARKDOWN_SELECTORS) {
+		if (selectorPart.startsWith(excluded)) return false;
+	}
+
+	return true;
+}
+
+/**
  * Builds a single minified CSS file from multiple source files.
  *
  * This function reads the provided source CSS or LESS files, compiles LESS files to CSS,
@@ -14,25 +58,33 @@ import CleanCSS from 'clean-css';
  * @returns A Promise that resolves when the CSS file has been written.
  */
 export async function buildCSS(srcFilenames: string[], dstFilename: string): Promise<void> {
+	// Read and compile all source files
 	const cssList = await Promise.all(srcFilenames.map(async (cssFilename) => {
 		let content = await Deno.readTextFile(cssFilename);
-		if (cssFilename.endsWith('.less')) content = (await less.render(content)).css;
+		if (cssFilename.endsWith('.less')) {
+			content = (await less.render(content)).css;
+		}
 		return content;
 	}));
 
-	cssList.push(CSS.replace(/\.markdown-body\{.*?\}/g, ''));
+	// Add GFM styles, removing the base .markdown-body{} rule which sets unwanted defaults
+	const gfmStyles = CSS.replace(/\.markdown-body\s*\{[^}]*\}/g, '');
+	cssList.push(gfmStyles);
 
-	let css = new CleanCSS({ format: { breaks: { afterRuleEnds: true } } }).minify(
-		cssList.join('\n'),
-	).styles as string;
+	// Minify with CleanCSS, configured to output one rule per line for filtering
+	const minified = new CleanCSS({
+		format: { breaks: { afterRuleEnds: true } },
+	}).minify(cssList.join('\n'));
 
-	// Remove "markdown" rules that are not needed for the CMS
-	css = css.split('\n').filter((line) => {
-		if (!line.startsWith('.markdown-body')) return true;
-		const part = line.split('{')[0].slice(14).trim();
-		if (!part) return false;
-		return !/^(:|>|h[123456]|a|a:hover|iframe)/.test(part);
-	}).join('\n');
+	if (minified.errors.length > 0) {
+		throw new Error(`CSS minification errors: ${minified.errors.join(', ')}`);
+	}
+
+	// Filter out unwanted markdown-body rules
+	const css = (minified.styles as string)
+		.split('\n')
+		.filter(shouldKeepMarkdownRule)
+		.join('\n');
 
 	await Deno.writeTextFile(dstFilename, css);
 }
