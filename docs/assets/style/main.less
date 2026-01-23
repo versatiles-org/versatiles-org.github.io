@@ -10,6 +10,24 @@ body {
 	color-scheme: dark;
 }
 
+/* Skip link for keyboard navigation - hidden until focused */
+.skip-link {
+	position: absolute;
+	top: -100px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #fff;
+	color: #1b1b1f;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+	z-index: 1000;
+	border-radius: 0 0 4px 4px;
+
+	&:focus {
+		top: 0;
+	}
+}
+
 a {
 	color: inherit;
 	text-decoration: underline;
