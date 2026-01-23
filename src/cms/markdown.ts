@@ -36,6 +36,10 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 
 	return {
 		attrs: attrs as MarkdownResult['attrs'],
+		// SECURITY: HTML sanitization is disabled because all markdown content comes from
+		// trusted sources (docs/ directory in this repository). This allows embedding
+		// raw HTML in markdown files for advanced formatting. Do not use this function
+		// to parse untrusted user-provided content.
 		html: render(body, { disableHtmlSanitization: true, renderer: new MarkdownRenderer() }),
 	};
 }
