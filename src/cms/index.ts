@@ -2,16 +2,10 @@ import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
 import { dirname, relative, resolve } from '@std/path';
 import { buildCSS } from './css.ts';
 import { parseMarkdown } from './markdown.ts';
-import { MenuEntry, Page } from 'cheerio_cms';
+import { Page } from 'cheerio_cms';
+import { config } from '../config.ts';
 
 const template = Deno.readTextFileSync('./templates/page.html');
-
-const menu: MenuEntry[] = [
-	{ title: 'Overview', url: 'https://versatiles.org/' },
-	{ title: 'Playground', url: 'https://versatiles.org/playground/' },
-	{ title: 'Tools', url: 'https://versatiles.org/tools/' },
-	{ title: 'Documentation', url: 'https://docs.versatiles.org/' },
-];
 
 export default class CMS {
 	private readonly srcPath: string;
@@ -45,7 +39,7 @@ export default class CMS {
 	private copyAssets() {
 		for (const entry of walkSync(this.srcPath)) {
 			if (!entry.isFile) continue;
-			if (!entry.name.match(/\.(png|jpg|jpeg|gif|svg|webp|ico?)$/i)) continue;
+			if (!config.assetExtensions.test(entry.name)) continue;
 			const relativePath = relative(this.srcPath, entry.path);
 			const dstFileName = resolve(this.dstPath, relativePath);
 			try {
@@ -90,10 +84,10 @@ export default class CMS {
 					const { html, attrs } = parseMarkdown(yaml);
 
 					const githubLink = attrs.githubLink ||
-						`https://github.com/versatiles-org/versatiles-org.github.io/tree/main/docs/${relativePath}`;
+						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
 					pageHTML = new Page(template)
-						.setMenu(menu, attrs.menuEntry, 'https://github.com/versatiles-org/')
+						.setMenu(config.menu, attrs.menuEntry, config.githubOrg)
 						.setTitle(attrs.title, attrs.description)
 						.setContent(html)
 						.setGithubLink(githubLink)
