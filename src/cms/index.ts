@@ -32,8 +32,14 @@ export default class CMS {
 	}
 
 	private clearFolder() {
-		if (existsSync(this.dstPath)) Deno.removeSync(this.dstPath, { recursive: true });
-		ensureDirSync(this.dstPath);
+		try {
+			if (existsSync(this.dstPath)) Deno.removeSync(this.dstPath, { recursive: true });
+			ensureDirSync(this.dstPath);
+		} catch (error) {
+			throw new Error(`Failed to clear/create destination folder "${this.dstPath}"`, {
+				cause: error,
+			});
+		}
 	}
 
 	private copyAssets() {
@@ -42,17 +48,31 @@ export default class CMS {
 			if (!entry.name.match(/\.(png|jpg|jpeg|gif|svg|webp|ico?)$/i)) continue;
 			const relativePath = relative(this.srcPath, entry.path);
 			const dstFileName = resolve(this.dstPath, relativePath);
-			ensureDirSync(dirname(dstFileName));
-			copySync(entry.path, dstFileName);
+			try {
+				ensureDirSync(dirname(dstFileName));
+				copySync(entry.path, dstFileName);
+			} catch (error) {
+				throw new Error(`Failed to copy asset "${entry.path}" to "${dstFileName}"`, {
+					cause: error,
+				});
+			}
 		}
 	}
 
 	private async buildCSS(): Promise<void> {
-		await buildCSS([
+		const srcFiles = [
 			resolve(this.srcPath, 'assets/style/main.less'),
 			resolve(this.srcPath, 'assets/style/menu.less'),
 			resolve(this.srcPath, 'assets/style/hero.less'),
-		], resolve(this.dstPath, 'assets/style.css'));
+		];
+		const dstFile = resolve(this.dstPath, 'assets/style.css');
+		try {
+			await buildCSS(srcFiles, dstFile);
+		} catch (error) {
+			throw new Error(`Failed to build CSS from [${srcFiles.join(', ')}] to "${dstFile}"`, {
+				cause: error,
+			});
+		}
 	}
 
 	private buildPages() {
@@ -60,7 +80,6 @@ export default class CMS {
 
 		for (const entry of walkSync(srcPath)) {
 			if (!entry.isFile) continue;
-			const filename = entry.name;
 
 			try {
 				let pageHTML: string;
@@ -89,7 +108,7 @@ export default class CMS {
 				ensureDirSync(dirname(htmlFileName));
 				Deno.writeTextFileSync(htmlFileName, pageHTML);
 			} catch (error) {
-				throw Error(`Error processing ${filename}:`, { cause: String(error) });
+				throw new Error(`Failed to process page "${entry.path}"`, { cause: error });
 			}
 		}
 	}
@@ -99,7 +118,11 @@ export default class CMS {
 			if (!entry.isFile) continue;
 			const extension = entry.name.split('.').pop()?.toLowerCase();
 			if (extension === 'ds_store' || extension === 'less') {
-				Deno.removeSync(entry.path);
+				try {
+					Deno.removeSync(entry.path);
+				} catch (error) {
+					throw new Error(`Failed to remove temporary file "${entry.path}"`, { cause: error });
+				}
 			}
 		}
 	}
