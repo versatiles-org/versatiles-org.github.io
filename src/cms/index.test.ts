@@ -1,33 +1,40 @@
 import { join } from '@std/path/join';
 import { existsSync, walkSync } from '@std/fs';
 import CMS from './index.ts';
-import { afterAll, describe, it } from '@std/testing/bdd';
+import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
 import { expect } from '@std/expect';
 
 describe('CMS builds site structure', () => {
-	// Arrange
-	const srcPath = 'test_src';
-	const dstPath = 'test_dst';
-	Deno.mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-	Deno.writeTextFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-	Deno.writeTextFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
-	Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
-	Deno.writeTextFileSync(join(srcPath, 'assets/style/ignore.png'), '');
-	Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
-	Deno.writeTextFileSync(
-		join(srcPath, 'test.md'),
-		[
-			'---',
-			'title: Test Title',
-			'description: Test Desc',
-			'menuEntry: test',
-			'---',
-			'Hello World!',
-		].join('\n'),
-	);
+	let srcPath: string;
+	let dstPath: string;
+
+	beforeAll(() => {
+		// Use temp directories to avoid polluting project root
+		srcPath = Deno.makeTempDirSync({ prefix: 'cms_test_src_' });
+		dstPath = Deno.makeTempDirSync({ prefix: 'cms_test_dst_' });
+
+		// Arrange
+		Deno.mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
+		Deno.writeTextFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
+		Deno.writeTextFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
+		Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
+		Deno.writeTextFileSync(join(srcPath, 'assets/style/ignore.png'), '');
+		Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
+		Deno.writeTextFileSync(
+			join(srcPath, 'test.md'),
+			[
+				'---',
+				'title: Test Title',
+				'description: Test Desc',
+				'menuEntry: test',
+				'---',
+				'Hello World!',
+			].join('\n'),
+		);
+	});
 
 	afterAll(() => {
-		// Cleanup
+		// Cleanup temp directories
 		Deno.removeSync(srcPath, { recursive: true });
 		Deno.removeSync(dstPath, { recursive: true });
 	});
