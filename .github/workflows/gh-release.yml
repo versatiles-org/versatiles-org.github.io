@@ -69,27 +69,15 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          - name: Trigger tools site update
-           run: |
-              curl --fail --silent --show-error \
-                --max-time 30 \
-                --connect-timeout 10 \
-                -X POST \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
-                "https://api.github.com/repos/${{ env.GITHUB_ORG }}/tools/actions/workflows/gh-release.yml/dispatches" \
-                -d '{"ref":"main"}'
+           env:
+              GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+           run: gh workflow run gh-release.yml --repo ${{ env.GITHUB_ORG }}/tools --ref main
 
    update-playground-sites:
       needs: gh-release
       runs-on: ubuntu-latest
       steps:
          - name: Trigger playground site update
-           run: |
-              curl --fail --silent --show-error \
-                --max-time 30 \
-                --connect-timeout 10 \
-                -X POST \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
-                "https://api.github.com/repos/${{ env.GITHUB_ORG }}/playground/actions/workflows/gh-release.yml/dispatches" \
-                -d '{"ref":"main"}'
+           env:
+              GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+           run: gh workflow run gh-release.yml --repo ${{ env.GITHUB_ORG }}/playground --ref main
