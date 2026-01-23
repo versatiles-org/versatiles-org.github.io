@@ -7,16 +7,50 @@ import { config } from '../config.ts';
 
 const template = Deno.readTextFileSync('./templates/page.html');
 
+/**
+ * Content Management System for building the VersaTiles static website.
+ *
+ * Handles the complete build pipeline:
+ * - Copying static assets (images)
+ * - Compiling LESS to CSS
+ * - Converting Markdown to HTML pages
+ * - Cleaning up temporary files
+ *
+ * @example
+ * ```ts
+ * const cms = new CMS('./docs', './dist');
+ * await cms.build();
+ * ```
+ */
 export default class CMS {
+	/** Source directory containing markdown files and assets */
 	private readonly srcPath: string;
 
+	/** Destination directory for the built website */
 	private readonly dstPath: string;
 
+	/**
+	 * Creates a new CMS instance.
+	 * @param srcPath - Path to source directory containing content and assets
+	 * @param dstPath - Path to destination directory for built output
+	 */
 	public constructor(srcPath: string, dstPath: string) {
 		this.srcPath = srcPath;
 		this.dstPath = dstPath;
 	}
 
+	/**
+	 * Builds the complete website.
+	 *
+	 * Executes the build pipeline in order:
+	 * 1. Clears the destination folder
+	 * 2. Copies static assets
+	 * 3. Compiles CSS from LESS files
+	 * 4. Builds HTML pages from Markdown
+	 * 5. Removes temporary files
+	 *
+	 * @throws {Error} If any build step fails
+	 */
 	public async build() {
 		this.clearFolder();
 		this.copyAssets();
@@ -25,6 +59,7 @@ export default class CMS {
 		this.cleanUp();
 	}
 
+	/** Removes existing destination folder and creates a fresh empty one. */
 	private clearFolder() {
 		try {
 			if (existsSync(this.dstPath)) Deno.removeSync(this.dstPath, { recursive: true });
@@ -36,6 +71,7 @@ export default class CMS {
 		}
 	}
 
+	/** Copies image assets from source to destination, preserving directory structure. */
 	private copyAssets() {
 		for (const entry of walkSync(this.srcPath)) {
 			if (!entry.isFile) continue;
@@ -53,6 +89,7 @@ export default class CMS {
 		}
 	}
 
+	/** Compiles LESS files into a single minified CSS file. */
 	private async buildCSS(): Promise<void> {
 		const srcFiles = [
 			resolve(this.srcPath, 'assets/style/main.less'),
@@ -69,6 +106,7 @@ export default class CMS {
 		}
 	}
 
+	/** Converts Markdown files to HTML pages using the page template. */
 	private buildPages() {
 		const { srcPath, dstPath } = this;
 
@@ -107,6 +145,7 @@ export default class CMS {
 		}
 	}
 
+	/** Removes temporary files (.DS_Store, .less) from the built assets folder. */
 	private cleanUp() {
 		for (const entry of walkSync(resolve(this.dstPath, 'assets'))) {
 			if (!entry.isFile) continue;
