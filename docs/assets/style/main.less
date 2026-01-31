@@ -143,3 +143,38 @@ footer {
 	color: #888;
 	padding: 2rem;
 }
+
+/* Print styles */
+@media print {
+	body {
+		background-color: #fff;
+		color: #000;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		color: #000;
+	}
+
+	main hero {
+		color: #333;
+	}
+
+	a {
+		color: #000;
+		text-decoration: underline;
+	}
+
+	a[href^="http"]::after {
+		content: " (" attr(href) ")";
+		font-size: 0.8em;
+	}
+
+	nav, footer, .skip-link, #map {
+		display: none;
+	}
+
+	main {
+		width: 100%;
+		padding: 0;
+	}
+}
