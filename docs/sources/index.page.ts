@@ -75,12 +75,6 @@ const styles = `<style>
 .sources-page tr:hover td {
 	background: #ffffff08;
 }
-.sources-page td:first-child {
-	white-space: nowrap;
-}
-.sources-page td:nth-child(3) {
-	white-space: nowrap;
-}
 </style>`;
 
 export default async function (): Promise<PageResult> {
