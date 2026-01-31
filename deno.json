@@ -1,7 +1,7 @@
 {
   "tasks": {
     "check": "deno lint && deno fmt && deno test -A",
-    "coverage": "deno test -A --coverage=coverage",
+    "coverage": "rm -rf coverage && deno test -A --coverage=coverage --coverage-raw-data-only && deno coverage coverage --exclude='dynamic_test'",
     "build": "deno run -A src/build.ts",
     "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' -A src/dev.ts",
     "test": "deno test -A",
