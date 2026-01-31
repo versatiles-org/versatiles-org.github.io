@@ -22,6 +22,13 @@ const EXCLUDED_MARKDOWN_SELECTORS = [
 	'a',
 	// iframe styles (not used)
 	'iframe',
+	// Table styles (handled by custom CSS)
+	'table',
+	'thead',
+	'tbody',
+	'th',
+	'td',
+	'tr',
 ];
 
 /**
