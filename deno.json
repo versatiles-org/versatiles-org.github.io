@@ -5,7 +5,6 @@
     "build": "deno run -A src/build.ts",
     "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' -A src/dev.ts",
     "test": "deno test -A",
-    "test-coverage": "deno test -A --coverage=coverage",
     "upgrade": "deno outdated --update --latest"
   },
   "nodeModulesDir": "none",
