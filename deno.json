@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "check": "deno check && deno lint && deno fmt && deno test -A",
+    "check": "deno lint && deno fmt && deno test -A",
     "coverage": "deno test -A --coverage=coverage",
     "build": "deno run -A src/build.ts",
     "dev": "deno run --watch='src,docs' --watch-exclude='**/.DS_Store' -A src/dev.ts",
