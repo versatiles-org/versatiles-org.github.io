@@ -5,7 +5,12 @@ import { parseMarkdown } from './markdown.ts';
 import { Page } from 'cheerio_cms';
 import { config } from '../config.ts';
 
-const template = Deno.readTextFileSync('./templates/page.html');
+let template: string;
+try {
+	template = Deno.readTextFileSync('./templates/page.html');
+} catch (error) {
+	throw new Error('Failed to read template file "./templates/page.html"', { cause: error });
+}
 
 /**
  * Content Management System for building the VersaTiles static website.
