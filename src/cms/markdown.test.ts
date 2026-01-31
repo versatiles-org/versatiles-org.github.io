@@ -76,7 +76,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "menuEntry"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "menuEntry"',
+		);
 	});
 
 	it('errors when title is missing', () => {
@@ -88,7 +90,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "title"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "title"',
+		);
 	});
 
 	it('errors when description is missing', () => {
@@ -100,7 +104,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "description"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "description"',
+		);
 	});
 
 	it('errors when menuEntry is not a string', () => {
@@ -113,7 +119,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "menuEntry"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "menuEntry"',
+		);
 	});
 
 	it('errors when title is not a string', () => {
@@ -126,7 +134,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "title"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "title"',
+		);
 	});
 
 	it('errors when description is not a string', () => {
@@ -139,7 +149,9 @@ describe('parseMarkdown', () => {
 			'Content',
 		].join('\n');
 
-		expect(() => parseMarkdown(input)).toThrow('Markdown attributes must contain a string "description"');
+		expect(() => parseMarkdown(input)).toThrow(
+			'Markdown attributes must contain a string "description"',
+		);
 	});
 
 	it('preserves optional githubLink attribute', () => {

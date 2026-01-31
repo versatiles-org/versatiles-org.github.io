@@ -125,7 +125,10 @@ export default class CMS {
 					const githubLink = result.githubLink ||
 						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
-					const canonicalPath = relativePath.replace(/\.page\.ts$/, '.html').replace(/index\.html$/, '');
+					const canonicalPath = relativePath.replace(/\.page\.ts$/, '.html').replace(
+						/index\.html$/,
+						'',
+					);
 					const canonicalUrl = `${config.baseUrl}/${canonicalPath}`;
 
 					pageHTML = new Page(template)
@@ -142,7 +145,10 @@ export default class CMS {
 					const githubLink = attrs.githubLink ||
 						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
-					const canonicalPath = relativePath.replace(/\.md$/, '.html').replace(/index\.html$/, '');
+					const canonicalPath = relativePath.replace(/\.md$/, '.html').replace(
+						/index\.html$/,
+						'',
+					);
 					const canonicalUrl = `${config.baseUrl}/${canonicalPath}`;
 
 					pageHTML = new Page(template)
@@ -158,7 +164,10 @@ export default class CMS {
 					continue;
 				}
 
-				const htmlFileName = resolve(dstPath, relativePath.replace(/\.page\.ts$|\.md$|\.html$/, '.html'));
+				const htmlFileName = resolve(
+					dstPath,
+					relativePath.replace(/\.page\.ts$|\.md$|\.html$/, '.html'),
+				);
 				ensureDirSync(dirname(htmlFileName));
 				Deno.writeTextFileSync(htmlFileName, pageHTML);
 			} catch (error) {
