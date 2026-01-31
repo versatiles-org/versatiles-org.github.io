@@ -32,8 +32,11 @@ jobs:
          - name: Lint
            run: deno lint
 
+         - name: Format
+           run: deno fmt --check
+
          - name: Test
-           run: deno test --allow-all
+           run: deno test -A
 
          - name: Build
            run: deno task build
