@@ -22,6 +22,8 @@ menuEntry: Overview
 
 ## Try it out
 
+<link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" as="style" />
+<link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js" as="script" />
 <link rel="stylesheet" type="text/css" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" />
 <script src="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js"></script>
 <style scoped>
