@@ -1,6 +1,7 @@
 import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
 import { dirname, relative, resolve } from '@std/path';
 import { buildCSS } from './css.ts';
+import { buildDynamicPage } from './dynamic.ts';
 import { parseMarkdown } from './markdown.ts';
 import { Page } from 'cheerio_cms';
 import { config } from '../config.ts';
@@ -60,7 +61,7 @@ export default class CMS {
 		this.clearFolder();
 		this.copyAssets();
 		await this.buildCSS();
-		this.buildPages();
+		await this.buildPages();
 		this.cleanUp();
 	}
 
@@ -107,8 +108,8 @@ export default class CMS {
 		}
 	}
 
-	/** Converts Markdown files to HTML pages using the page template. */
-	private buildPages() {
+	/** Converts Markdown and dynamic .page.ts files to HTML pages using the page template. */
+	private async buildPages() {
 		const { srcPath, dstPath } = this;
 
 		for (const entry of walkSync(srcPath)) {
@@ -118,7 +119,23 @@ export default class CMS {
 				let pageHTML: string;
 				const relativePath = relative(srcPath, entry.path);
 
-				if (entry.name.endsWith('.md')) {
+				if (entry.name.endsWith('.page.ts')) {
+					const result = await buildDynamicPage(entry.path);
+
+					const githubLink = result.githubLink ||
+						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
+
+					const canonicalPath = relativePath.replace(/\.page\.ts$/, '.html').replace(/index\.html$/, '');
+					const canonicalUrl = `${config.baseUrl}/${canonicalPath}`;
+
+					pageHTML = new Page(template)
+						.setMenu(config.menu, result.menuEntry, config.githubOrg)
+						.setTitle(result.title, result.description)
+						.setContent(result.html)
+						.setGithubLink(githubLink)
+						.addHead(`<link rel="canonical" href="${canonicalUrl}" />`)
+						.render();
+				} else if (entry.name.endsWith('.md')) {
 					const yaml = Deno.readTextFileSync(entry.path);
 					const { html, attrs } = parseMarkdown(yaml);
 
@@ -141,7 +158,7 @@ export default class CMS {
 					continue;
 				}
 
-				const htmlFileName = resolve(dstPath, relativePath.replace(/\.[a-z]+$/, '.html'));
+				const htmlFileName = resolve(dstPath, relativePath.replace(/\.page\.ts$|\.md$|\.html$/, '.html'));
 				ensureDirSync(dirname(htmlFileName));
 				Deno.writeTextFileSync(htmlFileName, pageHTML);
 			} catch (error) {
