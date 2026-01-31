@@ -96,12 +96,8 @@ export default class CMS {
 
 	/** Compiles LESS files into a single minified CSS file. */
 	private async buildCSS(): Promise<void> {
-		const srcFiles = [
-			resolve(this.srcPath, 'assets/style/main.less'),
-			resolve(this.srcPath, 'assets/style/menu.less'),
-			resolve(this.srcPath, 'assets/style/hero.less'),
-		];
-		const dstFile = resolve(this.dstPath, 'assets/style.css');
+		const srcFiles = config.cssSourceFiles.map((file) => resolve(this.srcPath, file));
+		const dstFile = resolve(this.dstPath, config.cssOutputFile);
 		try {
 			await buildCSS(srcFiles, dstFile);
 		} catch (error) {

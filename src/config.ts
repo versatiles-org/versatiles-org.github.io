@@ -5,6 +5,7 @@ import type { MenuEntry } from 'cheerio_cms';
  */
 
 export const config: {
+	baseUrl: string;
 	githubOrg: string;
 	githubRepo: string;
 	githubBranch: string;
@@ -13,7 +14,12 @@ export const config: {
 	devServerPort: number;
 	menu: MenuEntry[];
 	assetExtensions: RegExp;
+	cssSourceFiles: string[];
+	cssOutputFile: string;
 } = {
+	/** Base URL for the website (used for canonical URLs) */
+	baseUrl: 'https://versatiles.org',
+
 	/** GitHub organization URL */
 	githubOrg: 'https://github.com/versatiles-org/',
 
@@ -42,4 +48,14 @@ export const config: {
 
 	/** File extensions for assets to copy */
 	assetExtensions: /\.(png|jpg|jpeg|gif|svg|webp|ico?)$/i,
+
+	/** LESS/CSS source files to compile (relative to docs directory) */
+	cssSourceFiles: [
+		'assets/style/main.less',
+		'assets/style/menu.less',
+		'assets/style/hero.less',
+	],
+
+	/** Output CSS file (relative to dist directory) */
+	cssOutputFile: 'assets/style.css',
 };
