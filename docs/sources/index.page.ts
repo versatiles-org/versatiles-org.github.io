@@ -1,4 +1,4 @@
-import type { PageResult } from '../src/cms/types.ts';
+import type { PageResult } from '../../src/cms/types.ts';
 
 interface SourceEntry {
 	coverage: string;
@@ -42,32 +42,58 @@ async function fetchOrthophotos(): Promise<SourceEntry[]> {
 		.sort((a: SourceEntry, b: SourceEntry) => a.coverage.localeCompare(b.coverage));
 }
 
-function renderChapter(title: string, entries: SourceEntry[]): string {
-	const rows = entries.map((e) => `
-		<tr>
-			<td>${e.coverage}</td>
-			<td><a href="${e.source.url}">${e.source.name}</a></td>
-			<td>${e.license.url ? `<a href="${e.license.url}">${e.license.name}</a>` : e.license.name}</td>
-		</tr>
-	`).join('');
+function renderTable(entries: SourceEntry[]): string {
+	const rows = entries.map((e) =>
+		`<tr><td>${e.coverage}</td><td><a href="${e.source.url}">${e.source.name}</a></td><td>${e.license.url ? `<a href="${e.license.url}">${e.license.name}</a>` : e.license.name}</td></tr>`
+	).join('');
 
-	return `
-		<h2>${title}</h2>
-		<table>
-			<thead><tr><th>Coverage</th><th>Data Source</th><th>License</th></tr></thead>
-			<tbody>${rows}</tbody>
-		</table>
-	`;
+	return `<table>
+<thead><tr><th>Coverage</th><th>Data Source</th><th>License</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
 }
 
-export default async function (): Promise<PageResult> {
+const styles = `<style>
+.sources-page table {
+	display: table;
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5rem 0 3rem;
+	border: none;
+}
+.sources-page th,
+.sources-page td {
+	text-align: left;
+	padding: 0.6rem 1rem;
+	border-bottom: 1px solid #333;
+}
+.sources-page th {
+	color: #fff;
+	font-weight: 600;
+	border-bottom: 2px solid #444;
+}
+.sources-page tr:hover td {
+	background: #ffffff08;
+}
+.sources-page td:first-child {
+	white-space: nowrap;
+}
+.sources-page td:nth-child(3) {
+	white-space: nowrap;
+}
+</style>`;
 
-	const html = [
-		'<h1>Data Sources</h1>',
-		renderChapter('Vector Data', vectorData),
-		renderChapter('Satellite Data', satelliteData),
-		renderChapter('Orthophotos', await fetchOrthophotos()),
-	].join('\n');
+export default async function (): Promise<PageResult> {
+	const html = `${styles}
+<div class="sources-page">
+<h1>Data Sources</h1>
+<h2>Vector Data</h2>
+${renderTable(vectorData)}
+<h2>Satellite Data</h2>
+${renderTable(satelliteData)}
+<h2>Orthophotos</h2>
+${renderTable(await fetchOrthophotos())}
+</div>`;
 
 	return {
 		title: 'VersaTiles - Data Sources',
