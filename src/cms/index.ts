@@ -129,11 +129,15 @@ export default class CMS {
 					const githubLink = attrs.githubLink ||
 						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
+					const canonicalPath = relativePath.replace(/\.md$/, '.html').replace(/index\.html$/, '');
+					const canonicalUrl = `${config.baseUrl}/${canonicalPath}`;
+
 					pageHTML = new Page(template)
 						.setMenu(config.menu, attrs.menuEntry, config.githubOrg)
 						.setTitle(attrs.title, attrs.description)
 						.setContent(html)
 						.setGithubLink(githubLink)
+						.addHead(`<link rel="canonical" href="${canonicalUrl}" />`)
 						.render();
 				} else if (entry.name.endsWith('.html')) {
 					pageHTML = Deno.readTextFileSync(entry.path);
