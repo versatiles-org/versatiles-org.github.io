@@ -1,7 +1,7 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@deno/gfm@0.11": "0.11.0",
+    "jsr:@deno/gfm@0.12": "0.12.0",
     "jsr:@denosaurs/emoji@~0.3.1": "0.3.1",
     "jsr:@std/assert@^1.0.14": "1.0.18",
     "jsr:@std/assert@^1.0.17": "1.0.18",
@@ -30,18 +30,18 @@
     "npm:clean-css@^5.3.3": "5.3.3",
     "npm:github-slugger@2": "2.0.0",
     "npm:he@^1.2.0": "1.2.0",
-    "npm:katex@0.16": "0.16.23",
+    "npm:katex@0.16": "0.16.27",
     "npm:less@^4.5.1": "4.5.1",
-    "npm:marked-alert@2": "2.1.2_marked@12.0.2",
-    "npm:marked-footnote@^1.2.0": "1.4.0_marked@12.0.2",
-    "npm:marked-gfm-heading-id@^3.1.0": "3.2.0_marked@12.0.2",
-    "npm:marked@12": "12.0.2",
-    "npm:prismjs@^1.29.0": "1.30.0",
-    "npm:sanitize-html@^2.13.0": "2.17.0"
+    "npm:marked-alert@^2.1.2": "2.1.2_marked@17.0.1",
+    "npm:marked-footnote@^1.4.0": "1.4.0_marked@17.0.1",
+    "npm:marked-gfm-heading-id@^4.1.3": "4.1.3_marked@17.0.1",
+    "npm:marked@^17.0.1": "17.0.1",
+    "npm:prismjs@^1.30.0": "1.30.0",
+    "npm:sanitize-html@^2.17.0": "2.17.0"
   },
   "jsr": {
-    "@deno/gfm@0.11.0": {
-      "integrity": "ddadbfca6c1281729783612e4b0b2166b6543c1c49cc106b80911f4dc4087abc",
+    "@deno/gfm@0.12.0": {
+      "integrity": "9b2d8f3e3d5673da5b2e8613d36cf38619ac5e3bdeb895d35472a16870fb147a",
       "dependencies": [
         "jsr:@denosaurs/emoji",
         "npm:github-slugger",
@@ -363,8 +363,8 @@
     "is-what@3.14.1": {
       "integrity": "sha512-sNxgpk9793nzSs7bA6JQJGeIuRBQhAaNGG77kzYQgMkrID+lS6SlK07K5LaptscDlSaIgH+GPFzf+d75FVxozA=="
     },
-    "katex@0.16.23": {
-      "integrity": "sha512-7VlC1hsEEolL9xNO05v9VjrvWZePkCVBJqj8ruICxYjZfHaHbaU53AlP+PODyFIXEnaEIEWi3wJy7FPZ95JAVg==",
+    "katex@0.16.27": {
+      "integrity": "sha512-aeQoDkuRWSqQN6nSvVCEFvfXdqo1OQiCmmW1kc9xSdjutPv7BGO7pqY9sQRJpMOGrEdfDgF2TfRXe5eUAD2Waw==",
       "dependencies": [
         "commander"
       ],
@@ -396,27 +396,27 @@
         "semver"
       ]
     },
-    "marked-alert@2.1.2_marked@12.0.2": {
+    "marked-alert@2.1.2_marked@17.0.1": {
       "integrity": "sha512-EFNRZ08d8L/iEIPLTlQMDjvwIsj03gxWCczYTht6DCiHJIZhMk4NK5gtPY9UqAYb09eV5VGT+jD4lp396E0I+w==",
       "dependencies": [
         "marked"
       ]
     },
-    "marked-footnote@1.4.0_marked@12.0.2": {
+    "marked-footnote@1.4.0_marked@17.0.1": {
       "integrity": "sha512-fZTxAhI1TcLEs5UOjCfYfTHpyKGaWQevbxaGTEA68B51l7i87SctPFtHETYqPkEN0ka5opvy4Dy1l/yXVC+hmg==",
       "dependencies": [
         "marked"
       ]
     },
-    "marked-gfm-heading-id@3.2.0_marked@12.0.2": {
-      "integrity": "sha512-Xfxpr5lXLDLY10XqzSCA9l2dDaiabQUgtYM9hw8yunyVsB/xYBRpiic6BOiY/EAJw1ik1eWr1ET1HKOAPZBhXg==",
+    "marked-gfm-heading-id@4.1.3_marked@17.0.1": {
+      "integrity": "sha512-aR0i63LmFbuxU/gAgrgz1Ir+8HK6zAIFXMlckeKHpV+qKbYaOP95L4Ux5Gi+sKmCZU5qnN2rdKpvpb7PnUBIWg==",
       "dependencies": [
         "github-slugger",
         "marked"
       ]
     },
-    "marked@12.0.2": {
-      "integrity": "sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==",
+    "marked@17.0.1": {
+      "integrity": "sha512-boeBdiS0ghpWcSwoNm/jJBwdpFaMnZWRzjA6SkUMYb40SVaN1x7mmfGKp0jvexGcx+7y2La5zRZsYFZI6Qpypg==",
       "bin": true
     },
     "mime@1.6.0": {
@@ -535,7 +535,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@deno/gfm@0.11",
+      "jsr:@deno/gfm@0.12",
       "jsr:@std/expect@^1.0.17",
       "jsr:@std/front-matter@^1.0.9",
       "jsr:@std/fs@^1.0.22",

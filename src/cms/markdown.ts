@@ -1,12 +1,13 @@
 import { extractYaml } from '@std/front-matter';
-import { render, Renderer } from '@deno/gfm';
+import { Marked, render, Renderer } from '@deno/gfm';
 
 /**
  * Custom Markdown renderer that outputs clean heading tags without anchor links.
  */
 class MarkdownRenderer extends Renderer {
-	override heading(text: string, level: 1 | 2 | 3 | 4 | 5 | 6): string {
-		return `<h${level}>${text}</h${level}>`;
+	override heading({ tokens, depth }: Marked.Tokens.Heading): string {
+		const text = this.parser.parseInline(tokens);
+		return `<h${depth}>${text}</h${depth}>`;
 	}
 }
 

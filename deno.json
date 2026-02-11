@@ -9,7 +9,7 @@
   },
   "nodeModulesDir": "none",
   "imports": {
-    "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
+    "@deno/gfm": "jsr:@deno/gfm@^0.12.0",
     "@std/expect": "jsr:@std/expect@^1.0.17",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "@std/fs": "jsr:@std/fs@^1.0.22",
