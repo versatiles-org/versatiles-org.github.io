@@ -73,6 +73,42 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
 - **2024-07-30** - Our handy [“setup server” tool](https://versatiles.org/tools/setup_server) went online
 - **2023-07-16** - [versatiles.org](https://versatiles.org) officially launched
 
+## Roadmap
+
+<div id="roadmap">
+  <div class="roadmap-category roadmap-done">
+    <h3><span class="status-badge">Done</span></h3>
+    <ul class="roadmap-items">
+      <li class="roadmap-item"><a href="https://docs.versatiles.org">Documentation</a> at docs.versatiles.org</li>
+      <li class="roadmap-item"><a href="https://versatiles.org/node-versatiles-svelte/map-editor">Map editor</a>, written in Svelte</li>
+      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-docker/tree/main/versatiles-nginx">Docker container</a> with nginx and TLS</li>
+      <li class="roadmap-item"><a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js binding</a> for versatiles-rs</li>
+      <li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Satellite data</a> release</li>
+      <li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Style editor</a> for MapLibre</li>
+      <li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Setup server tool</a></li>
+    </ul>
+  </div>
+  <div class="roadmap-category roadmap-planned">
+    <h3><span class="status-badge">Planned</span></h3>
+    <ul class="roadmap-items">
+      <li class="roadmap-item">Finding partners</li>
+      <li class="roadmap-item">Migrate to Planetiler</li>
+      <li class="roadmap-item">Publish global elevation data</li>
+      <li class="roadmap-item">Publish "VersaTiles Studio"</li>
+      <li class="roadmap-item">Add SVG export</li>
+      <li class="roadmap-item">Integrate land cover data</li>
+      <li class="roadmap-item">Make it easier to convert GeoJSON to vector tiles</li>
+    </ul>
+  </div>
+  <div class="roadmap-category roadmap-exploring">
+    <h3><span class="status-badge">Exploring</span> funding needed</h3>
+    <ul class="roadmap-items">
+      <li class="roadmap-item">Update satellite data</li>
+      <li class="roadmap-item">Write a new style engine</li>
+    </ul>
+  </div>
+</div>
+
 ## Powered by
 
 <p style="text-align:center; margin:3rem 0">
