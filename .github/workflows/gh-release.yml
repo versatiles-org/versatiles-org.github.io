@@ -74,7 +74,7 @@ jobs:
          - name: Trigger tools site update
            env:
               GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-           run: gh workflow run gh-release.yml --repo ${{ env.GITHUB_ORG }}/tools --ref main
+           run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/tools --ref main
 
    update-playground-sites:
       needs: gh-release
