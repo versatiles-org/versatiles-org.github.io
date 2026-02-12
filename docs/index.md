@@ -79,32 +79,32 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
   <div class="roadmap-category roadmap-done">
     <h3><span class="status-badge">Done</span></h3>
     <ul class="roadmap-items">
-      <li class="roadmap-item"><a href="https://docs.versatiles.org">Documentation</a> at docs.versatiles.org</li>
-      <li class="roadmap-item"><a href="https://versatiles.org/node-versatiles-svelte/map-editor">Map editor</a>, written in Svelte</li>
-      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-docker/tree/main/versatiles-nginx">Docker container</a> with nginx and TLS</li>
-      <li class="roadmap-item"><a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js binding</a> for versatiles-rs</li>
-      <li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Satellite data</a> release</li>
-      <li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Style editor</a> for MapLibre</li>
-      <li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Setup server tool</a></li>
+      <li class="roadmap-item"><a href="https://docs.versatiles.org">Publish documentation at docs.versatiles.org</a></li>
+      <li class="roadmap-item"><a href="https://versatiles.org/node-versatiles-svelte/map-editor">Publish map editor</a></li>
+      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-docker/tree/main/versatiles-nginx">Publish Docker container with nginx and TLS</a></li>
+      <li class="roadmap-item"><a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Add Node.js bindings to the VersaTiles Rust CLI</a></li>
+      <li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Publish satellite and aerial imagery</a></li>
+      <li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Publish style editor plugin for MapLibre GL JS</a></li>
+      <li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Publish interactive server setup tool</a></li>
     </ul>
   </div>
   <div class="roadmap-category roadmap-planned">
     <h3><span class="status-badge">Planned</span></h3>
     <ul class="roadmap-items">
-      <li class="roadmap-item">Finding partners</li>
-      <li class="roadmap-item">Migrate to Planetiler</li>
-      <li class="roadmap-item">Publish global elevation data</li>
-      <li class="roadmap-item">Publish "VersaTiles Studio"</li>
-      <li class="roadmap-item">Add SVG export</li>
-      <li class="roadmap-item">Integrate land cover data</li>
-      <li class="roadmap-item">Make it easier to convert GeoJSON to vector tiles</li>
+      <li class="roadmap-item">Find partners and sponsors</li>
+      <li class="roadmap-item">Migrate tile generation to Planetiler</li>
+      <li class="roadmap-item">Publish free global elevation and terrain data</li>
+      <li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation</li>
+      <li class="roadmap-item">Add SVG export for print-quality maps</li>
+      <li class="roadmap-item">Integrate global land cover data</li>
+      <li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles</li>
     </ul>
   </div>
   <div class="roadmap-category roadmap-exploring">
     <h3><span class="status-badge">Exploring</span> funding needed</h3>
     <ul class="roadmap-items">
-      <li class="roadmap-item">Update satellite data</li>
-      <li class="roadmap-item">Write a new style engine</li>
+      <li class="roadmap-item">Update and extend satellite imagery</li>
+      <li class="roadmap-item">Build a new style engine</li>
     </ul>
   </div>
 </div>
