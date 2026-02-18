@@ -55,6 +55,8 @@ export const config: {
 		'assets/style/menu.less',
 		'assets/style/hero.less',
 		'assets/style/roadmap.less',
+		'assets/style/pipeline.less',
+		'assets/style/interested.less',
 	],
 
 	/** Output CSS file (relative to dist directory) */

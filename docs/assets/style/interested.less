@@ -1,0 +1,36 @@
+#interested {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+	margin: 2rem 0;
+}
+
+.interest-card {
+	background: #26262b;
+	border-radius: 6px;
+	padding: 1.2rem;
+
+	strong {
+		display: block;
+		color: #fff;
+		margin-bottom: 0.4rem;
+	}
+
+	span {
+		display: block;
+		font-size: 0.9em;
+		line-height: 1.4;
+		color: #aaa;
+		text-align: left;
+	}
+
+	&:hover {
+		background: #2e2e34;
+	}
+}
+
+@media (max-width: 500px) {
+	#interested {
+		grid-template-columns: 1fr;
+	}
+}

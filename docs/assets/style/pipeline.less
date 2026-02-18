@@ -1,0 +1,30 @@
+#pipeline {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1.5rem;
+	margin: 2rem 0;
+}
+
+.pipeline-step {
+	text-align: center;
+
+	strong {
+		display: block;
+		color: #fff;
+		font-size: 1.1em;
+		margin-bottom: 0.5rem;
+	}
+
+	span {
+		display: block;
+		font-size: 0.9em;
+		line-height: 1.4;
+		color: #aaa;
+	}
+}
+
+@media (max-width: 600px) {
+	#pipeline {
+		grid-template-columns: 1fr 1fr;
+	}
+}

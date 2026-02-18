@@ -50,6 +50,27 @@ menuEntry: Overview
 	map.addControl(new maplibregl.AttributionControl({ compact: true }));
 </script>
 
+## How it works
+
+<div id="pipeline">
+<div class="pipeline-step">
+<strong>Generate</strong>
+<span>Process OpenStreetMap data and satellite imagery into optimized vector and raster tiles.</span>
+</div>
+<div class="pipeline-step">
+<strong>Distribute</strong>
+<span>Host tile archives on any static file server or CDN — no special infrastructure required.</span>
+</div>
+<div class="pipeline-step">
+<strong>Serve</strong>
+<span>Deliver tiles to clients using a lightweight, high-performance tile server.</span>
+</div>
+<div class="pipeline-step">
+<strong>Render</strong>
+<span>Display beautiful maps in the browser with MapLibre GL JS and ready-made styles.</span>
+</div>
+</div>
+
 ## Interested?
 
 Read our small [introduction into VersaTiles](https://docs.versatiles.org/basics/versatiles.html) and dig deeper into the [documentation](https://docs.versatiles.org).
