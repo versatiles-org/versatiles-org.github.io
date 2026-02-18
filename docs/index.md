@@ -111,7 +111,7 @@ VersaTiles is a free and open alternative to commercial map services like Google
 ## Highlights
 
 - **2026-01-02** - [versatiles-rs](https://github.com/versatiles-org/versatiles-rs/) now has [Node.js bindings](https://www.npmjs.com/package/@versatiles/versatiles-rs).
-- **2025-10-08** - We published a first global **imagery prototype**, combining free satellite and aerial orthophotos: [versatiles.org/satellite_demo](https://versatiles.org/satellite_demo/)
+- **2025-10-08** - We published a first global **imagery prototype**, combining free satellite and aerial orthophotos: [tiles.versatiles.org](https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite)
 - **2025-08-17** - Michael presented *[VersaTiles - finally maps for everyone](https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone)* at FrOSCon 2025.
 - **2025-03-04** - Our documentation now lives on its own site: [docs.versatiles.org](https://docs.versatiles.org)
 - **2025-02-01** - We released our free [map editor](https://versatiles.org/node-versatiles-svelte/map-editor).
