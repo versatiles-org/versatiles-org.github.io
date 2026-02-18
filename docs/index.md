@@ -113,19 +113,19 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
   <div class="roadmap-category roadmap-planned">
     <h3><span class="status-badge">Planned</span></h3>
     <ul class="roadmap-items">
-      <li class="roadmap-item">Find partners and sponsors</li>
-      <li class="roadmap-item">Migrate tile generation to Planetiler</li>
-      <li class="roadmap-item">Publish free global elevation and terrain data</li>
-      <li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation</li>
-      <li class="roadmap-item">Integrate global land cover data</li>
-      <li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles</li>
+      <li class="roadmap-item">Find partners and sponsors — <em>ensure long-term sustainability of the project</em></li>
+      <li class="roadmap-item">Migrate tile generation to Planetiler — <em>faster and better tile generation from OSM data</em></li>
+      <li class="roadmap-item">Publish free global elevation and terrain data — <em>enable hillshading and 3D terrain visualization</em></li>
+      <li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation — <em>create and export custom maps without code</em></li>
+      <li class="roadmap-item">Integrate global land cover data — <em>add vegetation, urban areas, and other land use information</em></li>
+      <li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles — <em>easily add your own data layers to VersaTiles maps</em></li>
     </ul>
   </div>
   <div class="roadmap-category roadmap-exploring">
     <h3><span class="status-badge">Exploring</span> funding needed</h3>
     <ul class="roadmap-items">
-      <li class="roadmap-item">Update and extend satellite imagery</li>
-      <li class="roadmap-item">Build a new style engine</li>
+      <li class="roadmap-item">Update and extend satellite imagery — <em>improve coverage and resolution worldwide</em></li>
+      <li class="roadmap-item">Build a new style engine — <em>replace MapLibre's style spec with a more flexible alternative</em></li>
     </ul>
   </div>
 </div>
