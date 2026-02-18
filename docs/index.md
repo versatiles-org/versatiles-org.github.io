@@ -86,6 +86,7 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
       <li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Publish satellite and aerial imagery</a></li>
       <li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Publish style editor plugin for MapLibre GL JS</a></li>
       <li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Publish interactive server setup tool</a></li>
+      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-svg-renderer">Add SVG export for print-quality maps</a></li>
     </ul>
   </div>
   <div class="roadmap-category roadmap-planned">
@@ -95,7 +96,6 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
       <li class="roadmap-item">Migrate tile generation to Planetiler</li>
       <li class="roadmap-item">Publish free global elevation and terrain data</li>
       <li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation</li>
-      <li class="roadmap-item">Add SVG export for print-quality maps</li>
       <li class="roadmap-item">Integrate global land cover data</li>
       <li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles</li>
     </ul>
