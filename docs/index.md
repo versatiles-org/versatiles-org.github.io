@@ -75,15 +75,28 @@ VersaTiles is a free and open alternative to commercial map services like Google
 
 ## Interested?
 
-Read our small [introduction into VersaTiles](https://docs.versatiles.org/basics/versatiles.html) and dig deeper into the [documentation](https://docs.versatiles.org).
-
-Play with some frontend code examples in the [playground](https://versatiles.org/playground/).
-
-Try our [tools](https://versatiles.org/tools/), like our [installation tool](https://versatiles.org/tools/setup_server).
-
-Have a look at our [download server](https://download.versatiles.org/) and the free data we provide.
-
-Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodon](https://mastodon.social/@VersaTiles) or [Bluesky](https://bsky.app/profile/versatiles.bsky.social).
+<div id="interested">
+<div class="interest-card">
+<strong>Get Started</strong>
+<span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full <a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
+</div>
+<div class="interest-card">
+<strong>Explore the Playground</strong>
+<span>Experiment with frontend code examples and map styles in the <a href="https://versatiles.org/playground/">playground</a>.</span>
+</div>
+<div class="interest-card">
+<strong>Use Our Tools</strong>
+<span>Try our <a href="https://versatiles.org/tools/">tools</a>, including the interactive <a href="https://versatiles.org/tools/setup_server">server setup guide</a>.</span>
+</div>
+<div class="interest-card">
+<strong>Download Free Data</strong>
+<span>Browse our <a href="https://download.versatiles.org/">download server</a> for free map tiles, fonts, styles, and sprites.</span>
+</div>
+<div class="interest-card">
+<strong>Join the Community</strong>
+<span>Contribute on <a href="https://github.com/versatiles-org">GitHub</a> and follow us on <a href="https://mastodon.social/@VersaTiles">Mastodon</a> or <a href="https://bsky.app/profile/versatiles.bsky.social">Bluesky</a>.</span>
+</div>
+</div>
 
 ## Highlights
 
