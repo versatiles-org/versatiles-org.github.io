@@ -55,22 +55,22 @@ VersaTiles is a free and open alternative to commercial map services like Google
 ## How it works
 
 <div id="pipeline">
-<div class="pipeline-step">
-<strong>Generate</strong>
-<span>Process OpenStreetMap data and satellite imagery into optimized vector and raster tiles.</span>
-</div>
-<div class="pipeline-step">
-<strong>Distribute</strong>
-<span>Host tile archives on any static file server or CDN — no special infrastructure required.</span>
-</div>
-<div class="pipeline-step">
-<strong>Serve</strong>
-<span>Deliver tiles to clients using a lightweight, high-performance tile server.</span>
-</div>
-<div class="pipeline-step">
-<strong>Render</strong>
-<span>Display beautiful maps in the browser with MapLibre GL JS and ready-made styles.</span>
-</div>
+  <div class="pipeline-step">
+    <strong>Generate</strong>
+    <span>Process OpenStreetMap data and satellite imagery into optimized vector and raster tiles.</span>
+  </div>
+  <div class="pipeline-step">
+    <strong>Distribute</strong>
+    <span>Host tile archives on any static file server or CDN — no special infrastructure required.</span>
+  </div>
+  <div class="pipeline-step">
+    <strong>Serve</strong>
+    <span>Deliver tiles to clients using a lightweight, high-performance tile server.</span>
+  </div>
+  <div class="pipeline-step">
+    <strong>Render</strong>
+    <span>Display beautiful maps in the browser with MapLibre GL JS and ready-made styles.</span>
+  </div>
 </div>
 
 ## Quick Start
@@ -82,30 +82,30 @@ VersaTiles is a free and open alternative to commercial map services like Google
 ## Interested?
 
 <div id="interested">
-<div class="interest-card">
-<strong>Try Our Tile Server</strong>
-<span>Browse map styles, customize them, and export a <code>style.json</code> for your app at <a href="https://tiles.versatiles.org/">tiles.versatiles.org</a>.</span>
-</div>
-<div class="interest-card">
-<strong>Get Started</strong>
-<span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full <a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
-</div>
-<div class="interest-card">
-<strong>Explore the Playground</strong>
-<span>Experiment with frontend code examples and map styles in the <a href="https://versatiles.org/playground/">playground</a>.</span>
-</div>
-<div class="interest-card">
-<strong>Use Our Tools</strong>
-<span>Try our <a href="https://versatiles.org/tools/">tools</a>, including the interactive <a href="https://versatiles.org/tools/setup_server">server setup guide</a>.</span>
-</div>
-<div class="interest-card">
-<strong>Download Free Data</strong>
-<span>Browse our <a href="https://download.versatiles.org/">download server</a> for free map tiles, fonts, styles, and sprites.</span>
-</div>
-<div class="interest-card">
-<strong>Join the Community</strong>
-<span>Contribute on <a href="https://github.com/versatiles-org">GitHub</a> and follow us on <a href="https://mastodon.social/@VersaTiles">Mastodon</a> or <a href="https://bsky.app/profile/versatiles.bsky.social">Bluesky</a>.</span>
-</div>
+  <div class="interest-card">
+    <strong>Try Our Tile Server</strong>
+    <span>Browse map styles, customize them, and export a <code>style.json</code> for your app at <a href="https://tiles.versatiles.org/">tiles.versatiles.org</a>.</span>
+  </div>
+  <div class="interest-card">
+    <strong>Get Started</strong>
+    <span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full <a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
+  </div>
+  <div class="interest-card">
+    <strong>Explore the Playground</strong>
+    <span>Experiment with frontend code examples and map styles in the <a href="https://versatiles.org/playground/">playground</a>.</span>
+  </div>
+  <div class="interest-card">
+    <strong>Use Our Tools</strong>
+    <span>Try our <a href="https://versatiles.org/tools/">tools</a>, including the interactive <a href="https://versatiles.org/tools/setup_server">server setup guide</a>.</span>
+  </div>
+  <div class="interest-card">
+    <strong>Download Free Data</strong>
+    <span>Browse our <a href="https://download.versatiles.org/">download server</a> for free map tiles, fonts, styles, and sprites.</span>
+  </div>
+  <div class="interest-card">
+    <strong>Join the Community</strong>
+    <span>Contribute on <a href="https://github.com/versatiles-org">GitHub</a> and follow us on <a href="https://mastodon.social/@VersaTiles">Mastodon</a> or <a href="https://bsky.app/profile/versatiles.bsky.social">Bluesky</a>.</span>
+  </div>
 </div>
 
 ## Highlights
@@ -158,10 +158,14 @@ VersaTiles is a free and open alternative to commercial map services like Google
 ## Funded by
 
 <p style="text-align:center; margin:3rem 0">
-<a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/nlnet-white.svg" alt="NLnet Foundation logo" width="139" height="52" loading="lazy" style="background-color: transparent;margin-right:30px"></a>
-<a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/ngi0core-white.svg" alt="NGI Zero Core logo" width="166" height="52" loading="lazy" style="background-color: transparent;"></a>
-<br><small>Funded by European Commission's Next Generation Internet programme<br>through the NGI0 Commons Fund by NLnet.</small>
+  <a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/nlnet-white.svg" alt="NLnet Foundation logo" width="139" height="52" loading="lazy" style="background-color: transparent;margin-right:30px"></a>
+  <a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/ngi0core-white.svg" alt="NGI Zero Core logo" width="166" height="52" loading="lazy" style="background-color: transparent;"></a>
+  <br>
+  <small>Funded by European Commission's Next Generation Internet programme<br>through the NGI0 Commons Fund by NLnet.</small>
 </p>
 
-<p style="text-align:center; margin:3rem 0"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz.png" alt="MIZ Babelsberg — media innovation centre logo" width="294" height="36" loading="lazy" style="background-color: transparent;"></a><br><small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
+<p style="text-align:center; margin:3rem 0">
+  <a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz.png" alt="MIZ Babelsberg — media innovation centre logo" width="294" height="36" loading="lazy" style="background-color: transparent;"></a>
+  <br>
+  <small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
 </p>
