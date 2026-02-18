@@ -28,6 +28,7 @@
     "singleQuote": true,
     "proseWrap": "preserve",
     "include": [
+      "docs/",
       "playground/",
       "src/"
     ],
