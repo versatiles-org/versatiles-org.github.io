@@ -38,7 +38,7 @@ VersaTiles is a free and open alternative to commercial map services like Google
 		margin: auto;
 	}
 </style>
-<div id="map"></div>
+<div id="map" role="img" aria-label="Interactive map of Berlin rendered with VersaTiles"></div>
 <script>
 	const map = new maplibregl.Map({
 		container: 'map',
@@ -140,5 +140,5 @@ Join us on [GitHub](https://github.com/versatiles-org) and follow us on [Mastodo
 <br><small>Funded by European Commission's Next Generation Internet programme<br>through the NGI0 Commons Fund by NLnet.</small>
 </p>
 
-<p style="text-align:center; margin:3rem 0"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz.png" alt="MIZ Babelsberg logo" width="294" height="36" loading="lazy" style="background-color: transparent;"></a><br><small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
+<p style="text-align:center; margin:3rem 0"><a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz.png" alt="MIZ Babelsberg — media innovation centre logo" width="294" height="36" loading="lazy" style="background-color: transparent;"></a><br><small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
 </p>
