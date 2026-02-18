@@ -81,6 +81,7 @@ export default async function (): Promise<PageResult> {
 	const html = `${styles}
 <div class="sources-page">
 <h1>Data Sources</h1>
+<p>VersaTiles uses exclusively open and freely licensed data sources. The tables below list all data sources along with their licenses.</p>
 <h2>Vector Data</h2>
 ${renderTable(vectorData)}
 <h2>Satellite Data</h2>
