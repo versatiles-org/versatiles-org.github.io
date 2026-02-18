@@ -26,7 +26,7 @@
     "jsr:@std/toml@^1.0.3": "1.0.11",
     "jsr:@std/yaml@^1.0.5": "1.0.11",
     "npm:@types/node@*": "22.15.15",
-    "npm:cheerio_cms@^1.0.1": "1.0.1",
+    "npm:cheerio_cms@^1.1.0": "1.1.0",
     "npm:clean-css@^5.3.3": "5.3.3",
     "npm:github-slugger@2": "2.0.0",
     "npm:he@^1.2.0": "1.2.0",
@@ -218,15 +218,15 @@
         "domutils"
       ]
     },
-    "cheerio@1.1.2": {
-      "integrity": "sha512-IkxPpb5rS/d1IiLbHMgfPuS0FgiWTtFIm/Nj+2woXDLTZ7fOT2eqzgYbdMlLweqlHbsZjxEChoVK+7iph7jyQg==",
+    "cheerio@1.2.0": {
+      "integrity": "sha512-WDrybc/gKFpTYQutKIK6UvfcuxijIZfMfXaYm8NMsPQxSYvf+13fXUJ4rztGGbJcBQ/GF55gvrZ0Bc0bj/mqvg==",
       "dependencies": [
         "cheerio-select",
         "dom-serializer",
         "domhandler",
         "domutils",
         "encoding-sniffer",
-        "htmlparser2@10.0.0",
+        "htmlparser2@10.1.0",
         "parse5",
         "parse5-htmlparser2-tree-adapter",
         "parse5-parser-stream",
@@ -234,8 +234,8 @@
         "whatwg-mimetype"
       ]
     },
-    "cheerio_cms@1.0.1": {
-      "integrity": "sha512-QHZlNXkmPpHMQzvmZYzryJ8XIjqv/btcT52PxHOzAekKzDu8NaHk+lZ4LyMdScLKWSWfbjQ6o5br8dF7C8N+bw==",
+    "cheerio_cms@1.1.0": {
+      "integrity": "sha512-dnbsE6yXGnwQBZHL+Duo7lH6hrD0z6WSt+VjDHcSpiTBWdl+WoADQi9VigHFOzqDVCrS5ywzCnPeVb0GUH6YeA==",
       "dependencies": [
         "cheerio"
       ]
@@ -309,6 +309,9 @@
     "entities@6.0.1": {
       "integrity": "sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g=="
     },
+    "entities@7.0.1": {
+      "integrity": "sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA=="
+    },
     "errno@0.1.8": {
       "integrity": "sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==",
       "dependencies": [
@@ -329,13 +332,13 @@
       "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==",
       "bin": true
     },
-    "htmlparser2@10.0.0": {
-      "integrity": "sha512-TwAZM+zE5Tq3lrEHvOlvwgj1XLWQCtaaibSN11Q+gGBAS7Y1uZSWwXXRe4iF6OXnaq1riyQAPFOBtYc77Mxq0g==",
+    "htmlparser2@10.1.0": {
+      "integrity": "sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==",
       "dependencies": [
         "domelementtype",
         "domhandler",
         "domutils",
-        "entities@6.0.1"
+        "entities@7.0.1"
       ]
     },
     "htmlparser2@8.0.2": {
@@ -519,8 +522,8 @@
     "undici-types@6.21.0": {
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
     },
-    "undici@7.16.0": {
-      "integrity": "sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g=="
+    "undici@7.22.0": {
+      "integrity": "sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg=="
     },
     "whatwg-encoding@3.1.1": {
       "integrity": "sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==",
@@ -542,7 +545,7 @@
       "jsr:@std/http@^1.0.24",
       "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
-      "npm:cheerio_cms@^1.0.1",
+      "npm:cheerio_cms@^1.1.0",
       "npm:clean-css@^5.3.3",
       "npm:less@^4.5.1"
     ]
