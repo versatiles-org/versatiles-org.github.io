@@ -73,6 +73,12 @@ VersaTiles is a free and open alternative to commercial map services like Google
 </div>
 </div>
 
+## Quick Start
+
+**Use our free tile server** — browse map styles at [tiles.versatiles.org](https://tiles.versatiles.org/), customize a style, and export the `style.json` to use it with [MapLibre GL JS](https://maplibre.org/) in your web application.
+
+**Host your own map server** — use our interactive [server setup tool](https://versatiles.org/tools/setup_server) to generate a complete configuration for your own infrastructure.
+
 ## Interested?
 
 <div id="interested">
