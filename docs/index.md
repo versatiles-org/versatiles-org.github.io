@@ -20,6 +20,8 @@ menuEntry: Overview
 
 <hero>VersaTiles is a completely [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
 
+VersaTiles is a free and open alternative to commercial map services like Google Maps or Mapbox. It is designed for newsrooms, NGOs, developers, and public institutions who need reliable maps without vendor lock-in. VersaTiles is fully self-hostable, requires no API keys, charges no usage fees, and does not track your users.
+
 ## Try it out
 
 <link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" as="style" />
