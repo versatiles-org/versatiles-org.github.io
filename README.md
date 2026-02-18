@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-Unlicense-green)](https://unlicense.org/)
+
 # versatiles.org Website
 
 Repository for building the website for [versatiles.org](https://versatiles.org).
