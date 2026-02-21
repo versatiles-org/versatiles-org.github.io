@@ -91,6 +91,10 @@ VersaTiles is a free and open alternative to commercial map services like Google
     <span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full <a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
   </div>
   <div class="interest-card">
+    <strong>Browse Showcases</strong>
+    <span>See real-world examples and creative uses of VersaTiles in our <a href="https://docs.versatiles.org/showcases/">showcase gallery</a>.</span>
+  </div>
+  <div class="interest-card">
     <strong>Explore the Playground</strong>
     <span>Experiment with frontend code examples and map styles in the <a href="https://versatiles.org/playground/">playground</a>.</span>
   </div>
