@@ -144,8 +144,11 @@ menuEntry: Overview
 
 	buttons.forEach((btn, i) => {
 		btn.addEventListener('click', async () => {
-			document.querySelector('.map-style-btn.active').classList.remove('active');
+			const prev = document.querySelector('.map-style-btn.active');
+			prev.classList.remove('active');
+			prev.setAttribute('aria-pressed', 'false');
 			btn.classList.add('active');
+			btn.setAttribute('aria-pressed', 'true');
 			track.style.setProperty('--pos', i);
 			const name = btn.dataset.style;
 			const style = name === 'satellite'
