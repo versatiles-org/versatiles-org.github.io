@@ -123,15 +123,23 @@ export default class CMS {
 				if (entry.name.endsWith('.page.ts')) {
 					const result = await buildDynamicPage(entry.path);
 					pageHTML = this.renderPage(
-						relativePath, result.menuEntry, result.title,
-						result.description, result.html, result.githubLink,
+						relativePath,
+						result.menuEntry,
+						result.title,
+						result.description,
+						result.html,
+						result.githubLink,
 					);
 				} else if (entry.name.endsWith('.md')) {
 					const yaml = Deno.readTextFileSync(entry.path);
 					const { html, attrs } = parseMarkdown(yaml);
 					pageHTML = this.renderPage(
-						relativePath, attrs.menuEntry, attrs.title,
-						attrs.description, html, attrs.githubLink,
+						relativePath,
+						attrs.menuEntry,
+						attrs.title,
+						attrs.description,
+						html,
+						attrs.githubLink,
 					);
 				} else if (entry.name.endsWith('.html')) {
 					const content = Deno.readTextFileSync(entry.path);
@@ -139,8 +147,12 @@ export default class CMS {
 						const { body, attrs } = extractYaml(content);
 						const a = attrs as Record<string, string>;
 						pageHTML = this.renderPage(
-							relativePath, a.menuEntry, a.title,
-							a.description, body, a.githubLink,
+							relativePath,
+							a.menuEntry,
+							a.title,
+							a.description,
+							body,
+							a.githubLink,
 						);
 					} else {
 						pageHTML = content;
@@ -163,8 +175,12 @@ export default class CMS {
 
 	/** Renders a page from its metadata and content using the shared template. */
 	private renderPage(
-		relativePath: string, menuEntry: string, title: string,
-		description: string, html: string, githubLink?: string,
+		relativePath: string,
+		menuEntry: string,
+		title: string,
+		description: string,
+		html: string,
+		githubLink?: string,
 	): string {
 		const resolvedGithubLink = githubLink ||
 			`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
