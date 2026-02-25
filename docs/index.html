@@ -101,6 +101,11 @@ menuEntry: Overview
 	.map-style-btn.active {
 		color: #fff;
 	}
+
+	.maplibregl-ctrl-attrib {
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
 </style>
 <div id="map-wrap">
 	<div id="map" role="img" aria-label="Interactive map of Berlin rendered with VersaTiles"></div>
@@ -122,13 +127,14 @@ menuEntry: Overview
 	});
 
 	map.addControl(new maplibregl.FullscreenControl());
-	const attribControl = new maplibregl.AttributionControl({ });
-	map.addControl(attribControl, 'bottom-right');
-	attribControl._container.style.setProperty('opacity', '0');
+	map.addControl(new maplibregl.AttributionControl({}));
 
 	map.on('load', () => {
-		attribControl._container.classList.remove('maplibregl-compact-show');
-		attribControl._container.style.setProperty('opacity', '1');
+		const container = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
+		if (container) {
+			container.classList.remove('maplibregl-compact-show');
+			container.style.opacity = '1';
+		}
 	});
 
 	const buttons = document.querySelectorAll('.map-style-btn');
