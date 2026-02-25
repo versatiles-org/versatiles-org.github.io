@@ -1,4 +1,5 @@
 import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
+import { extractYaml } from '@std/front-matter';
 import { dirname, relative, resolve } from '@std/path';
 import { buildCSS } from './css.ts';
 import { buildDynamicPage } from './dynamic.ts';
@@ -145,7 +146,23 @@ export default class CMS {
 						.setGithubLink(githubLink)
 						.render();
 				} else if (entry.name.endsWith('.html')) {
-					pageHTML = Deno.readTextFileSync(entry.path);
+					const content = Deno.readTextFileSync(entry.path);
+					if (content.startsWith('---\n')) {
+						const { body, attrs } = extractYaml(content);
+						const a = attrs as Record<string, string>;
+
+						const githubLink = a.githubLink ||
+							`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
+
+						pageHTML = new Page(template)
+							.setMenu(config.menu, a.menuEntry, config.githubOrg)
+							.setTitle(a.title, a.description)
+							.setContent(body)
+							.setGithubLink(githubLink)
+							.render();
+					} else {
+						pageHTML = content;
+					}
 				} else {
 					continue;
 				}
