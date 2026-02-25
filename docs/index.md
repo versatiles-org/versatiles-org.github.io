@@ -28,6 +28,7 @@ VersaTiles is a free and open alternative to commercial map services like Google
 <link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js" as="script" />
 <link rel="stylesheet" type="text/css" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" />
 <script src="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js"></script>
+<script src="https://tiles.versatiles.org/assets/lib/versatiles-style/versatiles-style.js"></script>
 <style scoped>
 	#map {
 		display: block;
@@ -37,19 +38,61 @@ VersaTiles is a free and open alternative to commercial map services like Google
 		min-height: 240px;
 		margin: auto;
 	}
+	#map-buttons {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+		margin: 0.75rem auto 0;
+		max-width: 640px;
+	}
+	.map-style-btn {
+		padding: 0.35rem 1rem;
+		border: 1px solid #555;
+		border-radius: 4px;
+		background: #26262b;
+		color: #ccc;
+		cursor: pointer;
+		font-size: 0.85rem;
+		transition: all 0.15s;
+	}
+	.map-style-btn:hover {
+		border-color: #9d35ff;
+		color: #fff;
+	}
+	.map-style-btn.active {
+		background: #9d35ff;
+		border-color: #9d35ff;
+		color: #fff;
+	}
 </style>
 <div id="map" role="img" aria-label="Interactive map of Berlin rendered with VersaTiles"></div>
+<div id="map-buttons">
+	<button class="map-style-btn active" data-style="colorful">Colorful</button>
+	<button class="map-style-btn" data-style="shadow">Shadow</button>
+	<button class="map-style-btn" data-style="satellite">Satellite</button>
+</div>
 <script>
+	const baseUrl = 'https://tiles.versatiles.org';
 	const map = new maplibregl.Map({
 		container: 'map',
-		style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json',
+		style: VersaTilesStyle.colorful({ baseUrl }),
 		bounds: [13.09, 52.33, 13.74, 52.68],
 		maxZoom: 18,
 		attributionControl: false,
-		cooperativeGestures: true,
 	});
 	map.addControl(new maplibregl.FullscreenControl());
 	map.addControl(new maplibregl.AttributionControl({ compact: true }));
+	document.querySelectorAll('.map-style-btn').forEach(btn => {
+		btn.addEventListener('click', async () => {
+			document.querySelector('.map-style-btn.active').classList.remove('active');
+			btn.classList.add('active');
+			const name = btn.dataset.style;
+			const style = name === 'satellite'
+				? await VersaTilesStyle.satellite({ baseUrl })
+				: VersaTilesStyle[name]({ baseUrl });
+			map.setStyle(style);
+		});
+	});
 </script>
 
 ## How it works
