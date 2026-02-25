@@ -18,11 +18,11 @@ menuEntry: Overview
 	</div>
 </div>
 
-<hero>VersaTiles is a completely [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
+<hero>VersaTiles is a completely <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">FLOSS</a> stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
 
-VersaTiles is a free and open alternative to commercial map services like Google Maps or Mapbox. It is designed for newsrooms, NGOs, developers, and public institutions who need reliable maps without vendor lock-in. VersaTiles is fully self-hostable, requires no API keys, charges no usage fees, and does not track your users.
+<p>VersaTiles is a free and open alternative to commercial map services like Google Maps or Mapbox. It is designed for newsrooms, NGOs, developers, and public institutions who need reliable maps without vendor lock-in. VersaTiles is fully self-hostable, requires no API keys, charges no usage fees, and does not track your users.</p>
 
-## Try it out
+<h2>Try it out</h2>
 
 <link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.css" as="style" />
 <link rel="preload" href="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js" as="script" />
@@ -80,8 +80,10 @@ VersaTiles is a free and open alternative to commercial map services like Google
 		maxZoom: 18,
 		attributionControl: false,
 	});
+
 	map.addControl(new maplibregl.FullscreenControl());
 	map.addControl(new maplibregl.AttributionControl({ compact: true }));
+
 	document.querySelectorAll('.map-style-btn').forEach(btn => {
 		btn.addEventListener('click', async () => {
 			document.querySelector('.map-style-btn.active').classList.remove('active');
@@ -95,7 +97,7 @@ VersaTiles is a free and open alternative to commercial map services like Google
 	});
 </script>
 
-## How it works
+<h2>How it works</h2>
 
 <div id="pipeline">
   <div class="pipeline-step">
@@ -116,13 +118,13 @@ VersaTiles is a free and open alternative to commercial map services like Google
   </div>
 </div>
 
-## Quick Start
+<h2>Quick Start</h2>
 
-**Use our free tile server** — browse map styles at [tiles.versatiles.org](https://tiles.versatiles.org/), customize a style, and export the `style.json` to use it with [MapLibre GL JS](https://maplibre.org/) in your web application.
+<p><strong>Use our free tile server</strong> — browse map styles at <a href="https://tiles.versatiles.org/">tiles.versatiles.org</a>, customize a style, and export the <code>style.json</code> to use it with <a href="https://maplibre.org/">MapLibre GL JS</a> in your web application.</p>
 
-**Host your own map server** — use our interactive [server setup tool](https://versatiles.org/tools/setup_server) to generate a complete configuration for your own infrastructure.
+<p><strong>Host your own map server</strong> — use our interactive <a href="https://versatiles.org/tools/setup_server">server setup tool</a> to generate a complete configuration for your own infrastructure.</p>
 
-## Interested?
+<h2>Interested?</h2>
 
 <div id="interested">
   <div class="interest-card">
@@ -155,18 +157,20 @@ VersaTiles is a free and open alternative to commercial map services like Google
   </div>
 </div>
 
-## Highlights
+<h2>Highlights</h2>
 
-- **2026-01-02** - [versatiles-rs](https://github.com/versatiles-org/versatiles-rs/) now has [Node.js bindings](https://www.npmjs.com/package/@versatiles/versatiles-rs).
-- **2025-10-08** - We published a first global **imagery prototype**, combining free satellite and aerial orthophotos: [tiles.versatiles.org](https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite)
-- **2025-08-17** - Michael presented *[VersaTiles - finally maps for everyone](https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone)* at FrOSCon 2025.
-- **2025-03-04** - Our documentation now lives on its own site: [docs.versatiles.org](https://docs.versatiles.org)
-- **2025-02-01** - We released our free [map editor](https://versatiles.org/node-versatiles-svelte/map-editor).
-- **2024-09-25** - German magazine [Heise](https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html) featured VersaTiles as an open alternative to commercial map providers.
-- **2024-07-30** - Our handy ["setup server" tool](https://versatiles.org/tools/setup_server) went online.
-- **2023-07-16** - [versatiles.org](https://versatiles.org) officially launched.
+<ul>
+  <li><strong>2026-01-02</strong> - <a href="https://github.com/versatiles-org/versatiles-rs/">versatiles-rs</a> now has <a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js bindings</a>.</li>
+  <li><strong>2025-10-08</strong> - We published a first global <strong>imagery prototype</strong>, combining free satellite and aerial orthophotos: <a href="https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite">tiles.versatiles.org</a></li>
+  <li><strong>2025-08-17</strong> - Michael presented <em><a href="https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone">VersaTiles - finally maps for everyone</a></em> at FrOSCon 2025.</li>
+  <li><strong>2025-03-04</strong> - Our documentation now lives on its own site: <a href="https://docs.versatiles.org">docs.versatiles.org</a></li>
+  <li><strong>2025-02-01</strong> - We released our free <a href="https://versatiles.org/node-versatiles-svelte/map-editor">map editor</a>.</li>
+  <li><strong>2024-09-25</strong> - German magazine <a href="https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html">Heise</a> featured VersaTiles as an open alternative to commercial map providers.</li>
+  <li><strong>2024-07-30</strong> - Our handy <a href="https://versatiles.org/tools/setup_server">"setup server" tool</a> went online.</li>
+  <li><strong>2023-07-16</strong> - <a href="https://versatiles.org">versatiles.org</a> officially launched.</li>
+</ul>
 
-## Roadmap
+<h2>Roadmap</h2>
 
 <div id="roadmap">
   <div class="roadmap-category roadmap-done">
@@ -202,7 +206,7 @@ VersaTiles is a free and open alternative to commercial map services like Google
   </div>
 </div>
 
-## Funded by
+<h2>Funded by</h2>
 
 <p style="text-align:center; margin:3rem 0">
   <a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/nlnet-white.svg" alt="NLnet Foundation logo" width="139" height="52" loading="lazy" style="background-color: transparent;margin-right:30px"></a>
