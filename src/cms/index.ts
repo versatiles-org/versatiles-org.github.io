@@ -122,44 +122,26 @@ export default class CMS {
 
 				if (entry.name.endsWith('.page.ts')) {
 					const result = await buildDynamicPage(entry.path);
-
-					const githubLink = result.githubLink ||
-						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
-
-					pageHTML = new Page(template)
-						.setMenu(config.menu, result.menuEntry, config.githubOrg)
-						.setTitle(result.title, result.description)
-						.setContent(result.html)
-						.setGithubLink(githubLink)
-						.render();
+					pageHTML = this.renderPage(
+						relativePath, result.menuEntry, result.title,
+						result.description, result.html, result.githubLink,
+					);
 				} else if (entry.name.endsWith('.md')) {
 					const yaml = Deno.readTextFileSync(entry.path);
 					const { html, attrs } = parseMarkdown(yaml);
-
-					const githubLink = attrs.githubLink ||
-						`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
-
-					pageHTML = new Page(template)
-						.setMenu(config.menu, attrs.menuEntry, config.githubOrg)
-						.setTitle(attrs.title, attrs.description)
-						.setContent(html)
-						.setGithubLink(githubLink)
-						.render();
+					pageHTML = this.renderPage(
+						relativePath, attrs.menuEntry, attrs.title,
+						attrs.description, html, attrs.githubLink,
+					);
 				} else if (entry.name.endsWith('.html')) {
 					const content = Deno.readTextFileSync(entry.path);
 					if (content.startsWith('---\n')) {
 						const { body, attrs } = extractYaml(content);
 						const a = attrs as Record<string, string>;
-
-						const githubLink = a.githubLink ||
-							`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
-
-						pageHTML = new Page(template)
-							.setMenu(config.menu, a.menuEntry, config.githubOrg)
-							.setTitle(a.title, a.description)
-							.setContent(body)
-							.setGithubLink(githubLink)
-							.render();
+						pageHTML = this.renderPage(
+							relativePath, a.menuEntry, a.title,
+							a.description, body, a.githubLink,
+						);
 					} else {
 						pageHTML = content;
 					}
@@ -177,6 +159,26 @@ export default class CMS {
 				throw new Error(`Failed to process page "${entry.path}"`, { cause: error });
 			}
 		}
+	}
+
+	/** Renders a page from its metadata and content using the shared template. */
+	private renderPage(
+		relativePath: string, menuEntry: string, title: string,
+		description: string, html: string, githubLink?: string,
+	): string {
+		const resolvedGithubLink = githubLink ||
+			`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
+
+		return new Page(template)
+			.setMenu(config.menu, menuEntry, config.githubOrg)
+			.setTitle(title, description)
+			.setContent(html)
+			.setGithubLink(resolvedGithubLink)
+			.render()
+			// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
+			.replace('<li class="github-icon"><a ', '<li class="github-icon"><a aria-label="GitHub" ')
+			// Add rel="noopener" to target="_blank" links without it
+			.replace(/(<a\s[^>]*target="_blank")(?![^>]*rel=)/g, '$1 rel="noopener"');
 	}
 
 	/** Removes temporary files (.DS_Store, .less) from the built assets folder. */
