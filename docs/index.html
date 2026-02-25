@@ -37,10 +37,15 @@ menuEntry: Overview
 <style scoped>
 	#map-wrap {
 		position: relative;
-		max-width: 640px;
-		margin: auto;
 		width: 100vw;
 		margin-left: calc(50% - 50vw);
+	}
+
+	@media (min-width: 640px) {
+		#map-wrap {
+			width: auto;
+			margin-left: auto;
+		}
 	}
 
 	#map {
