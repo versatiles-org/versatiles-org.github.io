@@ -5,7 +5,8 @@ menuEntry: Overview
 ---
 
 <div id="logoblock">
-	<img src="assets/logo/versatiles.svg" alt="VersaTiles logo" style="background-color: transparent;" width="118" height="136">
+	<img src="assets/logo/versatiles.svg" alt="VersaTiles logo" style="background-color: transparent;" width="118"
+		height="136">
 	<div>
 		<h1>VersaTiles</h1>
 		<p>
@@ -18,9 +19,13 @@ menuEntry: Overview
 	</div>
 </div>
 
-<hero>VersaTiles is a completely <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">FLOSS</a> stack for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.</hero>
+<hero>VersaTiles is a completely <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">FLOSS</a> stack
+	for generating, distributing, and using map tiles based on OpenStreetMap data, free of any commercial interests.
+</hero>
 
-<p>VersaTiles is a free and open alternative to commercial map services like Google Maps or Mapbox. It is designed for newsrooms, NGOs, developers, and public institutions who need reliable maps without vendor lock-in. VersaTiles is fully self-hostable, requires no API keys, charges no usage fees, and does not track your users.</p>
+<p>VersaTiles is a free and open alternative to commercial map services like Google Maps or Mapbox. It is designed for
+	newsrooms, NGOs, developers, and public institutions who need reliable maps without vendor lock-in. VersaTiles is
+	fully self-hostable, requires no API keys, charges no usage fees, and does not track your users.</p>
 
 <h2>Try it out</h2>
 
@@ -30,46 +35,81 @@ menuEntry: Overview
 <script src="https://tiles.versatiles.org/assets/lib/maplibre-gl/maplibre-gl.js"></script>
 <script src="https://tiles.versatiles.org/assets/lib/versatiles-style/versatiles-style.js"></script>
 <style scoped>
+	#map-wrap {
+		position: relative;
+		max-width: 640px;
+		margin: auto;
+	}
+
 	#map {
 		display: block;
 		width: 100%;
-		max-width: 640px;
 		aspect-ratio: 16 / 9;
 		min-height: 240px;
-		margin: auto;
+		border-radius: 6px;
+		overflow: hidden;
 	}
-	#map-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 0.5rem;
-		margin: 0.75rem auto 0;
-		max-width: 640px;
+
+	#map-styles {
+		position: absolute;
+		bottom: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		background: rgba(15, 15, 18, 0.75);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-radius: 6px;
+		padding: 3px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		z-index: 1;
 	}
-	.map-style-btn {
-		padding: 0.35rem 1rem;
-		border: 1px solid #555;
+
+	#map-styles-track {
+		position: absolute;
+		inset: 3px;
+		width: calc((100% - 6px) / 3);
 		border-radius: 4px;
-		background: #26262b;
-		color: #ccc;
-		cursor: pointer;
-		font-size: 0.85rem;
-		transition: all 0.15s;
-	}
-	.map-style-btn:hover {
-		border-color: #9d35ff;
-		color: #fff;
-	}
-	.map-style-btn.active {
 		background: #9d35ff;
-		border-color: #9d35ff;
+		transform: translateX(calc(var(--pos, 0) * 100%));
+		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+	}
+
+	.map-style-btn {
+		position: relative;
+		z-index: 1;
+		padding: 4px 16px;
+		border: none;
+		border-radius: 4px;
+		background: transparent;
+		color: rgba(255, 255, 255, 0.55);
+		cursor: pointer;
+		font-size: 13px;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		transition: color 0.25s;
+		white-space: nowrap;
+		font-family: inherit;
+	}
+
+	.map-style-btn:hover {
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.map-style-btn.active {
 		color: #fff;
 	}
 </style>
-<div id="map" role="img" aria-label="Interactive map of Berlin rendered with VersaTiles"></div>
-<div id="map-buttons">
-	<button class="map-style-btn active" data-style="colorful">Colorful</button>
-	<button class="map-style-btn" data-style="shadow">Shadow</button>
-	<button class="map-style-btn" data-style="satellite">Satellite</button>
+<div id="map-wrap">
+	<div id="map" role="img" aria-label="Interactive map of Berlin rendered with VersaTiles"></div>
+	<div id="map-styles">
+		<div id="map-styles-track"></div>
+		<button class="map-style-btn active" data-style="colorful">Colorful</button>
+		<button class="map-style-btn" data-style="shadow">Shadow</button>
+		<button class="map-style-btn" data-style="satellite">Satellite</button>
+	</div>
 </div>
 <script>
 	const baseUrl = 'https://tiles.versatiles.org';
@@ -82,12 +122,23 @@ menuEntry: Overview
 	});
 
 	map.addControl(new maplibregl.FullscreenControl());
-	map.addControl(new maplibregl.AttributionControl({ compact: true }));
+	const attribControl = new maplibregl.AttributionControl({ });
+	map.addControl(attribControl, 'bottom-right');
+	attribControl._container.style.setProperty('opacity', '0');
 
-	document.querySelectorAll('.map-style-btn').forEach(btn => {
+	map.on('load', () => {
+		attribControl._container.classList.remove('maplibregl-compact-show');
+		attribControl._container.style.setProperty('opacity', '1');
+	});
+
+	const buttons = document.querySelectorAll('.map-style-btn');
+	const track = document.getElementById('map-styles');
+
+	buttons.forEach((btn, i) => {
 		btn.addEventListener('click', async () => {
 			document.querySelector('.map-style-btn.active').classList.remove('active');
 			btn.classList.add('active');
+			track.style.setProperty('--pos', i);
 			const name = btn.dataset.style;
 			const style = name === 'satellite'
 				? await VersaTilesStyle.satellite({ baseUrl })
@@ -100,123 +151,168 @@ menuEntry: Overview
 <h2>How it works</h2>
 
 <div id="pipeline">
-  <div class="pipeline-step">
-    <strong>Generate</strong>
-    <span>Process OpenStreetMap data and satellite imagery into optimized vector and raster tiles.</span>
-  </div>
-  <div class="pipeline-step">
-    <strong>Distribute</strong>
-    <span>Host tile archives on any static file server or CDN — no special infrastructure required.</span>
-  </div>
-  <div class="pipeline-step">
-    <strong>Serve</strong>
-    <span>Deliver tiles to clients using a lightweight, high-performance tile server.</span>
-  </div>
-  <div class="pipeline-step">
-    <strong>Render</strong>
-    <span>Display beautiful maps in the browser with MapLibre GL JS and ready-made styles.</span>
-  </div>
+	<div class="pipeline-step">
+		<strong>Generate</strong>
+		<span>Process OpenStreetMap data and satellite imagery into optimized vector and raster tiles.</span>
+	</div>
+	<div class="pipeline-step">
+		<strong>Distribute</strong>
+		<span>Host tile archives on any static file server or CDN — no special infrastructure required.</span>
+	</div>
+	<div class="pipeline-step">
+		<strong>Serve</strong>
+		<span>Deliver tiles to clients using a lightweight, high-performance tile server.</span>
+	</div>
+	<div class="pipeline-step">
+		<strong>Render</strong>
+		<span>Display beautiful maps in the browser with MapLibre GL JS and ready-made styles.</span>
+	</div>
 </div>
 
 <h2>Quick Start</h2>
 
-<p><strong>Use our free tile server</strong> — browse map styles at <a href="https://tiles.versatiles.org/">tiles.versatiles.org</a>, customize a style, and export the <code>style.json</code> to use it with <a href="https://maplibre.org/">MapLibre GL JS</a> in your web application.</p>
+<p><strong>Use our free tile server</strong> — browse map styles at <a
+		href="https://tiles.versatiles.org/">tiles.versatiles.org</a>, customize a style, and export the
+	<code>style.json</code> to use it with <a href="https://maplibre.org/">MapLibre GL JS</a> in your web application.
+</p>
 
-<p><strong>Host your own map server</strong> — use our interactive <a href="https://versatiles.org/tools/setup_server">server setup tool</a> to generate a complete configuration for your own infrastructure.</p>
+<p><strong>Host your own map server</strong> — use our interactive <a
+		href="https://versatiles.org/tools/setup_server">server setup tool</a> to generate a complete configuration for
+	your own infrastructure.</p>
 
 <h2>Interested?</h2>
 
 <div id="interested">
-  <div class="interest-card">
-    <strong>Try Our Tile Server</strong>
-    <span>Browse map styles, customize them, and export a <code>style.json</code> for your app at <a href="https://tiles.versatiles.org/">tiles.versatiles.org</a>.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Get Started</strong>
-    <span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full <a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Browse Showcases</strong>
-    <span>See real-world examples and creative uses of VersaTiles in our <a href="https://docs.versatiles.org/showcases/">showcase gallery</a>.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Explore the Playground</strong>
-    <span>Experiment with frontend code examples and map styles in the <a href="https://versatiles.org/playground/">playground</a>.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Use Our Tools</strong>
-    <span>Try our <a href="https://versatiles.org/tools/">tools</a>, including the interactive <a href="https://versatiles.org/tools/setup_server">server setup guide</a>.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Download Free Data</strong>
-    <span>Browse our <a href="https://download.versatiles.org/">download server</a> for free map tiles, fonts, styles, and sprites.</span>
-  </div>
-  <div class="interest-card">
-    <strong>Join the Community</strong>
-    <span>Contribute on <a href="https://github.com/versatiles-org">GitHub</a> and follow us on <a href="https://mastodon.social/@VersaTiles">Mastodon</a> or <a href="https://bsky.app/profile/versatiles.bsky.social">Bluesky</a>.</span>
-  </div>
+	<div class="interest-card">
+		<strong>Try Our Tile Server</strong>
+		<span>Browse map styles, customize them, and export a <code>style.json</code> for your app at <a
+				href="https://tiles.versatiles.org/">tiles.versatiles.org</a>.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Get Started</strong>
+		<span>Read our <a href="https://docs.versatiles.org/basics/versatiles.html">introduction</a> and explore the full
+			<a href="https://docs.versatiles.org">documentation</a> to learn how VersaTiles works.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Browse Showcases</strong>
+		<span>See real-world examples and creative uses of VersaTiles in our <a
+				href="https://docs.versatiles.org/showcases/">showcase gallery</a>.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Explore the Playground</strong>
+		<span>Experiment with frontend code examples and map styles in the <a
+				href="https://versatiles.org/playground/">playground</a>.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Use Our Tools</strong>
+		<span>Try our <a href="https://versatiles.org/tools/">tools</a>, including the interactive <a
+				href="https://versatiles.org/tools/setup_server">server setup guide</a>.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Download Free Data</strong>
+		<span>Browse our <a href="https://download.versatiles.org/">download server</a> for free map tiles, fonts, styles,
+			and sprites.</span>
+	</div>
+	<div class="interest-card">
+		<strong>Join the Community</strong>
+		<span>Contribute on <a href="https://github.com/versatiles-org">GitHub</a> and follow us on <a
+				href="https://mastodon.social/@VersaTiles">Mastodon</a> or <a
+				href="https://bsky.app/profile/versatiles.bsky.social">Bluesky</a>.</span>
+	</div>
 </div>
 
 <h2>Highlights</h2>
 
 <ul>
-  <li><strong>2026-01-02</strong> - <a href="https://github.com/versatiles-org/versatiles-rs/">versatiles-rs</a> now has <a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js bindings</a>.</li>
-  <li><strong>2025-10-08</strong> - We published a first global <strong>imagery prototype</strong>, combining free satellite and aerial orthophotos: <a href="https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite">tiles.versatiles.org</a></li>
-  <li><strong>2025-08-17</strong> - Michael presented <em><a href="https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone">VersaTiles - finally maps for everyone</a></em> at FrOSCon 2025.</li>
-  <li><strong>2025-03-04</strong> - Our documentation now lives on its own site: <a href="https://docs.versatiles.org">docs.versatiles.org</a></li>
-  <li><strong>2025-02-01</strong> - We released our free <a href="https://versatiles.org/node-versatiles-svelte/map-editor">map editor</a>.</li>
-  <li><strong>2024-09-25</strong> - German magazine <a href="https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html">Heise</a> featured VersaTiles as an open alternative to commercial map providers.</li>
-  <li><strong>2024-07-30</strong> - Our handy <a href="https://versatiles.org/tools/setup_server">"setup server" tool</a> went online.</li>
-  <li><strong>2023-07-16</strong> - <a href="https://versatiles.org">versatiles.org</a> officially launched.</li>
+	<li><strong>2026-01-02</strong> - <a href="https://github.com/versatiles-org/versatiles-rs/">versatiles-rs</a> now
+		has <a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js bindings</a>.</li>
+	<li><strong>2025-10-08</strong> - We published a first global <strong>imagery prototype</strong>, combining free
+		satellite and aerial orthophotos: <a
+			href="https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite">tiles.versatiles.org</a></li>
+	<li><strong>2025-08-17</strong> - Michael presented <em><a
+				href="https://media.ccc.de/v/froscon2025-3303-versatiles_-_finally_maps_for_everyone">VersaTiles - finally
+				maps for everyone</a></em> at FrOSCon 2025.</li>
+	<li><strong>2025-03-04</strong> - Our documentation now lives on its own site: <a
+			href="https://docs.versatiles.org">docs.versatiles.org</a></li>
+	<li><strong>2025-02-01</strong> - We released our free <a
+			href="https://versatiles.org/node-versatiles-svelte/map-editor">map editor</a>.</li>
+	<li><strong>2024-09-25</strong> - German magazine <a
+			href="https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html">Heise</a>
+		featured VersaTiles as an open alternative to commercial map providers.</li>
+	<li><strong>2024-07-30</strong> - Our handy <a href="https://versatiles.org/tools/setup_server">"setup server"
+			tool</a> went online.</li>
+	<li><strong>2023-07-16</strong> - <a href="https://versatiles.org">versatiles.org</a> officially launched.</li>
 </ul>
 
 <h2>Roadmap</h2>
 
 <div id="roadmap">
-  <div class="roadmap-category roadmap-done">
-    <h3><span class="status-badge">Done</span></h3>
-    <ul class="roadmap-items">
-      <li class="roadmap-item"><a href="https://docs.versatiles.org">Publish documentation at docs.versatiles.org</a></li>
-      <li class="roadmap-item"><a href="https://versatiles.org/node-versatiles-svelte/map-editor">Publish map editor</a></li>
-      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-docker/tree/main/versatiles-nginx">Publish Docker container with nginx and TLS</a></li>
-      <li class="roadmap-item"><a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Add Node.js bindings to the VersaTiles Rust CLI</a></li>
-      <li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Publish satellite and aerial imagery</a></li>
-      <li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Publish style editor plugin for MapLibre GL JS</a></li>
-      <li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Publish interactive server setup tool</a></li>
-      <li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-svg-renderer">Add SVG export for print-quality maps</a></li>
-    </ul>
-  </div>
-  <div class="roadmap-category roadmap-planned">
-    <h3><span class="status-badge">Planned</span></h3>
-    <ul class="roadmap-items">
-      <li class="roadmap-item">Find partners and sponsors — <em>ensure long-term sustainability of the project</em></li>
-      <li class="roadmap-item">Migrate tile generation to Planetiler — <em>faster and better tile generation from OSM data</em></li>
-      <li class="roadmap-item">Publish free global elevation and terrain data — <em>enable hillshading and 3D terrain visualization</em></li>
-      <li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation — <em>create and export custom maps without code</em></li>
-      <li class="roadmap-item">Integrate global land cover data — <em>add vegetation, urban areas, and other land use information</em></li>
-      <li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles — <em>easily add your own data layers to VersaTiles maps</em></li>
-    </ul>
-  </div>
-  <div class="roadmap-category roadmap-exploring">
-    <h3><span class="status-badge">Exploring</span> funding needed</h3>
-    <ul class="roadmap-items">
-      <li class="roadmap-item">Update and extend satellite imagery — <em>improve coverage and resolution worldwide</em></li>
-      <li class="roadmap-item">Build a new style engine — <em>replace MapLibre's style spec with a more flexible alternative</em></li>
-    </ul>
-  </div>
+	<div class="roadmap-category roadmap-done">
+		<h3><span class="status-badge">Done</span></h3>
+		<ul class="roadmap-items">
+			<li class="roadmap-item"><a href="https://docs.versatiles.org">Publish documentation at docs.versatiles.org</a>
+			</li>
+			<li class="roadmap-item"><a href="https://versatiles.org/node-versatiles-svelte/map-editor">Publish map
+					editor</a></li>
+			<li class="roadmap-item"><a
+					href="https://github.com/versatiles-org/versatiles-docker/tree/main/versatiles-nginx">Publish Docker
+					container with nginx and TLS</a></li>
+			<li class="roadmap-item"><a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Add Node.js bindings
+					to the VersaTiles Rust CLI</a></li>
+			<li class="roadmap-item"><a href="https://tiles.versatiles.org/#map=4.19/49.22/10.14&style=satellite">Publish
+					satellite and aerial imagery</a></li>
+			<li class="roadmap-item"><a href="https://github.com/versatiles-org/maplibre-versatiles-styler">Publish style
+					editor plugin for MapLibre GL JS</a></li>
+			<li class="roadmap-item"><a href="https://versatiles.org/tools/setup_server">Publish interactive server setup
+					tool</a></li>
+			<li class="roadmap-item"><a href="https://github.com/versatiles-org/versatiles-svg-renderer">Add SVG export for
+					print-quality maps</a></li>
+		</ul>
+	</div>
+	<div class="roadmap-category roadmap-planned">
+		<h3><span class="status-badge">Planned</span></h3>
+		<ul class="roadmap-items">
+			<li class="roadmap-item">Find partners and sponsors — <em>ensure long-term sustainability of the project</em>
+			</li>
+			<li class="roadmap-item">Migrate tile generation to Planetiler — <em>faster and better tile generation from OSM
+					data</em></li>
+			<li class="roadmap-item">Publish free global elevation and terrain data — <em>enable hillshading and 3D terrain
+					visualization</em></li>
+			<li class="roadmap-item">Release VersaTiles Studio, an all-in-one app for map creation — <em>create and export
+					custom maps without code</em></li>
+			<li class="roadmap-item">Integrate global land cover data — <em>add vegetation, urban areas, and other land use
+					information</em></li>
+			<li class="roadmap-item">Simplify conversion from GeoJSON to vector tiles — <em>easily add your own data layers
+					to VersaTiles maps</em></li>
+		</ul>
+	</div>
+	<div class="roadmap-category roadmap-exploring">
+		<h3><span class="status-badge">Exploring</span> funding needed</h3>
+		<ul class="roadmap-items">
+			<li class="roadmap-item">Update and extend satellite imagery — <em>improve coverage and resolution
+					worldwide</em></li>
+			<li class="roadmap-item">Build a new style engine — <em>replace MapLibre's style spec with a more flexible
+					alternative</em></li>
+		</ul>
+	</div>
 </div>
 
 <h2>Funded by</h2>
 
 <p style="text-align:center; margin:3rem 0">
-  <a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/nlnet-white.svg" alt="NLnet Foundation logo" width="139" height="52" loading="lazy" style="background-color: transparent;margin-right:30px"></a>
-  <a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/ngi0core-white.svg" alt="NGI Zero Core logo" width="166" height="52" loading="lazy" style="background-color: transparent;"></a>
-  <br>
-  <small>Funded by European Commission's Next Generation Internet programme<br>through the NGI0 Commons Fund by NLnet.</small>
+	<a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/nlnet-white.svg" alt="NLnet Foundation logo"
+			width="139" height="52" loading="lazy" style="background-color: transparent;margin-right:30px"></a>
+	<a href="https://nlnet.nl/project/VersaTiles/"><img src="/assets/logo/ngi0core-white.svg" alt="NGI Zero Core logo"
+			width="166" height="52" loading="lazy" style="background-color: transparent;"></a>
+	<br>
+	<small>Funded by European Commission's Next Generation Internet programme<br>through the NGI0 Commons Fund by
+		NLnet.</small>
 </p>
 
 <p style="text-align:center; margin:3rem 0">
-  <a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img src="/assets/logo/miz.png" alt="MIZ Babelsberg — media innovation centre logo" width="294" height="36" loading="lazy" style="background-color: transparent;"></a>
-  <br>
-  <small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
+	<a href="https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html"><img
+			src="/assets/logo/miz.png" alt="MIZ Babelsberg — media innovation centre logo" width="294" height="36"
+			loading="lazy" style="background-color: transparent;"></a>
+	<br>
+	<small>MIZ-Babelsberg has funded the development of the "VersaTiles Editorial Tools"</small>
 </p>
