@@ -91,7 +91,7 @@ sections:
         image: assets/cards/google-cloud.webp
 
       - title: "Docker images"
-        hook: "Production-ready Docker images"
+        hook: "Production-ready images: versatiles, versatiles-frontend, versatiles-nginx, and more."
         url: https://hub.docker.com/u/versatiles
         repo: https://github.com/versatiles-org/versatiles-docker
         image: assets/cards/docker.webp
@@ -125,7 +125,7 @@ sections:
       - title: "Frontend bundles"
         hook: "Pre-packaged web frontends with MapLibre, fonts, sprites, and styles."
         url: https://github.com/versatiles-org/versatiles-frontend/releases/latest
-        repo: https://github.com/versatiles-org/versatiles-frontend/
+        repo: https://github.com/versatiles-org/versatiles-frontend
         image: assets/cards/frontend.webp
 
       - title: "Choropleth pipeline *(experimental)*"
@@ -133,8 +133,8 @@ sections:
         url: https://github.com/versatiles-org/versatiles-choro
         image: assets/cards/choropleth.webp
 
-      - title: "Overview of Orthophotos"
-        hook: "See the current state of scrapers, fetching high-resolution orthophotos."
+      - title: "Orthophoto coverage"
+        hook: "See the current state of the scrapers fetching high-resolution orthophotos."
         url: https://versatiles.org/orthophotos/
         repo: https://github.com/versatiles-org/orthophotos
         image: assets/cards/orthophotos.webp
@@ -150,6 +150,7 @@ sections:
       - title: "Pre-built fonts"
         hook: "Ready-to-use Fira, Lato, Noto, Roboto glyph archives."
         url: https://github.com/versatiles-org/versatiles-fonts/releases/latest
+        repo: https://github.com/versatiles-org/versatiles-fonts
         image: assets/cards/fonts.webp
 
   - title: "Spec & community"
