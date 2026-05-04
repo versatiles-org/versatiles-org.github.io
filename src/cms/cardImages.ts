@@ -6,9 +6,10 @@ import { basename, resolve } from '@std/path';
  *
  * The cards display at ~300 CSS pixels wide; this output size gives us
  * roughly 2.5x for high-DPI displays without bloating the page weight.
+ * 16:9 is the natural aspect ratio for screenshots and the CSS expects it.
  */
 const TARGET_WIDTH = 800;
-const TARGET_HEIGHT = 500;
+const TARGET_HEIGHT = 450;
 
 /** WebP quality (0-100). 78 is a good size/quality tradeoff for screenshots. */
 const WEBP_QUALITY = 78;
