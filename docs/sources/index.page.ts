@@ -22,7 +22,10 @@ const satelliteData: SourceEntry[] = [
 	},
 	{
 		coverage: 'Global',
-		source: { name: 'NASA Blue Marble Next Generation', url: 'https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/' },
+		source: {
+			name: 'NASA Blue Marble Next Generation',
+			url: 'https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/',
+		},
 		license: { name: 'Public Domain' },
 	},
 ];
@@ -34,7 +37,15 @@ async function fetchOrthophotos(): Promise<SourceEntry[]> {
 		.filter((e: { status?: { status?: string; creator?: unknown; license?: unknown } }) =>
 			e.status?.status === 'success' && e.status?.creator && e.status?.license
 		)
-		.map((e: { name: { fullname: string }; status: { creator: { name: string; url: string }; license: { name: string; url: string } } }) => ({
+		.map((
+			e: {
+				name: { fullname: string };
+				status: {
+					creator: { name: string; url: string };
+					license: { name: string; url: string };
+				};
+			},
+		) => ({
 			coverage: e.name.fullname,
 			source: { name: e.status.creator.name, url: e.status.creator.url },
 			license: { name: e.status.license.name, url: e.status.license.url },
@@ -44,7 +55,9 @@ async function fetchOrthophotos(): Promise<SourceEntry[]> {
 
 function renderTable(entries: SourceEntry[]): string {
 	const rows = entries.map((e) =>
-		`<tr><td>${e.coverage}</td><td><a href="${e.source.url}">${e.source.name}</a></td><td>${e.license.url ? `<a href="${e.license.url}">${e.license.name}</a>` : e.license.name}</td></tr>`
+		`<tr><td>${e.coverage}</td><td><a href="${e.source.url}">${e.source.name}</a></td><td>${
+			e.license.url ? `<a href="${e.license.url}">${e.license.name}</a>` : e.license.name
+		}</td></tr>`
 	).join('');
 
 	return `<table>
