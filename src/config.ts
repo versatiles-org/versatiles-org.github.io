@@ -60,6 +60,7 @@ export const config: {
 		'assets/style/roadmap.less',
 		'assets/style/pipeline.less',
 		'assets/style/cards.less',
+		'assets/style/sponsor.less',
 	],
 
 	/** Output CSS file (relative to dist directory) */

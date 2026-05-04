@@ -1,0 +1,56 @@
+#sponsor-buttons {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	align-items: stretch;
+	flex-wrap: wrap;
+	margin: 2rem 0 4rem;
+}
+
+.sponsor-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	min-height: 56px;
+	padding: 0.9rem 1.6rem;
+	border-radius: 10px;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 1.05rem;
+	line-height: 1.1;
+	box-sizing: border-box;
+	white-space: nowrap;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+	transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+	}
+
+	.icon {
+		width: 22px;
+		height: 22px;
+		flex-shrink: 0;
+	}
+}
+
+.sponsor-btn--github {
+	background: #bf3989;
+	color: #fff;
+
+	&:hover {
+		background: #a82d76;
+		color: #fff;
+	}
+}
+
+.sponsor-btn--oc {
+	background: #297eff;
+	color: #fff;
+
+	&:hover {
+		background: #1e6fde;
+		color: #fff;
+	}
+}
