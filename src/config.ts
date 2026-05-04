@@ -17,6 +17,8 @@ export const config: {
 	cssSourceFiles: string[];
 	cssOutputFile: string;
 	cardsYamlFile: string;
+	cardImagesSrcDir: string;
+	cardImagesDstDir: string;
 } = {
 	/** Base URL for the website (used for canonical URLs) */
 	baseUrl: 'https://versatiles.org',
@@ -65,4 +67,10 @@ export const config: {
 
 	/** Discovery cards data file (relative to docs directory) */
 	cardsYamlFile: 'cards.yaml',
+
+	/** Source directory for card thumbnail PNGs (relative to docs directory) */
+	cardImagesSrcDir: 'assets/cards',
+
+	/** Output directory for processed WebP thumbnails (relative to dist directory) */
+	cardImagesDstDir: 'assets/cards',
 };

@@ -3,6 +3,7 @@ import { extractYaml } from '@std/front-matter';
 import { dirname, relative, resolve } from '@std/path';
 import { buildCSS } from './css.ts';
 import { renderCardsFromFile } from './cards.ts';
+import { processCardImages } from './cardImages.ts';
 import { buildDynamicPage } from './dynamic.ts';
 import { parseMarkdown } from './markdown.ts';
 import { Page } from 'cheerio_cms';
@@ -63,6 +64,7 @@ export default class CMS {
 		this.clearFolder();
 		this.copyAssets();
 		await this.buildCSS();
+		await this.buildCardImages();
 		await this.buildPages();
 		this.cleanUp();
 	}
@@ -81,9 +83,13 @@ export default class CMS {
 
 	/** Copies image assets from source to destination, preserving directory structure. */
 	private copyAssets() {
+		const cardImagesSrc = resolve(this.srcPath, config.cardImagesSrcDir);
 		for (const entry of walkSync(this.srcPath)) {
 			if (!entry.isFile) continue;
 			if (!config.assetExtensions.test(entry.name)) continue;
+			// Source PNGs for card thumbnails are processed into WebP via the
+			// dedicated card-image pipeline; don't ship the raw PNGs.
+			if (entry.path.startsWith(cardImagesSrc) && /\.png$/i.test(entry.name)) continue;
 			const relativePath = relative(this.srcPath, entry.path);
 			const dstFileName = resolve(this.dstPath, relativePath);
 			try {
@@ -94,6 +100,19 @@ export default class CMS {
 					cause: error,
 				});
 			}
+		}
+	}
+
+	/** Processes card thumbnail PNGs into WebPs sized for the front-page grid. */
+	private async buildCardImages(): Promise<void> {
+		const srcDir = resolve(this.srcPath, config.cardImagesSrcDir);
+		const dstDir = resolve(this.dstPath, config.cardImagesDstDir);
+		try {
+			await processCardImages(srcDir, dstDir);
+		} catch (error) {
+			throw new Error(`Failed to process card images from "${srcDir}" to "${dstDir}"`, {
+				cause: error,
+			});
 		}
 	}
 
@@ -117,8 +136,10 @@ export default class CMS {
 		// Render the discovery cards once; the result is injected into any page
 		// that contains a <!-- cards --> placeholder.
 		const cardsYamlPath = resolve(srcPath, config.cardsYamlFile);
+		// Check image existence against `dstPath` because the renderer references
+		// processed WebP files that buildCardImages just wrote there.
 		const cardsHtml = existsSync(cardsYamlPath)
-			? renderCardsFromFile(cardsYamlPath, { imageBaseDir: srcPath })
+			? renderCardsFromFile(cardsYamlPath, { imageBaseDir: dstPath })
 			: '';
 		const applyPlaceholders = (html: string) => html.replaceAll('<!-- cards -->', cardsHtml);
 
