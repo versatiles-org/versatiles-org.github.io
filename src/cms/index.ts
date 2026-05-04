@@ -2,6 +2,7 @@ import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
 import { extractYaml } from '@std/front-matter';
 import { dirname, relative, resolve } from '@std/path';
 import { buildCSS } from './css.ts';
+import { renderCardsFromFile } from './cards.ts';
 import { buildDynamicPage } from './dynamic.ts';
 import { parseMarkdown } from './markdown.ts';
 import { Page } from 'cheerio_cms';
@@ -113,8 +114,18 @@ export default class CMS {
 	private async buildPages() {
 		const { srcPath, dstPath } = this;
 
+		// Render the discovery cards once; the result is injected into any page
+		// that contains a <!-- cards --> placeholder.
+		const cardsYamlPath = resolve(srcPath, config.cardsYamlFile);
+		const cardsHtml = existsSync(cardsYamlPath)
+			? renderCardsFromFile(cardsYamlPath, { imageBaseDir: srcPath })
+			: '';
+		const applyPlaceholders = (html: string) => html.replaceAll('<!-- cards -->', cardsHtml);
+
 		for (const entry of walkSync(srcPath)) {
 			if (!entry.isFile) continue;
+			// The cards data file is consumed via the placeholder, not as a page.
+			if (entry.path === cardsYamlPath) continue;
 
 			try {
 				let pageHTML: string;
@@ -127,7 +138,7 @@ export default class CMS {
 						result.menuEntry,
 						result.title,
 						result.description,
-						result.html,
+						applyPlaceholders(result.html),
 						result.githubLink,
 					);
 				} else if (entry.name.endsWith('.md')) {
@@ -138,7 +149,7 @@ export default class CMS {
 						attrs.menuEntry,
 						attrs.title,
 						attrs.description,
-						html,
+						applyPlaceholders(html),
 						attrs.githubLink,
 					);
 				} else if (entry.name.endsWith('.html')) {
@@ -151,11 +162,11 @@ export default class CMS {
 							a.menuEntry,
 							a.title,
 							a.description,
-							body,
+							applyPlaceholders(body),
 							a.githubLink,
 						);
 					} else {
-						pageHTML = content;
+						pageHTML = applyPlaceholders(content);
 					}
 				} else {
 					continue;

@@ -20,7 +20,7 @@ describe('CMS builds site structure', () => {
 		Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
 		Deno.writeTextFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
 		Deno.writeTextFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/interested.less'), '#interested{}');
+		Deno.writeTextFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
 		Deno.writeTextFileSync(join(srcPath, 'assets/style/ignore.png'), '');
 		Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
 		Deno.writeTextFileSync(
@@ -79,7 +79,7 @@ describe('CMS error handling', () => {
 			Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
 			Deno.writeTextFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
 			Deno.writeTextFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/interested.less'), '#interested{}');
+			Deno.writeTextFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
 			Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNG');
 
 			// Create markdown file with missing required front matter (missing description and menuEntry)

@@ -1,0 +1,165 @@
+// Discovery cards on the front page (rendered from docs/cards.yaml).
+//
+// Layout:
+//  - Each section has a heading and a responsive grid of .card tiles.
+//  - On viewports wide enough to break out of the 40rem main column,
+//    the section widens to fit a 3-column grid; below that it falls
+//    back to 2-column, then 1-column on mobile.
+//
+// Interaction:
+//  - Each .card uses the "stretched link" pattern: an invisible
+//    overlay on .card__link makes the whole tile clickable, while
+//    inline links inside the hook and the secondary repo link stay
+//    independently clickable above it.
+
+.cards-section {
+	margin: 3rem 0;
+
+	// Break the section grid out of the 40rem main column so we can
+	// fit three cards per row at typical desktop widths.
+	@media (min-width: 56rem) {
+		width: min(56rem, 95vw);
+		margin-left: calc(50% - min(28rem, 47.5vw));
+	}
+
+	h3 {
+		margin: 0 0 1.2rem;
+		font-size: 1.1rem;
+		color: #fff;
+	}
+}
+
+.cards-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+
+	@media (min-width: 56rem) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media (max-width: 30rem) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: #26262b;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: background-color 0.15s ease, transform 0.15s ease;
+
+	&:hover {
+		background: #2e2e34;
+	}
+
+	&:focus-within {
+		outline: 2px solid #9d35ff;
+		outline-offset: 2px;
+	}
+}
+
+.card__thumb {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	object-fit: cover;
+	background: #1b1b1f;
+}
+
+.card__thumb--placeholder {
+	background:
+		linear-gradient(135deg, #2a2a30 0%, #1f1f24 100%);
+	position: relative;
+
+	// Subtle diagonal hatching so empty placeholders are visibly
+	// "intentional" rather than looking like a broken image.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image: repeating-linear-gradient(
+			45deg,
+			transparent 0,
+			transparent 12px,
+			rgba(255, 255, 255, 0.025) 12px,
+			rgba(255, 255, 255, 0.025) 13px
+		);
+	}
+}
+
+.card__title {
+	margin: 0.9rem 1rem 0.3rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #fff;
+	line-height: 1.3;
+}
+
+.card__link {
+	color: inherit;
+	text-decoration: none;
+
+	// Stretched-link overlay makes the whole .card clickable.
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+}
+
+.card__hook {
+	margin: 0 1rem 1rem;
+	font-size: 0.875rem;
+	line-height: 1.45;
+	color: #aaa;
+	flex: 1;
+	text-align: left !important;
+
+	// Inline links inside the hook need to sit above the stretched
+	// overlay so they remain independently clickable.
+	a {
+		position: relative;
+		z-index: 2;
+		color: #ddd;
+		text-decoration: underline;
+		text-decoration-color: #555;
+
+		&:hover {
+			color: #fff;
+			text-decoration-color: #aaa;
+		}
+	}
+
+	code {
+		background: rgba(255, 255, 255, 0.06);
+		padding: 0.1em 0.35em;
+		border-radius: 3px;
+		font-size: 0.85em;
+	}
+}
+
+.card__repo {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	z-index: 2;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: #ddd;
+	background: rgba(15, 15, 18, 0.75);
+	border-radius: 4px;
+	text-decoration: none;
+	backdrop-filter: blur(4px);
+	transition: background-color 0.15s ease, color 0.15s ease;
+
+	&:hover {
+		background: rgba(15, 15, 18, 0.95);
+		color: #fff;
+	}
+}

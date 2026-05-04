@@ -78,3 +78,21 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 		html: render(body, { disableHtmlSanitization: true, renderer: new MarkdownRenderer() }),
 	};
 }
+
+/**
+ * Renders a single line of Markdown to inline HTML, stripping the
+ * outer `<p>` wrapper that GFM otherwise adds.
+ *
+ * Intended for short snippets like card titles, hooks, or labels —
+ * not for multi-paragraph content.
+ *
+ * @param text - Markdown source (typically a single line)
+ * @returns HTML with inline tags only
+ */
+export function renderInlineMarkdown(text: string): string {
+	const html = render(text, {
+		disableHtmlSanitization: true,
+		renderer: new MarkdownRenderer(),
+	}).trim();
+	return html.replace(/^<p>/, '').replace(/<\/p>$/, '').trim();
+}

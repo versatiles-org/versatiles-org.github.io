@@ -16,6 +16,7 @@ export const config: {
 	assetExtensions: RegExp;
 	cssSourceFiles: string[];
 	cssOutputFile: string;
+	cardsYamlFile: string;
 } = {
 	/** Base URL for the website (used for canonical URLs) */
 	baseUrl: 'https://versatiles.org',
@@ -56,9 +57,12 @@ export const config: {
 		'assets/style/hero.less',
 		'assets/style/roadmap.less',
 		'assets/style/pipeline.less',
-		'assets/style/interested.less',
+		'assets/style/cards.less',
 	],
 
 	/** Output CSS file (relative to dist directory) */
 	cssOutputFile: 'assets/style.css',
+
+	/** Discovery cards data file (relative to docs directory) */
+	cardsYamlFile: 'cards.yaml',
 };
