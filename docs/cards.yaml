@@ -16,7 +16,7 @@ sections:
   - title: "Live demos & tools"
     cards:
       - title: "Tile server & style picker"
-        hook: "Browse our public tile server, define your own map styles."
+        hook: "Use our public tile server and build your own map styles."
         url: https://tiles.versatiles.org/
         image: assets/cards/tile-server.webp
 
