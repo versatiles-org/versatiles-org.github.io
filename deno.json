@@ -37,7 +37,10 @@
       "src/"
     ],
     "exclude": [
-      "docs/"
+      "**/*.yaml",
+      "**/*.yml",
+      "**/*.svg",
+      "docs/index.html"
     ]
   }
 }
