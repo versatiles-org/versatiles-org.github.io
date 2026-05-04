@@ -13,7 +13,7 @@
 #   repo:     optional secondary link, shown as a small "Source" link
 
 sections:
-  - title: "🗺️ Live demos & tools"
+  - title: "Live demos & tools"
     cards:
       - title: "Tile server & style picker"
         hook: "Browse our public tile server, define your own map styles."
@@ -22,14 +22,13 @@ sections:
 
       - title: "Aerial imagery"
         hook: "Free, high-resolution orthophotos served as map tiles."
-        url: https://versatiles.org/orthophotos/
+        url: https://tiles.versatiles.org/#map=16/52.518637/13.376013&style=satellite&config=eyJvdmVybGF5IjpmYWxzZX0
         repo: https://github.com/versatiles-org/orthophotos
-        image: assets/cards/orthophotos.webp
+        image: assets/cards/aerial-imagery.webp
 
       - title: "3D terrain & elevation"
         hook: "Global elevation data with hillshading and 3D terrain."
-        url: "https://tiles.versatiles.org/#map=12.94/45.3801/6.72569/151.7/60&style=satellite&config=eyJ0ZXJyYWluIjp0cnVlfQ"
-        repo: https://github.com/versatiles-org/elevation
+        url: "https://tiles.versatiles.org/#map=13.86/46.67217/9.54747/-62.6/60&style=satellite&config=eyJ0ZXJyYWluIjp0cnVlfQ"
         image: assets/cards/terrain.webp
 
       - title: "Style customizer"
@@ -41,11 +40,12 @@ sections:
       - title: "Showcases"
         hook: "Real-world maps and creative uses of VersaTiles."
         url: https://docs.versatiles.org/showcases/
+        repo: https://github.com/versatiles-org/versatiles-documentation/blob/main/showcases/showcases.yaml
         image: assets/cards/showcases.webp
 
       - title: "Map editor"
         hook: "Drop pins, draw shapes, share editable maps in the browser."
-        url: https://versatiles.org/node-versatiles-svelte/map-editor
+        url: https://versatiles.org/node-versatiles-svelte/map-editor#FeQRaYxHbYwVB2EvzxiO_xgqOZxXlBuIrhUiQhIiKiWhasWSFiMnWDlO9NkKfkOhNmejdlRhDkWjRmEjBnahLoEhVnddmNhblViLlBjS0MQA
         repo: https://github.com/versatiles-org/node-versatiles-svelte
         image: assets/cards/map-editor.webp
 
@@ -66,12 +66,11 @@ sections:
         url: https://download.versatiles.org/
         image: assets/cards/download.webp
 
-  - title: "🛠 Servers & CLIs"
+  - title: "Servers & CLIs"
     cards:
       - title: "Server setup wizard"
         hook: "Answer a few questions, get a copy-pasteable install command."
         url: https://versatiles.org/tools/setup_server
-        repo: https://github.com/versatiles-org/tools
         image: assets/cards/setup-server.webp
 
       - title: "VersaTiles CLI"
@@ -86,18 +85,18 @@ sections:
         image: assets/cards/node-server.webp
 
       - title: "Google Cloud server"
-        hook: "Serve tiles + assets straight from a GCS bucket on Google Cloud Run."
+        hook: "Serve tiles + assets straight from a GCS bucket on Google Cloud Run. Perfect for newsrooms."
         url: https://www.npmjs.com/package/@versatiles/google-cloud
         repo: https://github.com/versatiles-org/node-versatiles-google-cloud
         image: assets/cards/google-cloud.webp
 
       - title: "Docker images"
-        hook: "Production-ready images: `versatiles`, `versatiles-frontend`, `versatiles-nginx`, and more."
+        hook: "Production-ready Docker images"
         url: https://hub.docker.com/u/versatiles
         repo: https://github.com/versatiles-org/versatiles-docker
         image: assets/cards/docker.webp
 
-  - title: "📦 Libraries"
+  - title: "Libraries"
     cards:
       - title: "Style toolkit"
         hook: "Generate MapLibre styles: Colorful, Graybeard, Eclipse, Neutrino, Shadow, Satellite."
@@ -119,13 +118,14 @@ sections:
 
       - title: "SVG renderer"
         hook: "Render print-quality SVG maps from a style + bbox."
-        url: https://www.npmjs.com/package/@versatiles/svg-renderer
+        url: https://versatiles.org/versatiles-svg-renderer/demo/index.html
         repo: https://github.com/versatiles-org/versatiles-svg-renderer
         image: assets/cards/svg-renderer.webp
 
       - title: "Frontend bundles"
         hook: "Pre-packaged web frontends with MapLibre, fonts, sprites, and styles."
         url: https://github.com/versatiles-org/versatiles-frontend/releases/latest
+        repo: https://github.com/versatiles-org/versatiles-frontend/
         image: assets/cards/frontend.webp
 
       - title: "Choropleth pipeline *(experimental)*"
@@ -133,7 +133,13 @@ sections:
         url: https://github.com/versatiles-org/versatiles-choro
         image: assets/cards/choropleth.webp
 
-  - title: "🔣 Fonts & glyphs"
+      - title: "Overview of Orthophotos"
+        hook: "See the current state of scrapers, fetching high-resolution orthophotos."
+        url: https://versatiles.org/orthophotos/
+        repo: https://github.com/versatiles-org/orthophotos
+        image: assets/cards/orthophotos.webp
+
+  - title: "Fonts & glyphs"
     cards:
       - title: "SDF glyph generator"
         hook: "Rust tool that produces high-precision SDF glyph PBFs from TTF/OTF fonts."
@@ -146,7 +152,7 @@ sections:
         url: https://github.com/versatiles-org/versatiles-fonts/releases/latest
         image: assets/cards/fonts.webp
 
-  - title: "📖 Spec & community"
+  - title: "Spec & community"
     cards:
       - title: "Container spec"
         hook: "Open specification for the `.versatiles` tile container format."
@@ -156,11 +162,14 @@ sections:
       - title: "GitHub org"
         hook: "All repos, issues, discussions."
         url: https://github.com/versatiles-org
+        image: assets/cards/github.webp
 
       - title: "Mastodon"
         hook: "Project updates and ecosystem news."
         url: https://mastodon.social/@VersaTiles
+        image: assets/cards/mastodon.webp
 
       - title: "Bluesky"
         hook: "Project updates on Bluesky."
         url: https://bsky.app/profile/versatiles.bsky.social
+        image: assets/cards/bluesky.webp
