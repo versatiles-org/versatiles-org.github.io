@@ -3,24 +3,29 @@ import { existsSync } from '@std/fs';
 import { processCardImages } from './cardImages.ts';
 import { afterEach, beforeEach, describe, it } from '@std/testing/bdd';
 import { expect } from '@std/expect';
+import { encode as encodePng } from '@jsquash/png';
+import { decode as decodeWebp } from '@jsquash/webp';
 
 /**
- * These tests shell out to ImageMagick (`magick`). If the binary is not
- * available — for example in a minimal CI image — the binary-dependent
- * cases are skipped so the rest of the suite still passes.
+ * Builds a synthetic PNG of the given size (alternating-stripe fill so a
+ * resize step has something distinguishable to work on) and writes it to
+ * `path`. Returns the encoded buffer in case the caller needs it.
  */
-const magickAvailable = await (async () => {
-	try {
-		const out = await new Deno.Command('magick', {
-			args: ['-version'],
-			stdout: 'null',
-			stderr: 'null',
-		}).output();
-		return out.success;
-	} catch {
-		return false;
+async function writeSyntheticPng(path: string, width: number, height: number): Promise<void> {
+	const data = new Uint8ClampedArray(width * height * 4);
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			const i = (y * width + x) * 4;
+			const onStripe = (x + y) % 16 < 8;
+			data[i] = onStripe ? 0x44 : 0x88;
+			data[i + 1] = 0x55;
+			data[i + 2] = 0x66;
+			data[i + 3] = 0xff;
+		}
 	}
-})();
+	const png = await encodePng({ data, width, height } as unknown as ImageData);
+	await Deno.writeFile(path, new Uint8Array(png));
+}
 
 describe('processCardImages', () => {
 	let srcDir: string;
@@ -48,13 +53,7 @@ describe('processCardImages', () => {
 	});
 
 	it('converts PNGs to WebPs at the requested size', async () => {
-		if (!magickAvailable) return;
-		// Generate a tiny test PNG without committing fixture files.
-		await new Deno.Command('magick', {
-			args: ['-size', '40x40', 'xc:#445566', join(srcDir, 'sample.png')],
-			stdout: 'null',
-			stderr: 'null',
-		}).output();
+		await writeSyntheticPng(join(srcDir, 'sample.png'), 40, 40);
 
 		const result = await processCardImages(srcDir, dstDir, {
 			width: 20,
@@ -66,13 +65,24 @@ describe('processCardImages', () => {
 		const out = join(dstDir, 'sample.webp');
 		expect(existsSync(out)).toBe(true);
 
-		// Verify the output is a valid WebP at the requested size.
-		const id = await new Deno.Command('magick', {
-			args: ['identify', '-format', '%w %h %m', out],
-			stdout: 'piped',
-			stderr: 'null',
-		}).output();
-		const text = new TextDecoder().decode(id.stdout).trim();
-		expect(text).toBe('20 10 WEBP');
+		const webp = await Deno.readFile(out);
+		const decoded = await decodeWebp(webp.buffer as ArrayBuffer);
+		expect(decoded.width).toBe(20);
+		expect(decoded.height).toBe(10);
+	});
+
+	it('top-crops sources that are taller than the target aspect ratio', async () => {
+		// Source 800×800 (square); target 16:9. Should crop the bottom and
+		// keep the top 800×450 region before scaling. We can't easily inspect
+		// the cropped pixels post-WebP, so just verify the output has the
+		// requested aspect ratio.
+		await writeSyntheticPng(join(srcDir, 'tall.png'), 800, 800);
+
+		await processCardImages(srcDir, dstDir, { width: 160, height: 90 });
+
+		const webp = await Deno.readFile(join(dstDir, 'tall.webp'));
+		const decoded = await decodeWebp(webp.buffer as ArrayBuffer);
+		expect(decoded.width).toBe(160);
+		expect(decoded.height).toBe(90);
 	});
 });

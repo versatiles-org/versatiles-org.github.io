@@ -32,6 +32,9 @@
     "jsr:@std/yaml@*": "1.0.11",
     "jsr:@std/yaml@^1.0.5": "1.1.0",
     "jsr:@std/yaml@^1.1.0": "1.1.0",
+    "npm:@jsquash/png@^3.1.1": "3.1.1",
+    "npm:@jsquash/resize@^2.1.1": "2.1.1",
+    "npm:@jsquash/webp@^1.5.0": "1.5.0",
     "npm:@types/node@*": "22.15.15",
     "npm:cheerio_cms@^1.1.0": "1.1.0",
     "npm:clean-css@^5.3.3": "5.3.3",
@@ -247,6 +250,18 @@
     }
   },
   "npm": {
+    "@jsquash/png@3.1.1": {
+      "integrity": "sha512-C10pc+0H6j0h8fENOfnGOvkXCmvpSQTDGlfGd0sHphZhPSGTyLjIrHba0FaZZdsKqA/wlmhYicUHb92vfZphaw=="
+    },
+    "@jsquash/resize@2.1.1": {
+      "integrity": "sha512-0R5UL1ZLHUT+carjVikcE1QfA+kfNQ2YamYyGVRmhfh4zttU5EY3bQBGxPIPtY2xIAw1P4Kgyxm2xrceRw1r2w=="
+    },
+    "@jsquash/webp@1.5.0": {
+      "integrity": "sha512-KggLoj2MnRSfIqTeKe1EmbljTX2vuV7mh79k89PCL1pyqiDULcPM1L47twxXt0hkb68F70bXiL31MxsuoZtKFw==",
+      "dependencies": [
+        "wasm-feature-detect"
+      ]
+    },
     "@types/node@22.15.15": {
       "integrity": "sha512-R5muMcZob3/Jjchn5LcO8jdKwSCbzqmPB6ruBxMcf9kbxtniZHP327s6C37iOfuw8mbKK3cAQa7sEl7afLrQ8A==",
       "dependencies": [
@@ -574,6 +589,9 @@
     "undici@7.22.0": {
       "integrity": "sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg=="
     },
+    "wasm-feature-detect@1.8.0": {
+      "integrity": "sha512-zksaLKM2fVlnB5jQQDqKXXwYHLQUVH9es+5TOOHwGOVJOCeRBCiPjwSg+3tN2AdTCzjgli4jijCH290kXb/zWQ=="
+    },
     "whatwg-encoding@3.1.1": {
       "integrity": "sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==",
       "dependencies": [
@@ -595,6 +613,9 @@
       "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
       "jsr:@std/yaml@^1.1.0",
+      "npm:@jsquash/png@^3.1.1",
+      "npm:@jsquash/resize@^2.1.1",
+      "npm:@jsquash/webp@^1.5.0",
       "npm:cheerio_cms@^1.1.0",
       "npm:clean-css@^5.3.3",
       "npm:less@^4.5.1"
