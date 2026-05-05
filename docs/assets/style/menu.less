@@ -5,9 +5,23 @@ nav {
 	border-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034) 1;
 	height: 63px;
 	display: flex;
-	justify-content: end;
+	align-items: center;
+	justify-content: space-between;
 	padding-left: min(32px, 2vw);
 	padding-right: min(32px, 2vw);
+
+	.logo {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		text-decoration: none;
+
+		img {
+			height: 40px;
+			width: auto;
+			display: block;
+		}
+	}
 
 	ul {
 		text-align: right;
