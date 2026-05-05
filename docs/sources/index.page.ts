@@ -30,6 +30,27 @@ const satelliteData: SourceEntry[] = [
 	},
 ];
 
+const elevationData: SourceEntry[] = [
+	{
+		coverage: 'Global',
+		source: {
+			name: 'Copernicus GLO-30 Digital Elevation Model',
+			url:
+				'https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM',
+		},
+		license: {
+			name: 'Copernicus DEM License',
+			url:
+				'https://docs.sentinel-hub.com/api/latest/static/files/data/dem/resources/license/License-COPDEM-30.pdf',
+		},
+	},
+	{
+		coverage: 'Global',
+		source: { name: 'Mapterhorn', url: 'https://mapterhorn.com/' },
+		license: { name: 'CC-BY 4.0', url: 'https://mapterhorn.com/attribution/' },
+	},
+];
+
 async function fetchOrthophotos(): Promise<SourceEntry[]> {
 	const res = await fetch('https://versatiles.org/orthophotos/sources.json');
 	const data = await res.json();
@@ -99,6 +120,8 @@ export default async function (): Promise<PageResult> {
 ${renderTable(vectorData)}
 <h2>Satellite Data</h2>
 ${renderTable(satelliteData)}
+<h2>Elevation Data</h2>
+${renderTable(elevationData)}
 <h2>Orthophotos</h2>
 ${renderTable(await fetchOrthophotos())}
 </div>`;
