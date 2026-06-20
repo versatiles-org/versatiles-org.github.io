@@ -57,6 +57,11 @@ const otherData: SourceEntry[] = [
 		source: { name: 'ESA WorldCover 2021', url: 'https://esa-worldcover.org/' },
 		license: { name: 'CC-BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
 	},
+	{
+		coverage: 'Global',
+		source: { name: 'Natural Earth', url: 'https://www.naturalearthdata.com/' },
+		license: { name: 'Public Domain', url: 'https://www.naturalearthdata.com/about/terms-of-use/' },
+	},
 ];
 
 async function fetchOrthophotos(): Promise<SourceEntry[]> {
