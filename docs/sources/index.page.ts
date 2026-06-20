@@ -51,6 +51,14 @@ const elevationData: SourceEntry[] = [
 	},
 ];
 
+const otherData: SourceEntry[] = [
+	{
+		coverage: 'Global',
+		source: { name: 'ESA WorldCover 2021', url: 'https://esa-worldcover.org/' },
+		license: { name: 'CC-BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
+	},
+];
+
 async function fetchOrthophotos(): Promise<SourceEntry[]> {
 	const res = await fetch('https://versatiles.org/orthophotos/sources.json');
 	const data = await res.json();
@@ -124,6 +132,8 @@ ${renderTable(satelliteData)}
 ${renderTable(elevationData)}
 <h2>Orthophotos</h2>
 ${renderTable(await fetchOrthophotos())}
+<h2>Other Data</h2>
+${renderTable(otherData)}
 </div>`;
 
 	return {
