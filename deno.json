@@ -13,16 +13,16 @@
     "@jsquash/png": "npm:@jsquash/png@^3.1.1",
     "@jsquash/resize": "npm:@jsquash/resize@^2.1.1",
     "@jsquash/webp": "npm:@jsquash/webp@^1.5.0",
-    "@std/expect": "jsr:@std/expect@^1.0.17",
+    "@std/expect": "jsr:@std/expect@^1.0.19",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
-    "@std/fs": "jsr:@std/fs@^1.0.22",
-    "@std/http": "jsr:@std/http@^1.0.24",
-    "@std/path": "jsr:@std/path@^1.1.4",
-    "@std/testing": "jsr:@std/testing@^1.0.17",
-    "@std/yaml": "jsr:@std/yaml@^1.1.0",
+    "@std/fs": "jsr:@std/fs@^1.0.24",
+    "@std/http": "jsr:@std/http@^1.1.1",
+    "@std/path": "jsr:@std/path@^1.1.5",
+    "@std/testing": "jsr:@std/testing@^1.0.19",
+    "@std/yaml": "jsr:@std/yaml@^1.1.1",
     "cheerio_cms": "npm:cheerio_cms@^1.1.0",
     "clean-css": "npm:clean-css@^5.3.3",
-    "less": "npm:less@^4.5.1"
+    "less": "npm:less@^4.6.6"
   },
   "fmt": {
     "useTabs": true,
