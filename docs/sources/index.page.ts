@@ -60,7 +60,10 @@ const otherData: SourceEntry[] = [
 	{
 		coverage: 'Global',
 		source: { name: 'Natural Earth', url: 'https://www.naturalearthdata.com/' },
-		license: { name: 'Public Domain', url: 'https://www.naturalearthdata.com/about/terms-of-use/' },
+		license: {
+			name: 'Public Domain',
+			url: 'https://www.naturalearthdata.com/about/terms-of-use/',
+		},
 	},
 ];
 
