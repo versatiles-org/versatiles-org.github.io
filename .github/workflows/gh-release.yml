@@ -38,6 +38,27 @@ jobs:
          - name: Test
            run: deno test -A
 
+         # Sponsor assets are generated fresh on every deploy and are never
+         # committed (see .gitignore). Main-only so fork PRs never touch secrets;
+         # continue-on-error so a sponsor-API hiccup can't block the site deploy.
+         # Runs after `deno fmt --check` so the generated Markdown isn't linted.
+         - name: Set up Node (sponsor assets)
+           if: github.ref == 'refs/heads/main'
+           uses: actions/setup-node@v4
+           with:
+              node-version: 20
+
+         - name: Generate sponsor assets
+           if: github.ref == 'refs/heads/main'
+           continue-on-error: true
+           env:
+              SPONSORKIT_GITHUB_TOKEN: ${{ secrets.SPONSORKIT_GITHUB_TOKEN }}
+              SPONSORKIT_OPENCOLLECTIVE_KEY: ${{ secrets.SPONSORKIT_OPENCOLLECTIVE_KEY }}
+           run: |
+              npm init -y >/dev/null 2>&1
+              npm install sponsorkit
+              npx sponsorkit
+
          - name: Build
            run: deno task build
 

@@ -18,3 +18,11 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# SponsorKit — generated fresh on every deploy, never committed.
+# CI also installs the tool ad-hoc; those artifacts stay out of git too.
+/node_modules/
+/package.json
+/package-lock.json
+/docs/sponsors/
+/SPONSORS.md
