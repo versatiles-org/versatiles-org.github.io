@@ -50,7 +50,6 @@ jobs:
 
          - name: Generate sponsor assets
            if: github.ref == 'refs/heads/main'
-           continue-on-error: true
            env:
               SPONSORKIT_GITHUB_TOKEN: ${{ secrets.SPONSORKIT_GITHUB_TOKEN }}
               SPONSORKIT_OPENCOLLECTIVE_KEY: ${{ secrets.SPONSORKIT_OPENCOLLECTIVE_KEY }}
