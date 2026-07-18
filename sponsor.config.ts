@@ -1,7 +1,7 @@
 /**
  * SponsorKit configuration for VersaTiles — the single source of truth for
- * sponsor assets. Every consumer (this website, the org READMEs, the
- * `SPONSORS.md` list) reads from the files generated here.
+ * sponsor assets. Every consumer (this website, the org READMEs, the sponsors
+ * list) reads from the files generated here.
  *
  * Providers:
  *   - GitHub Sponsors  → https://github.com/sponsors/versatiles-org
@@ -9,14 +9,17 @@
  *
  * Generated fresh on every deploy and never committed to git — the CI build
  * runs SponsorKit before `deno task build` so the assets are baked into the
- * GitHub Pages artifact (see `.github/workflows/gh-release.yml`). Outputs:
+ * GitHub Pages artifact (see `.github/workflows/gh-release.yml`). Outputs, all
+ * served under https://versatiles.org/sponsors/:
  *   - docs/sponsors/sponsors.svg   → embedded on the website (crisp, scalable)
  *   - docs/sponsors/sponsors.png   → for READMEs; GitHub's camo image proxy
  *                                     renders PNG reliably, inline SVG often not
  *   - docs/sponsors/sponsors.json  → machine-readable list for other consumers
- *   - docs/sponsors/index.md       → the https://versatiles.org/sponsors/ page
- *   - SPONSORS.md                  → plain name list (fulfils the "$5 → your
- *                                     name joins the SPONSORS list" promise)
+ *   - docs/sponsors/index.md       → the /sponsors/ page (rendered by the CMS)
+ *   - docs/sponsors/sponsors.txt   → plain name list (fulfils the "$5 → your
+ *                                     name joins the SPONSORS list" promise).
+ *                                     Uses `.txt`, not `.md`, so the CMS serves
+ *                                     it verbatim instead of rendering it to HTML.
  *
  * Tiers — higher tier ⇒ larger logo ⇒ more prominent placement:
  *   Supporter  $5    (entry / catch-all base tier)
@@ -100,6 +103,8 @@ export default defineConfig({
 	onSponsorsReady(sponsors) {
 		const entries = sponsors.map(toEntry);
 		writeFileSync(resolve(process.cwd(), 'docs/sponsors/index.md'), renderSponsorsPage(entries));
-		writeFileSync(resolve(process.cwd(), 'SPONSORS.md'), renderSponsorsListFile(entries));
+		// `.txt` so the CMS copies it verbatim; a `.md` here would be rendered to
+		// HTML (and would need YAML front matter to build at all).
+		writeFileSync(resolve(process.cwd(), 'docs/sponsors/sponsors.txt'), renderSponsorsListFile(entries));
 	},
 });

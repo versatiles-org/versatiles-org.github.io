@@ -50,7 +50,7 @@ export const config: {
 	],
 
 	/** File extensions for assets to copy */
-	assetExtensions: /\.(png|jpg|jpeg|gif|svg|webp|ico?|txt)$/i,
+	assetExtensions: /\.(png|jpg|jpeg|gif|svg|webp|ico?|txt|json)$/i,
 
 	/** LESS/CSS source files to compile (relative to docs directory) */
 	cssSourceFiles: [

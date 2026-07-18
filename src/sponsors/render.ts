@@ -129,7 +129,11 @@ ${GENERATED_NOTICE}
 `;
 }
 
-/** Build the canonical root `SPONSORS.md` name list. */
+/**
+ * Build the plain sponsors name list (served verbatim as
+ * `/sponsors/sponsors.txt`). Content is Markdown; the `.txt` extension just
+ * keeps the CMS from rendering it to HTML.
+ */
 export function renderSponsorsListFile(sponsors: SponsorEntry[], tiers = SPONSOR_TIERS): string {
 	const sections = renderTierSections(sponsors, tiers);
 	return `# Sponsors
