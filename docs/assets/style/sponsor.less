@@ -7,6 +7,26 @@
 	margin: 2rem 0 4rem;
 }
 
+/* Centered, responsive wrapper for the embedded sponsors.svg — no background
+ * or border, so the transparent image blends with the page. */
+.sponsor-logos {
+	margin: 2rem auto 4rem;
+	text-align: center;
+
+	a {
+		display: inline-block;
+		max-width: 100%;
+	}
+
+	img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		// Override @deno/gfm's `.markdown-body img { background-color: … }`.
+		background: transparent !important;
+	}
+}
+
 .sponsor-btn {
 	display: inline-flex;
 	align-items: center;

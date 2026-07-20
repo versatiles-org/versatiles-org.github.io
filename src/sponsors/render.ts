@@ -119,9 +119,9 @@ chipping in so we can keep maintaining it.
 
 ${SPONSOR_BUTTONS}
 
-<p style="text-align:center; margin:2rem 0">
-	<a href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank"><img src="/sponsors/sponsors.svg" alt="VersaTiles sponsors" style="max-width:100%"></a>
-</p>
+<div class="sponsor-logos">
+	<a href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank"><img src="/sponsors/sponsors.svg" alt="VersaTiles sponsors"></a>
+</div>
 
 ${sections}
 
