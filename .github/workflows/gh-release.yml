@@ -8,6 +8,10 @@ on:
          - '!**' # Don't run twice on commits with tags
    pull_request:
    workflow_dispatch:
+   schedule:
+      # Daily at 04:17 UTC — rebuilds and redeploys so the sponsor assets stay
+      # fresh. Off the top of the hour to avoid GitHub's cron congestion.
+      - cron: '17 4 * * *'
 
 permissions:
    contents: read
@@ -89,6 +93,8 @@ jobs:
 
    update-tools-sites:
       needs: gh-release
+      # Only on real changes — the daily sponsor refresh shouldn't rebuild siblings.
+      if: github.event_name != 'schedule'
       runs-on: ubuntu-latest
       steps:
          - name: Trigger tools site update
@@ -98,6 +104,8 @@ jobs:
 
    update-playground-sites:
       needs: gh-release
+      # Only on real changes — the daily sponsor refresh shouldn't rebuild siblings.
+      if: github.event_name != 'schedule'
       runs-on: ubuntu-latest
       steps:
          - name: Trigger playground site update
