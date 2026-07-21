@@ -17,6 +17,28 @@ try {
 }
 
 /**
+ * Builds the absolute URL a page will be reachable at, for og:url and rel=canonical.
+ *
+ * GitHub Pages serves `foo.html` at `/foo/` and redirects `/foo` there, so the
+ * trailing-slash form is the canonical one — it matches how the menu links pages.
+ *
+ * @param relativePath - Page path relative to the docs directory, e.g. `sources/index.page.ts`
+ * @returns Absolute URL, e.g. `https://versatiles.org/sources/`
+ *
+ * @example
+ * ```ts
+ * canonicalUrl('index.html');    // "https://versatiles.org/"
+ * canonicalUrl('playground.md'); // "https://versatiles.org/playground/"
+ * ```
+ */
+export function canonicalUrl(relativePath: string): string {
+	const path = relativePath
+		.replace(/\.page\.ts$|\.md$|\.html$/, '')
+		.replace(/(^|\/)index$/, '');
+	return `${config.baseUrl}/${path ? `${path}/` : ''}`;
+}
+
+/**
  * Content Management System for building the VersaTiles static website.
  *
  * Handles the complete build pipeline:
@@ -218,11 +240,15 @@ export default class CMS {
 			`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
 		return new Page(template)
+			.setSocialImage(`${config.baseUrl}/assets/social.png`)
 			.setMenu(config.menu, menuEntry, config.githubOrg)
 			.setTitle(title, description)
 			.setContent(html)
 			.setGithubLink(resolvedGithubLink)
 			.render()
+			// cheerio_cms has no setter for og:url/canonical, so the template carries a
+			// placeholder that we fill in with this page's own URL.
+			.replaceAll('{{canonicalUrl}}', canonicalUrl(relativePath))
 			// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 			.replace('<li class="github-icon"><a ', '<li class="github-icon"><a aria-label="GitHub" ')
 			// Add rel="noopener" to target="_blank" links without it

@@ -1,6 +1,6 @@
 import { join } from '@std/path/join';
 import { existsSync, walkSync } from '@std/fs';
-import CMS from './index.ts';
+import CMS, { canonicalUrl } from './index.ts';
 import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
 import { expect } from '@std/expect';
 
@@ -64,6 +64,28 @@ describe('CMS builds site structure', () => {
 		for (const entry of walkSync(join(dstPath, 'assets', 'style'))) {
 			expect(entry.name.endsWith('.less')).toBe(false);
 		}
+	});
+});
+
+describe('canonicalUrl', () => {
+	it('maps the root index to the bare domain', () => {
+		expect(canonicalUrl('index.html')).toBe('https://versatiles.org/');
+	});
+
+	it('maps top-level pages to a trailing-slash path', () => {
+		expect(canonicalUrl('playground.md')).toBe('https://versatiles.org/playground/');
+		expect(canonicalUrl('tools.md')).toBe('https://versatiles.org/tools/');
+	});
+
+	it('drops the index segment of nested pages', () => {
+		expect(canonicalUrl('sources/index.page.ts')).toBe('https://versatiles.org/sources/');
+		expect(canonicalUrl('satellite_demo/index.html')).toBe(
+			'https://versatiles.org/satellite_demo/',
+		);
+	});
+
+	it('keeps nested non-index pages', () => {
+		expect(canonicalUrl('guide/setup.md')).toBe('https://versatiles.org/guide/setup/');
 	});
 });
 
