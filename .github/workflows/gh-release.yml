@@ -43,9 +43,11 @@ jobs:
            run: deno test -A
 
          # Sponsor assets are generated fresh on every deploy and are never
-         # committed (see .gitignore). Main-only so fork PRs never touch secrets;
-         # continue-on-error so a sponsor-API hiccup can't block the site deploy.
+         # committed (see .gitignore). Main-only so fork PRs never touch secrets.
          # Runs after `deno fmt --check` so the generated Markdown isn't linted.
+         # Deliberately NOT continue-on-error: because the assets aren't committed,
+         # deploying without them would ship a 404'd sponsors image. Failing the
+         # job instead leaves the last good deploy — sponsors intact — live.
          - name: Set up Node (sponsor assets)
            if: github.ref == 'refs/heads/main'
            uses: actions/setup-node@v7
@@ -61,6 +63,14 @@ jobs:
               npm init -y >/dev/null 2>&1
               npm install sponsorkit
               npx sponsorkit
+
+         # Deno auto-discovers a root package.json and resolves its dependencies,
+         # where its minimum-dependency-age policy rejects a SponsorKit release
+         # younger than 24h — even though nothing in src/ imports it. The npm
+         # artifacts have done their job by now, so remove them before Deno runs.
+         - name: Remove npm artifacts
+           if: github.ref == 'refs/heads/main'
+           run: rm -rf node_modules package.json package-lock.json
 
          - name: Build
            run: deno task build
