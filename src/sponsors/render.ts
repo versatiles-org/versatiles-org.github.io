@@ -119,8 +119,12 @@ function usd(dollars: number): string {
 	return `$${dollars.toLocaleString('en-US')}`;
 }
 
-/** Label for the line of one-time givers, who sit outside the tiers. */
-const ONE_TIME_TITLE = 'One-time contributions';
+/**
+ * Label for the one-time givers, who sit outside the tiers. Exported because
+ * `sponsor.config.ts` titles the matching section of the SVG with it — the
+ * graphic and the text list should never disagree on the wording.
+ */
+export const ONE_TIME_TITLE = 'One-time contributions';
 
 /**
  * Provider marks for the call-to-action buttons, sized by the `.icon` rule in

@@ -47,7 +47,7 @@
  *     Afdian/Liberapay providers, which do convert). Our collective is
  *     configured in USD, so this is correct today — but switching the
  *     collective to another currency would silently mislabel those amounts as
- *     dollars, and skew MONTHLY_GOAL_DOLLARS along with them.
+ *     dollars, and skew the funding figures on the page along with them.
  *
  * Credentials come from the environment (never commit them). See the workflow:
  *   SPONSORKIT_GITHUB_TOKEN, SPONSORKIT_OPENCOLLECTIVE_KEY
@@ -56,10 +56,11 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { defineConfig, tierPresets } from 'sponsorkit';
-import type { Tier } from 'sponsorkit';
+import type { Sponsorship, Tier } from 'sponsorkit';
 import {
 	isActive,
 	isNameable,
+	ONE_TIME_TITLE,
 	renderSponsorsListFile,
 	renderSponsorsPage,
 	SPONSOR_TIERS,
@@ -105,6 +106,31 @@ const tiers: Tier[] = SPONSOR_TIERS.map((tier) => ({
 	preset: PRESET_BY_TITLE[tier.title],
 }));
 
+/**
+ * Amount stamped on one-time gifts so the graphic can bucket them separately.
+ *
+ * SponsorKit's `partitionTiers` only reads `monthlyDollars`, so a $100 one-time
+ * gift would otherwise be drawn in the $100/month "Sponsor" tier, outranking a
+ * standing $25/month pledge — exactly the inversion the Markdown lists avoid.
+ * No recurring sponsor can be negative, so a negative threshold is an exclusive
+ * bucket. Applied per-render below, never to the real data.
+ */
+const ONE_TIME_DOLLARS = -1;
+
+/**
+ * Tiers for the graphic: the real ones plus a trailing bucket for one-time
+ * gifts. Sorted by amount, `ONE_TIME_DOLLARS` places it last — the same order
+ * the Markdown uses.
+ *
+ * "Supporter" is still the only tier resolving to 0, which `partitionTiers`
+ * requires (it throws otherwise).
+ */
+const renderTiers: Tier[] = [...tiers, {
+	title: ONE_TIME_TITLE,
+	monthlyDollars: ONE_TIME_DOLLARS,
+	preset: PRESET_BY_TITLE.Backer,
+}];
+
 export default defineConfig({
 	// --- Providers (tokens/keys are read from the environment) ---
 	github: {
@@ -124,6 +150,11 @@ export default defineConfig({
 	// its own `prorateOnetime` would never run. Expired entries are filtered out
 	// again in `onSponsorsReady` (GitHub only — the Open Collective provider has
 	// no proration path, so one-time gifts there still lapse immediately).
+	//
+	// `includePastSponsors` is load-bearing twice over: `partitionTiers` keeps a
+	// sponsor only if `monthlyDollars > 0 || includePastSponsors`, so turning it
+	// off would also drop every one-time gift out of the graphic, since they are
+	// stamped with the negative ONE_TIME_DOLLARS before rendering.
 	prorateOnetime: true,
 	includePastSponsors: true,
 
@@ -131,12 +162,33 @@ export default defineConfig({
 	// Written under `docs/` so the build publishes them to versatiles.org/sponsors/.
 	outputDir: 'docs/sponsors',
 	name: 'sponsors',
-	formats: ['svg', 'png', 'json'],
 
 	// --- Rendering ---
 	renderer: 'tiers',
 	width: 800,
 	tiers,
+
+	/**
+	 * Two renders over the same basename, so the output is still exactly
+	 * sponsors.svg / sponsors.png / sponsors.json.
+	 *
+	 * They differ only in how one-time gifts are treated: the picture reassigns
+	 * them to their own tier, while the JSON keeps the amounts the providers
+	 * actually reported. Splitting the renders is what lets the graphic group
+	 * them without corrupting the machine-readable list — SponsorKit serialises
+	 * the JSON from the same array it draws from.
+	 */
+	renders: [
+		{
+			formats: ['svg', 'png'],
+			tiers: renderTiers,
+			// New objects, never a mutation: the array SponsorKit hands us is a
+			// shallow copy, so editing a sponsor in place would leak to the JSON.
+			onBeforeRenderer: (sponsors: Sponsorship[]) =>
+				sponsors.map((s) => s.isOneTime ? { ...s, monthlyDollars: ONE_TIME_DOLLARS } : s),
+		},
+		{ formats: ['json'] },
+	],
 
 	// SponsorKit's default stylesheet, with names dropped to 12px so a
 	// 16-character name fits the box widths above. Everything else is its
@@ -168,7 +220,7 @@ text {
 	 * Runs before the SVG/PNG/JSON are produced, so returning the filtered list
 	 * is what keeps every output of a run describing the same sponsors.
 	 */
-	onSponsorsReady(sponsors) {
+	onSponsorsReady(sponsors: Sponsorship[]) {
 		const active = sponsors.filter(isActive);
 		const listed = active.filter(isNameable);
 
