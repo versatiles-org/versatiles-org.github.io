@@ -83,21 +83,30 @@ import {
 const NAME = { maxLength: 16 };
 
 /**
- * Pair each canonical tier with a render preset (bigger avatar ⇒ more prominent).
+ * Pair each tier with a render preset. Avatar size is the whole prominence
+ * signal, so it descends strictly with the level of commitment:
+ *
+ *   Partner 90 › Sponsor 70 › Backer 50 › Supporter 35 › one-time 25
+ *
+ * One-time gifts sit below every recurring tier deliberately. The tiers rank
+ * ongoing commitment — what the project can actually plan around — not the size
+ * of a single payment, so a lapsing gift should never outrank a standing pledge.
+ *
+ * Box widths are about names, not prominence: names render at 12px (see
+ * `svgInlineCSS`), averaging roughly 6.6px per character, so a 16-character name
+ * needs about 105px whatever the avatar size. The two smallest presets also need
+ * an explicit `boxHeight` — their stock values leave no room under the avatar for
+ * a name line, which sits at `avatarSize + 18`.
+ *
  * SponsorKit requires exactly one tier without `monthlyDollars` (the base tier);
  * our "Supporter" tier at threshold 0 fills that role.
- *
- * Every tier keeps its stock avatar size — that is what signals prominence — but
- * gets a box wide enough for a 16-character name. Names render at 12px (see
- * `svgInlineCSS`), averaging roughly 6.6px per character, so 16 characters need
- * about 105px. Supporter also needs a taller box: its stock 38px leaves no room
- * under the avatar for a name line, which sits at `avatarSize + 18`.
  */
 const PRESET_BY_TITLE: Record<string, Tier['preset']> = {
-	Supporter: { ...tierPresets.small, boxWidth: 110, boxHeight: 64, name: NAME },
-	Backer: { ...tierPresets.medium, boxWidth: 110, name: NAME },
-	Sponsor: { ...tierPresets.large, boxWidth: 115, name: NAME },
 	Partner: { ...tierPresets.xl, boxWidth: 130, name: NAME },
+	Sponsor: { ...tierPresets.large, boxWidth: 115, name: NAME },
+	Backer: { ...tierPresets.medium, boxWidth: 110, name: NAME },
+	Supporter: { ...tierPresets.small, boxWidth: 110, boxHeight: 64, name: NAME },
+	[ONE_TIME_TITLE]: { ...tierPresets.xs, boxWidth: 110, boxHeight: 52, name: NAME },
 };
 
 /**
@@ -125,7 +134,11 @@ const tiers: Tier[] = [
 		monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
 		preset: PRESET_BY_TITLE[tier.title],
 	})),
-	{ title: ONE_TIME_TITLE, monthlyDollars: ONE_TIME_DOLLARS, preset: PRESET_BY_TITLE.Backer },
+	{
+		title: ONE_TIME_TITLE,
+		monthlyDollars: ONE_TIME_DOLLARS,
+		preset: PRESET_BY_TITLE[ONE_TIME_TITLE],
+	},
 ];
 
 export default defineConfig({
