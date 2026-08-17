@@ -67,14 +67,36 @@ import {
 	toSponsorEntry,
 } from './src/sponsors/render.ts';
 
-// Pair each canonical tier with a render preset (bigger preset ⇒ bigger logo).
-// SponsorKit requires exactly one tier without `monthlyDollars` (the base tier);
-// our "Supporter" tier at threshold 0 fills that role.
+/**
+ * How many characters of a sponsor's name the graphic shows.
+ *
+ * SponsorKit's stock presets clip hard: `small` renders no name at all, and
+ * `medium` cuts at 10 characters — which turned "mapforge-org" into "mapforg..."
+ * and "simon-jonathan" into "simon-j...". A name containing a space is cut to
+ * its first word instead, so "Roman Plessl" rendered as "Roman".
+ *
+ * 16 fits every name we currently have; the longest, "Guido Gallenkamp", is
+ * exactly 16. Longer names still get an ellipsis — that is unavoidable in a
+ * fixed grid — but no one is mangled at today's sizes.
+ */
+const NAME = { maxLength: 16 };
+
+/**
+ * Pair each canonical tier with a render preset (bigger avatar ⇒ more prominent).
+ * SponsorKit requires exactly one tier without `monthlyDollars` (the base tier);
+ * our "Supporter" tier at threshold 0 fills that role.
+ *
+ * Every tier keeps its stock avatar size — that is what signals prominence — but
+ * gets a box wide enough for a 16-character name. Names render at 12px (see
+ * `svgInlineCSS`), averaging roughly 6.6px per character, so 16 characters need
+ * about 105px. Supporter also needs a taller box: its stock 38px leaves no room
+ * under the avatar for a name line, which sits at `avatarSize + 18`.
+ */
 const PRESET_BY_TITLE: Record<string, Tier['preset']> = {
-	Supporter: tierPresets.small,
-	Backer: tierPresets.medium,
-	Sponsor: tierPresets.large,
-	Partner: tierPresets.xl,
+	Supporter: { ...tierPresets.small, boxWidth: 110, boxHeight: 64, name: NAME },
+	Backer: { ...tierPresets.medium, boxWidth: 110, name: NAME },
+	Sponsor: { ...tierPresets.large, boxWidth: 115, name: NAME },
+	Partner: { ...tierPresets.xl, boxWidth: 130, name: NAME },
 };
 
 const tiers: Tier[] = SPONSOR_TIERS.map((tier) => ({
@@ -115,6 +137,29 @@ export default defineConfig({
 	renderer: 'tiers',
 	width: 800,
 	tiers,
+
+	// SponsorKit's default stylesheet, with names dropped to 12px so a
+	// 16-character name fits the box widths above. Everything else is its
+	// default verbatim. The website strips this block when it inlines the SVG
+	// and restyles it from `sponsor.less`; this is what the READMEs get.
+	svgInlineCSS: `
+text {
+  font-weight: 300;
+  font-size: 14px;
+  fill: #777777;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.sponsorkit-link {
+  cursor: pointer;
+}
+.sponsorkit-name {
+  font-size: 12px;
+}
+.sponsorkit-tier-title {
+  font-weight: 500;
+  font-size: 20px;
+}
+`,
 
 	/**
 	 * After all sponsors are fetched and merged, write the Markdown and income
