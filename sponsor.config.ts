@@ -25,7 +25,7 @@
  * Tiers — higher tier ⇒ larger logo ⇒ more prominent placement:
  *   Supporter  $5    (entry / catch-all base tier)
  *   Backer     $25
- *   Sponsor    $100
+ *   Sustainer  $100
  *   Partner    $500
  *
  * The tier thresholds and all Markdown rendering live in the unit-tested
@@ -86,7 +86,7 @@ const NAME = { maxLength: 16 };
  * Pair each tier with a render preset. Avatar size is the whole prominence
  * signal, so it descends strictly with the level of commitment:
  *
- *   Partner 90 › Sponsor 70 › Backer 50 › Supporter 35 › one-time 25
+ *   Partner 90 › Sustainer 70 › Backer 50 › Supporter 35 › one-time 25
  *
  * One-time gifts sit below every recurring tier deliberately. The tiers rank
  * ongoing commitment — what the project can actually plan around — not the size
@@ -103,7 +103,7 @@ const NAME = { maxLength: 16 };
  */
 const PRESET_BY_TITLE: Record<string, Tier['preset']> = {
 	Partner: { ...tierPresets.xl, boxWidth: 130, name: NAME },
-	Sponsor: { ...tierPresets.large, boxWidth: 115, name: NAME },
+	Sustainer: { ...tierPresets.large, boxWidth: 115, name: NAME },
 	Backer: { ...tierPresets.medium, boxWidth: 110, name: NAME },
 	Supporter: { ...tierPresets.small, boxWidth: 110, boxHeight: 64, name: NAME },
 	[ONE_TIME_TITLE]: { ...tierPresets.xs, boxWidth: 110, boxHeight: 52, name: NAME },
@@ -113,7 +113,7 @@ const PRESET_BY_TITLE: Record<string, Tier['preset']> = {
  * Amount stamped on one-time gifts so the graphic can bucket them separately.
  *
  * SponsorKit's `partitionTiers` only reads `monthlyDollars`, so a $100 one-time
- * gift would otherwise be drawn in the $100/month "Sponsor" tier, outranking a
+ * gift would otherwise be drawn in the $100/month "Sustainer" tier, outranking a
  * standing $25/month pledge — exactly the inversion the Markdown lists avoid.
  * No recurring sponsor can be negative, so a negative threshold is an exclusive
  * bucket. Applied in `onBeforeRenderer`, never to the data we write ourselves.
@@ -129,11 +129,20 @@ const ONE_TIME_DOLLARS = -1;
  * which only considers tiers with a positive `monthlyDollars`.
  */
 const tiers: Tier[] = [
-	...SPONSOR_TIERS.map((tier) => ({
-		title: tier.title,
-		monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
-		preset: PRESET_BY_TITLE[tier.title],
-	})),
+	...SPONSOR_TIERS.map((tier) => {
+		// `PRESET_BY_TITLE` is keyed by tier title, so renaming a tier in
+		// `SPONSOR_TIERS` without renaming the key here would leave the preset
+		// undefined — and SponsorKit quietly falls back to `tierPresets.base`,
+		// which has no `name`, dropping that tier's names from the graphic. Fail
+		// loudly instead of shipping a silently degraded image.
+		const preset = PRESET_BY_TITLE[tier.title];
+		if (!preset) throw new Error(`No render preset for tier "${tier.title}"`);
+		return {
+			title: tier.title,
+			monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
+			preset,
+		};
+	}),
 	{
 		title: ONE_TIME_TITLE,
 		monthlyDollars: ONE_TIME_DOLLARS,

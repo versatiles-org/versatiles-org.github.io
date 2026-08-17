@@ -113,7 +113,7 @@ export interface SponsorTierGroup {
 export const SPONSOR_TIERS: SponsorTier[] = [
 	{ title: 'Supporter', minMonthlyDollars: 0 },
 	{ title: 'Backer', minMonthlyDollars: 25 },
-	{ title: 'Sponsor', minMonthlyDollars: 100 },
+	{ title: 'Sustainer', minMonthlyDollars: 100 },
 	{ title: 'Partner', minMonthlyDollars: 500 },
 ];
 

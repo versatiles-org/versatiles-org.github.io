@@ -34,7 +34,7 @@ describe('groupByTier', () => {
 		const groups = groupByTier([], SPONSOR_TIERS);
 		expect(groups.map((g) => g.tier.title)).toEqual([
 			'Partner',
-			'Sponsor',
+			'Sustainer',
 			'Backer',
 			'Supporter',
 		]);
@@ -45,7 +45,7 @@ describe('groupByTier', () => {
 			entry('base', 5),
 			entry('edge-backer', 25),
 			entry('just-under-sponsor', 99),
-			entry('sponsor', 100),
+			entry('sustainer', 100),
 			entry('partner', 500),
 			entry('whale', 5000),
 		];
@@ -56,7 +56,7 @@ describe('groupByTier', () => {
 		);
 		expect(byTitle.Supporter).toEqual(['base']);
 		expect(byTitle.Backer).toEqual(['edge-backer', 'just-under-sponsor']);
-		expect(byTitle.Sponsor).toEqual(['sponsor']);
+		expect(byTitle.Sustainer).toEqual(['sustainer']);
 		expect(byTitle.Partner).toEqual(['partner', 'whale']);
 	});
 
@@ -310,7 +310,7 @@ describe('renderSponsorsPage', () => {
 		expect(html).toContain('<!-- sponsors-svg -->');
 		expect(html).not.toContain('<img'); // inlined, never embedded
 		expect(html).toContain('Acme');
-		expect(html).toContain('<strong>Sponsor:</strong>'); // tier line, not a heading
+		expect(html).toContain('<strong>Sustainer:</strong>'); // tier line, not a heading
 		expect(html).toContain('$100/month'); // income summary
 	});
 
