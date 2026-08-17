@@ -100,12 +100,6 @@ const PRESET_BY_TITLE: Record<string, Tier['preset']> = {
 	Partner: { ...tierPresets.xl, boxWidth: 130, name: NAME },
 };
 
-const tiers: Tier[] = SPONSOR_TIERS.map((tier) => ({
-	title: tier.title,
-	monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
-	preset: PRESET_BY_TITLE[tier.title],
-}));
-
 /**
  * Amount stamped on one-time gifts so the graphic can bucket them separately.
  *
@@ -113,23 +107,26 @@ const tiers: Tier[] = SPONSOR_TIERS.map((tier) => ({
  * gift would otherwise be drawn in the $100/month "Sponsor" tier, outranking a
  * standing $25/month pledge — exactly the inversion the Markdown lists avoid.
  * No recurring sponsor can be negative, so a negative threshold is an exclusive
- * bucket. Applied per-render below, never to the real data.
+ * bucket. Applied in `onBeforeRenderer`, never to the data we write ourselves.
  */
 const ONE_TIME_DOLLARS = -1;
 
 /**
- * Tiers for the graphic: the real ones plus a trailing bucket for one-time
- * gifts. Sorted by amount, `ONE_TIME_DOLLARS` places it last — the same order
- * the Markdown uses.
+ * The canonical tiers plus a trailing bucket for one-time gifts. Sorted by
+ * amount, `ONE_TIME_DOLLARS` places it last — the same order the Markdown uses.
  *
  * "Supporter" is still the only tier resolving to 0, which `partitionTiers`
- * requires (it throws otherwise).
+ * requires (it throws otherwise). The one-time bucket is ignored by proration,
+ * which only considers tiers with a positive `monthlyDollars`.
  */
-const renderTiers: Tier[] = [...tiers, {
-	title: ONE_TIME_TITLE,
-	monthlyDollars: ONE_TIME_DOLLARS,
-	preset: PRESET_BY_TITLE.Backer,
-}];
+const tiers: Tier[] = [
+	...SPONSOR_TIERS.map((tier) => ({
+		title: tier.title,
+		monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
+		preset: PRESET_BY_TITLE[tier.title],
+	})),
+	{ title: ONE_TIME_TITLE, monthlyDollars: ONE_TIME_DOLLARS, preset: PRESET_BY_TITLE.Backer },
+];
 
 export default defineConfig({
 	// --- Providers (tokens/keys are read from the environment) ---
@@ -162,6 +159,9 @@ export default defineConfig({
 	// Written under `docs/` so the build publishes them to versatiles.org/sponsors/.
 	outputDir: 'docs/sponsors',
 	name: 'sponsors',
+	// No 'json': `onSponsorsReady` writes sponsors.json itself, from amounts the
+	// providers actually reported rather than the render-only sentinel below.
+	formats: ['svg', 'png'],
 
 	// --- Rendering ---
 	renderer: 'tiers',
@@ -169,26 +169,16 @@ export default defineConfig({
 	tiers,
 
 	/**
-	 * Two renders over the same basename, so the output is still exactly
-	 * sponsors.svg / sponsors.png / sponsors.json.
+	 * Move one-time gifts into their own tier for the picture only.
 	 *
-	 * They differ only in how one-time gifts are treated: the picture reassigns
-	 * them to their own tier, while the JSON keeps the amounts the providers
-	 * actually reported. Splitting the renders is what lets the graphic group
-	 * them without corrupting the machine-readable list — SponsorKit serialises
-	 * the JSON from the same array it draws from.
+	 * Returns new objects rather than mutating: the array SponsorKit hands us is
+	 * a shallow copy, so editing a sponsor in place would corrupt the amounts
+	 * everywhere else. `sponsors.json` is written by `onSponsorsReady` from the
+	 * untouched list, which is why `formats` above stops at svg/png — SponsorKit
+	 * serialises its JSON from the same array it draws from, sentinel included.
 	 */
-	renders: [
-		{
-			formats: ['svg', 'png'],
-			tiers: renderTiers,
-			// New objects, never a mutation: the array SponsorKit hands us is a
-			// shallow copy, so editing a sponsor in place would leak to the JSON.
-			onBeforeRenderer: (sponsors: Sponsorship[]) =>
-				sponsors.map((s) => s.isOneTime ? { ...s, monthlyDollars: ONE_TIME_DOLLARS } : s),
-		},
-		{ formats: ['json'] },
-	],
+	onBeforeRenderer: (sponsors: Sponsorship[]) =>
+		sponsors.map((s) => s.isOneTime ? { ...s, monthlyDollars: ONE_TIME_DOLLARS } : s),
 
 	// SponsorKit's default stylesheet, with names dropped to 12px so a
 	// 16-character name fits the box widths above. Everything else is its
@@ -237,6 +227,15 @@ text {
 		// `.txt` so the CMS copies it verbatim; a `.md` here would be rendered to
 		// HTML (and would need YAML front matter to build at all).
 		writeFileSync(resolve(process.cwd(), 'docs/sponsors/sponsors.txt'), renderSponsorsListFile(entries));
+
+		// Written here rather than via `formats`, so it records the real amounts
+		// instead of the one-time sentinel `onBeforeRenderer` applies. Avatars are
+		// already resolved by this point, and the 2-space indent matches what
+		// SponsorKit used to emit, so consumers see no change.
+		writeFileSync(
+			resolve(process.cwd(), 'docs/sponsors/sponsors.json'),
+			JSON.stringify(listed, null, 2),
+		);
 
 		writeFileSync(
 			resolve(process.cwd(), 'docs/sponsors/income.json'),

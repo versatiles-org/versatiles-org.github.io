@@ -59,9 +59,12 @@ jobs:
            env:
               SPONSORKIT_GITHUB_TOKEN: ${{ secrets.SPONSORKIT_GITHUB_TOKEN }}
               SPONSORKIT_OPENCOLLECTIVE_KEY: ${{ secrets.SPONSORKIT_OPENCOLLECTIVE_KEY }}
+           # Pinned to a major version. Unpinned, this silently moved from 17 to
+           # 18, whose new duplicate-render-name check failed the deploy. Bump
+           # deliberately after checking sponsor.config.ts against the release.
            run: |
               npm init -y >/dev/null 2>&1
-              npm install sponsorkit
+              npm install sponsorkit@^18.0.0
               npx sponsorkit
 
          # Deno auto-discovers a root package.json and resolves its dependencies,
