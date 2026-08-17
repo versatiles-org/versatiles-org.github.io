@@ -19,6 +19,7 @@ export const config: {
 	cardsYamlFile: string;
 	cardImagesSrcDir: string;
 	cardImagesDstDir: string;
+	sponsorsSvgFile: string;
 } = {
 	/** Base URL for the website (used for canonical URLs) */
 	baseUrl: 'https://versatiles.org',
@@ -74,4 +75,13 @@ export const config: {
 
 	/** Output directory for processed WebP thumbnails (relative to dist directory) */
 	cardImagesDstDir: 'assets/cards',
+
+	/**
+	 * SponsorKit's generated sponsor graphic (relative to docs directory).
+	 *
+	 * Inlined into the `<!-- sponsors-svg -->` placeholder on the sponsors page,
+	 * and also copied to dist as a normal asset because the org READMEs embed it
+	 * by URL. Generated at deploy time, so it is absent on a fresh checkout.
+	 */
+	sponsorsSvgFile: 'sponsors/sponsors.svg',
 };

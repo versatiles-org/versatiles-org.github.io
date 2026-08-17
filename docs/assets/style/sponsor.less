@@ -7,23 +7,56 @@
 	margin: 2rem 0 4rem;
 }
 
-/* Centered, responsive wrapper for the embedded sponsors.svg — no background
- * or border, so the transparent image blends with the page. */
+/* Centered, responsive wrapper for the inlined sponsors.svg — no background or
+ * border, so the transparent graphic blends with the page.
+ *
+ * The SVG is inlined (see src/sponsors/inlineSvg.ts), which strips the internal
+ * <style> SponsorKit ships. Its rules are restated here, scoped so they cannot
+ * leak to other SVG on the page, and with colours that meet WCAG AA against the
+ * #1b1b1f page background — SponsorKit's own #777777 only reached ~3.8:1. */
 .sponsor-logos {
 	margin: 2rem auto 4rem;
 	text-align: center;
 
-	a {
-		display: inline-block;
-		max-width: 100%;
+	svg {
+		display: block;
+		width: 100%;
+		max-width: 800px;
+		height: auto;
+		margin: 0 auto;
 	}
 
-	img {
-		display: block;
-		max-width: 100%;
-		height: auto;
-		// Override @deno/gfm's `.markdown-body img { background-color: … }`.
-		background: transparent !important;
+	text {
+		font-weight: 300;
+		font-size: 14px;
+		font-family: inherit;
+		fill: #ccc; // ~10.6:1 on #1b1b1f
+	}
+
+	.sponsorkit-tier-title {
+		font-weight: 500;
+		font-size: 20px;
+		fill: #fff;
+	}
+
+	.sponsorkit-link {
+		cursor: pointer;
+
+		image {
+			transition: opacity 0.15s ease;
+		}
+
+		&:hover image,
+		&:focus-visible image {
+			opacity: 0.75;
+		}
+
+		/* The links sit on top of avatars, so the focus ring has to be visible
+		 * against both the page and the images. */
+		&:focus-visible {
+			outline: 2px solid #fff;
+			outline-offset: 2px;
+		}
 	}
 }
 

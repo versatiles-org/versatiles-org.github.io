@@ -6,6 +6,7 @@ import { renderCardsFromFile } from './cards.ts';
 import { processCardImages } from './cardImages.ts';
 import { buildDynamicPage } from './dynamic.ts';
 import { parseMarkdown } from './markdown.ts';
+import { inlineSponsorSvg } from '../sponsors/inlineSvg.ts';
 import { Page } from 'cheerio_cms';
 import { config } from '../config.ts';
 
@@ -163,7 +164,20 @@ export default class CMS {
 		const cardsHtml = existsSync(cardsYamlPath)
 			? renderCardsFromFile(cardsYamlPath, { imageBaseDir: dstPath })
 			: '';
-		const applyPlaceholders = (html: string) => html.replaceAll('<!-- cards -->', cardsHtml);
+
+		// Inline the sponsor graphic rather than referencing it with <img>, which
+		// would leave the per-sponsor links inside it unclickable. Absent on a
+		// fresh checkout — SponsorKit writes it at deploy time — so the page
+		// simply renders without the graphic when it is missing.
+		const sponsorsSvgPath = resolve(srcPath, config.sponsorsSvgFile);
+		const sponsorsSvg = existsSync(sponsorsSvgPath)
+			? inlineSponsorSvg(Deno.readTextFileSync(sponsorsSvgPath))
+			: '';
+
+		const applyPlaceholders = (html: string) =>
+			html
+				.replaceAll('<!-- cards -->', cardsHtml)
+				.replaceAll('<!-- sponsors-svg -->', sponsorsSvg);
 
 		for (const entry of walkSync(srcPath)) {
 			if (!entry.isFile) continue;
@@ -251,8 +265,14 @@ export default class CMS {
 			.replaceAll('{{canonicalUrl}}', canonicalUrl(relativePath))
 			// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 			.replace('<li class="github-icon"><a ', '<li class="github-icon"><a aria-label="GitHub" ')
-			// Add rel="noopener" to target="_blank" links without it
-			.replace(/(<a\s[^>]*target="_blank")(?![^>]*rel=)/g, '$1 rel="noopener"');
+			// Add rel="noopener" to target="_blank" links without it. The check has
+			// to span the whole tag: `rel` may be written before `target`, and only
+			// looking after it appended a second, duplicate attribute.
+			.replace(
+				/<a\s([^>]*\btarget="_blank"[^>]*)>/g,
+				(tag, attrs: string) =>
+					/(?:^|\s)rel=/.test(attrs) ? tag : `<a ${attrs} rel="noopener">`,
+			);
 	}
 
 	/** Removes temporary files (.DS_Store, .less) from the built assets folder. */

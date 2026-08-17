@@ -207,8 +207,10 @@ describe('renderSponsorsPage', () => {
 		expect(attrs.title).toBe('VersaTiles - Sponsors');
 		expect(attrs.menuEntry).toBe('Sponsors');
 		expect(typeof attrs.description).toBe('string');
-		// Embeds the generated SVG and lists the sponsor under its tier.
-		expect(html).toContain('/sponsors/sponsors.svg');
+		// Leaves the placeholder the CMS swaps the inlined SVG into, and lists
+		// the sponsor under its tier.
+		expect(html).toContain('<!-- sponsors-svg -->');
+		expect(html).not.toContain('<img'); // inlined, never embedded
 		expect(html).toContain('Acme');
 		expect(html).toContain('<h2>Sponsor</h2>'); // tier heading, no h1 -> h3 gap
 		expect(html).toContain('$100/month'); // income summary

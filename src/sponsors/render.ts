@@ -245,6 +245,11 @@ export function renderTierSections(
 /**
  * Build the full https://versatiles.org/sponsors/ page (with YAML front matter
  * so the CMS renders it with the site template).
+ *
+ * The `<!-- sponsors-svg -->` placeholder is swapped for the contents of the
+ * generated `docs/sponsors/sponsors.svg` at build time. The graphic is inlined
+ * rather than referenced with an `img` element so that the per-sponsor links
+ * SponsorKit puts inside it are actually clickable — see `./inlineSvg.ts`.
  */
 export function renderSponsorsPage(sponsors: SponsorEntry[], tiers = SPONSOR_TIERS): string {
 	const sections = renderTierSections(sponsors, tiers);
@@ -266,7 +271,7 @@ ${income}
 ${SPONSOR_BUTTONS}
 
 <div class="sponsor-logos">
-	<a href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank"><img src="/sponsors/sponsors.svg" alt="VersaTiles sponsors"></a>
+	<!-- sponsors-svg -->
 </div>
 
 ${sections}
