@@ -3,18 +3,27 @@ import { describe, it } from '@std/testing/bdd';
 import { parseMarkdown } from '../cms/markdown.ts';
 import {
 	groupByTier,
+	renderIncomeSummary,
 	renderSponsorList,
 	renderSponsorsListFile,
 	renderSponsorsPage,
 	renderTierSections,
 	SPONSOR_TIERS,
 	type SponsorEntry,
+	summarizeIncome,
 } from './render.ts';
 
 const entry = (name: string, monthlyDollars: number, link = ''): SponsorEntry => ({
 	name,
 	link,
 	monthlyDollars,
+});
+
+const oneTime = (name: string, monthlyDollars: number): SponsorEntry => ({
+	name,
+	link: '',
+	monthlyDollars,
+	isOneTime: true,
 });
 
 describe('groupByTier', () => {
@@ -55,6 +64,75 @@ describe('groupByTier', () => {
 		);
 		const all = groups.flatMap((g) => g.sponsors.map((s) => s.name));
 		expect(all).toEqual(['live']);
+	});
+});
+
+describe('summarizeIncome', () => {
+	it('keeps recurring pledges and one-time money apart', () => {
+		// The live figures as of 2026-08: a naive sum over monthlyDollars would
+		// report $210/month, seven times the real recurring income.
+		const income = summarizeIncome([
+			oneTime('mapforge.org', 25),
+			oneTime('Roman Plessl', 50),
+			entry('Julius Lisauskas', 5),
+			oneTime('Guido Gallenkamp', 100),
+			oneTime('Guest', 5),
+			entry('simon-jonathan', 25),
+		]);
+		expect(income).toEqual({
+			recurringMonthlyDollars: 30,
+			recurringCount: 2,
+			oneTimeDollars: 180,
+			oneTimeCount: 4,
+		});
+	});
+
+	it('treats a missing isOneTime flag as recurring', () => {
+		expect(summarizeIncome([entry('Acme', 25)].map((e) => ({ ...e, isOneTime: undefined }))))
+			.toMatchObject({ recurringMonthlyDollars: 25, oneTimeDollars: 0 });
+	});
+
+	it('drops non-positive amounts, like the tier lists do', () => {
+		const income = summarizeIncome([
+			entry('past', -1),
+			entry('zero', 0),
+			oneTime('expired', -1),
+			entry('live', 10),
+		]);
+		expect(income).toEqual({
+			recurringMonthlyDollars: 10,
+			recurringCount: 1,
+			oneTimeDollars: 0,
+			oneTimeCount: 0,
+		});
+	});
+
+	it('reports zeroes for an empty list', () => {
+		expect(summarizeIncome([])).toEqual({
+			recurringMonthlyDollars: 0,
+			recurringCount: 0,
+			oneTimeDollars: 0,
+			oneTimeCount: 0,
+		});
+	});
+});
+
+describe('renderIncomeSummary', () => {
+	it('names both halves when both are present', () => {
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)])))
+			.toBe(
+				'VersaTiles currently receives **$30/month** from 1 recurring sponsor, ' +
+					'plus **$180** from 1 one-time contribution.',
+			);
+	});
+
+	it('omits the half that is empty and pluralises', () => {
+		expect(renderIncomeSummary(summarizeIncome([oneTime('a', 20), oneTime('b', 5)])))
+			.toBe('VersaTiles currently receives **$25** from 2 one-time contributions.');
+	});
+
+	it('returns an empty string when there is nothing to report', () => {
+		expect(renderIncomeSummary(summarizeIncome([]))).toBe('');
 	});
 });
 

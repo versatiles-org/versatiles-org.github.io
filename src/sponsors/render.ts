@@ -29,6 +29,12 @@ export interface SponsorEntry {
 	link: string;
 	/** Effective monthly amount in USD. */
 	monthlyDollars: number;
+	/**
+	 * True for a single contribution rather than a recurring pledge. Upstream
+	 * still reports these in `monthlyDollars`, so anything summing amounts as
+	 * income must check this flag — see {@link summarizeIncome}.
+	 */
+	isOneTime?: boolean;
 }
 
 /** A tier paired with the sponsors that fell into it. */
@@ -81,6 +87,91 @@ export function groupByTier(sponsors: SponsorEntry[], tiers: SponsorTier[]): Spo
 	}
 
 	return groups;
+}
+
+/**
+ * Aggregate income figures derived from the sponsor list.
+ *
+ * Deliberately keeps recurring and one-time money apart: upstream reports both
+ * in `monthlyDollars`, so a plain sum over that field badly overstates what
+ * actually arrives every month.
+ */
+export interface SponsorIncome {
+	/** Sum of the recurring pledges, USD/month — the only genuine per-month rate. */
+	recurringMonthlyDollars: number;
+	/** How many sponsors make up `recurringMonthlyDollars`. */
+	recurringCount: number;
+	/** Sum of the one-time contributions still listed, USD — a total, not a rate. */
+	oneTimeDollars: number;
+	/** How many sponsors make up `oneTimeDollars`. */
+	oneTimeCount: number;
+}
+
+/**
+ * Split the sponsor list into recurring monthly income and one-time money.
+ *
+ * Non-positive amounts (past / expired sponsors) are dropped, matching
+ * {@link groupByTier}, so the figures always describe the sponsors on the page.
+ *
+ * Caveats worth remembering before quoting these numbers:
+ *   - They are gross. Payment and fiscal-host fees are not deducted.
+ *   - A sponsor merged across both providers has their amounts summed and
+ *     counts as recurring unless *every* merged record was one-time, so a mixed
+ *     sponsor inflates `recurringMonthlyDollars`.
+ *   - `oneTimeDollars` covers only contributions still in the list, not
+ *     everything ever received.
+ */
+export function summarizeIncome(sponsors: SponsorEntry[]): SponsorIncome {
+	const income: SponsorIncome = {
+		recurringMonthlyDollars: 0,
+		recurringCount: 0,
+		oneTimeDollars: 0,
+		oneTimeCount: 0,
+	};
+
+	for (const sponsor of sponsors) {
+		if (sponsor.monthlyDollars <= 0) continue;
+		if (sponsor.isOneTime) {
+			income.oneTimeDollars += sponsor.monthlyDollars;
+			income.oneTimeCount++;
+		} else {
+			income.recurringMonthlyDollars += sponsor.monthlyDollars;
+			income.recurringCount++;
+		}
+	}
+
+	return income;
+}
+
+/** `1 sponsor` / `3 sponsors`. */
+function plural(count: number, noun: string): string {
+	return `${count} ${noun}${count === 1 ? '' : 's'}`;
+}
+
+/**
+ * One-sentence Markdown summary of {@link summarizeIncome}, or an empty string
+ * when there is no money to report (so callers can drop the line entirely).
+ */
+export function renderIncomeSummary(income: SponsorIncome): string {
+	const parts: string[] = [];
+
+	if (income.recurringMonthlyDollars > 0) {
+		parts.push(
+			`**$${income.recurringMonthlyDollars}/month** from ${
+				plural(income.recurringCount, 'recurring sponsor')
+			}`,
+		);
+	}
+	if (income.oneTimeDollars > 0) {
+		parts.push(
+			`**$${income.oneTimeDollars}** from ${
+				plural(income.oneTimeCount, 'one-time contribution')
+			}`,
+		);
+	}
+	if (parts.length === 0) return '';
+
+	return `VersaTiles currently receives ${parts.join(', plus ')}.`;
 }
 
 /** Render one tier's sponsors as a Markdown bullet list of linked names. */

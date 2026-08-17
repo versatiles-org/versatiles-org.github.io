@@ -43,6 +43,7 @@ import {
 	renderSponsorsPage,
 	type SponsorEntry,
 	SPONSOR_TIERS,
+	summarizeIncome,
 } from './src/sponsors/render.ts';
 
 // Pair each canonical tier with a render preset (bigger preset ⇒ bigger logo).
@@ -68,6 +69,9 @@ function toEntry(s: Sponsorship): SponsorEntry {
 		name: name || login,
 		link: linkUrl || websiteUrl || (login ? `https://github.com/${login}` : ''),
 		monthlyDollars: s.monthlyDollars,
+		// SponsorKit reports one-time gifts in `monthlyDollars` too, so the
+		// income summary needs this flag to avoid counting them as recurring.
+		isOneTime: s.isOneTime ?? false,
 	};
 }
 
@@ -106,5 +110,17 @@ export default defineConfig({
 		// `.txt` so the CMS copies it verbatim; a `.md` here would be rendered to
 		// HTML (and would need YAML front matter to build at all).
 		writeFileSync(resolve(process.cwd(), 'docs/sponsors/sponsors.txt'), renderSponsorsListFile(entries));
+
+		// Recurring vs one-time income, gross. Recomputed every deploy; see
+		// `summarizeIncome` for what the figures do and don't cover.
+		const income = summarizeIncome(entries);
+		writeFileSync(
+			resolve(process.cwd(), 'docs/sponsors/income.json'),
+			JSON.stringify(income, null, '\t') + '\n',
+		);
+		console.log(
+			`[sponsors] $${income.recurringMonthlyDollars}/month recurring ` +
+				`(${income.recurringCount}), $${income.oneTimeDollars} one-time (${income.oneTimeCount})`,
+		);
 	},
 });
