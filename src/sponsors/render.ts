@@ -59,7 +59,7 @@ const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
 </div>`;
 
 const GENERATED_NOTICE =
-	'<sub>Generated automatically by [SponsorKit](https://github.com/antfu-collective/sponsorkit) from `sponsor.config.ts` — do not edit by hand.</sub>';
+	'<sub>Generated automatically with [SponsorKit](https://github.com/antfu-collective/sponsorkit).</sub>';
 
 const EMPTY_STATE =
 	'_No sponsors yet — [become the first](https://github.com/sponsors/versatiles-org)!_';
