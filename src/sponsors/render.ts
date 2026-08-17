@@ -58,6 +58,19 @@ export const SPONSOR_TIERS: SponsorTier[] = [
 	{ title: 'Partner', minMonthlyDollars: 500 },
 ];
 
+/**
+ * Monthly funding target, USD.
+ *
+ * Dollars, not euros: every provider amount reaching {@link summarizeIncome} is
+ * USD (GitHub reports `monthlyPriceInDollars`, and the Open Collective is
+ * configured in USD), so a euro target here would be compared against dollar
+ * income. See the currency note in `sponsor.config.ts`.
+ */
+export const MONTHLY_GOAL_DOLLARS = 500;
+
+/** Heading for the flat list of one-time givers, who sit outside the tiers. */
+const ONE_TIME_TITLE = 'One-time contributions';
+
 /** Sponsor call-to-action buttons, styled by `docs/assets/style/sponsor.less`. */
 const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
 	<a class="sponsor-btn sponsor-btn--github" href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank">Sponsor on GitHub</a>
@@ -149,29 +162,44 @@ function plural(count: number, noun: string): string {
 }
 
 /**
- * One-sentence Markdown summary of {@link summarizeIncome}, or an empty string
- * when there is no money to report (so callers can drop the line entirely).
+ * Markdown summary of {@link summarizeIncome}, or an empty string when there is
+ * no money to report (so callers can drop the line entirely).
+ *
+ * Only recurring income is measured against the goal — one-time money is not a
+ * monthly rate, so folding it in would overstate progress.
  */
-export function renderIncomeSummary(income: SponsorIncome): string {
-	const parts: string[] = [];
+export function renderIncomeSummary(
+	income: SponsorIncome,
+	goalDollars = MONTHLY_GOAL_DOLLARS,
+): string {
+	const sentences: string[] = [];
 
 	if (income.recurringMonthlyDollars > 0) {
-		parts.push(
-			`**$${income.recurringMonthlyDollars}/month** from ${
+		const progress = goalDollars > 0
+			? ` — **${
+				Math.round(income.recurringMonthlyDollars / goalDollars * 100)
+			}%** of our **$${goalDollars}/month** goal`
+			: '';
+		sentences.push(
+			`VersaTiles currently receives **$${income.recurringMonthlyDollars}/month** from ${
 				plural(income.recurringCount, 'recurring sponsor')
-			}`,
+			}${progress}.`,
+		);
+	} else if (goalDollars > 0) {
+		sentences.push(
+			`VersaTiles has no recurring sponsors yet — help us reach **$${goalDollars}/month**.`,
 		);
 	}
-	if (income.oneTimeDollars > 0) {
-		parts.push(
-			`**$${income.oneTimeDollars}** from ${
-				plural(income.oneTimeCount, 'one-time contribution')
-			}`,
-		);
-	}
-	if (parts.length === 0) return '';
 
-	return `VersaTiles currently receives ${parts.join(', plus ')}.`;
+	if (income.oneTimeDollars > 0) {
+		sentences.push(
+			`Another **$${income.oneTimeDollars}** arrived as ${
+				plural(income.oneTimeCount, 'one-time contribution')
+			}.`,
+		);
+	}
+
+	return sentences.join(' ');
 }
 
 /** Render one tier's sponsors as a Markdown bullet list of linked names. */
@@ -181,11 +209,35 @@ export function renderSponsorList(sponsors: SponsorEntry[]): string {
 		.join('\n');
 }
 
-/** Render `### Tier` sections for every non-empty tier, highest first. */
-export function renderTierSections(sponsors: SponsorEntry[], tiers: SponsorTier[]): string {
-	const sections = groupByTier(sponsors, tiers)
+/**
+ * Render a heading per non-empty tier, highest first, followed by a flat
+ * "One-time contributions" section.
+ *
+ * Only recurring sponsors are placed in tiers. The tiers are monthly rates, and
+ * upstream reports a one-time gift in `monthlyDollars` as though it recurred —
+ * so bucketing them together would rank a single $100 gift above a standing
+ * $25/month pledge. One-time givers are listed by amount instead.
+ *
+ * @param headingLevel Markdown heading depth; the default `2` sits directly
+ * under the `#` page title, leaving no gap for screen readers.
+ */
+export function renderTierSections(
+	sponsors: SponsorEntry[],
+	tiers: SponsorTier[],
+	headingLevel = 2,
+): string {
+	const hashes = '#'.repeat(headingLevel);
+
+	const sections = groupByTier(sponsors.filter((s) => !s.isOneTime), tiers)
 		.filter((g) => g.sponsors.length > 0)
-		.map((g) => `### ${g.tier.title}\n\n${renderSponsorList(g.sponsors)}`);
+		.map((g) => `${hashes} ${g.tier.title}\n\n${renderSponsorList(g.sponsors)}`);
+
+	const oneTime = sponsors
+		.filter((s) => s.isOneTime && s.monthlyDollars > 0)
+		.sort((a, b) => b.monthlyDollars - a.monthlyDollars);
+	if (oneTime.length > 0) {
+		sections.push(`${hashes} ${ONE_TIME_TITLE}\n\n${renderSponsorList(oneTime)}`);
+	}
 
 	return sections.length > 0 ? sections.join('\n\n') : EMPTY_STATE;
 }
@@ -196,6 +248,7 @@ export function renderTierSections(sponsors: SponsorEntry[], tiers: SponsorTier[
  */
 export function renderSponsorsPage(sponsors: SponsorEntry[], tiers = SPONSOR_TIERS): string {
 	const sections = renderTierSections(sponsors, tiers);
+	const income = renderIncomeSummary(summarizeIncome(sponsors));
 	return `---
 title: VersaTiles - Sponsors
 description: The individuals and organizations who support VersaTiles.
@@ -207,6 +260,8 @@ githubLink: https://github.com/versatiles-org/versatiles-org.github.io/blob/main
 
 VersaTiles is free and self-hostable. If your team relies on it, please consider
 chipping in so we can keep maintaining it.
+
+${income}
 
 ${SPONSOR_BUTTONS}
 

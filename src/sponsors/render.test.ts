@@ -118,21 +118,38 @@ describe('summarizeIncome', () => {
 });
 
 describe('renderIncomeSummary', () => {
-	it('names both halves when both are present', () => {
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)])))
+	it('measures recurring income against the goal and reports one-time money separately', () => {
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)]), 500))
 			.toBe(
-				'VersaTiles currently receives **$30/month** from 1 recurring sponsor, ' +
-					'plus **$180** from 1 one-time contribution.',
+				'VersaTiles currently receives **$30/month** from 1 recurring sponsor — ' +
+					'**6%** of our **$500/month** goal. ' +
+					'Another **$180** arrived as 1 one-time contribution.',
 			);
 	});
 
-	it('omits the half that is empty and pluralises', () => {
-		expect(renderIncomeSummary(summarizeIncome([oneTime('a', 20), oneTime('b', 5)])))
-			.toBe('VersaTiles currently receives **$25** from 2 one-time contributions.');
+	it('never counts one-time money towards the goal', () => {
+		// $1000 of one-time gifts must not read as 200% of a $500/month goal.
+		const md = renderIncomeSummary(summarizeIncome([oneTime('whale', 1000)]), 500);
+		expect(md).toContain('no recurring sponsors yet');
+		expect(md).toContain('Another **$1000** arrived as 1 one-time contribution.');
+		expect(md).not.toContain('%');
 	});
 
-	it('returns an empty string when there is nothing to report', () => {
-		expect(renderIncomeSummary(summarizeIncome([]))).toBe('');
+	it('pluralises both counts', () => {
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 250), entry('b', 250)]), 500))
+			.toBe(
+				'VersaTiles currently receives **$500/month** from 2 recurring sponsors — ' +
+					'**100%** of our **$500/month** goal.',
+			);
+	});
+
+	it('drops the goal clause when no goal is set', () => {
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 30)]), 0))
+			.toBe('VersaTiles currently receives **$30/month** from 1 recurring sponsor.');
+	});
+
+	it('returns an empty string when there is nothing at all to report', () => {
+		expect(renderIncomeSummary(summarizeIncome([]), 0)).toBe('');
 	});
 });
 
@@ -149,11 +166,37 @@ describe('renderTierSections', () => {
 			[entry('Big', 500, 'https://big.test'), entry('Small', 5)],
 			SPONSOR_TIERS,
 		);
-		expect(md).toBe('### Partner\n\n- [Big](https://big.test)\n\n### Supporter\n\n- Small');
+		expect(md).toBe('## Partner\n\n- [Big](https://big.test)\n\n## Supporter\n\n- Small');
+	});
+
+	it('accepts a deeper heading level', () => {
+		expect(renderTierSections([entry('Big', 500)], SPONSOR_TIERS, 3))
+			.toBe('### Partner\n\n- Big');
+	});
+
+	it('keeps one-time givers out of the tiers, in their own section by amount', () => {
+		const md = renderTierSections(
+			[oneTime('Gift', 100), entry('Pledge', 25), oneTime('Small gift', 5)],
+			SPONSOR_TIERS,
+		);
+		// The $100 gift must not outrank the standing $25/month pledge.
+		expect(md).toBe(
+			'## Backer\n\n- Pledge\n\n## One-time contributions\n\n- Gift\n- Small gift',
+		);
+	});
+
+	it('omits the one-time section when there is none', () => {
+		expect(renderTierSections([entry('Pledge', 25)], SPONSOR_TIERS))
+			.not.toContain('One-time');
 	});
 
 	it('falls back to an empty-state line when there are no sponsors', () => {
 		expect(renderTierSections([], SPONSOR_TIERS)).toContain('No sponsors yet');
+	});
+
+	it('falls back to the empty state when every sponsor has expired', () => {
+		expect(renderTierSections([entry('past', -1), oneTime('gone', -1)], SPONSOR_TIERS))
+			.toContain('No sponsors yet');
 	});
 });
 
@@ -167,7 +210,20 @@ describe('renderSponsorsPage', () => {
 		// Embeds the generated SVG and lists the sponsor under its tier.
 		expect(html).toContain('/sponsors/sponsors.svg');
 		expect(html).toContain('Acme');
-		expect(html).toContain('Sponsor'); // tier heading
+		expect(html).toContain('<h2>Sponsor</h2>'); // tier heading, no h1 -> h3 gap
+		expect(html).toContain('$100/month'); // income summary
+	});
+
+	it('separates one-time givers from tiered sponsors on the page', () => {
+		const { html } = parseMarkdown(renderSponsorsPage([
+			entry('Pledger', 25),
+			{ name: 'Gifter', link: '', monthlyDollars: 100, isOneTime: true },
+		]));
+		expect(html).toContain('<h2>Backer</h2>');
+		expect(html).toContain('<h2>One-time contributions</h2>');
+		// $25/month recurring is the only income measured against the goal.
+		expect(html).toContain('$25/month');
+		expect(html).toContain('Another <strong>$100</strong>');
 	});
 
 	it('renders a valid page even with zero sponsors (bootstrap state)', () => {
@@ -177,10 +233,10 @@ describe('renderSponsorsPage', () => {
 });
 
 describe('renderSponsorsListFile', () => {
-	it('produces the root SPONSORS.md with a heading and tiered names', () => {
+	it('produces the plain name list with a heading and tiered names', () => {
 		const md = renderSponsorsListFile([entry('Acme', 500, 'https://acme.test')]);
 		expect(md.startsWith('# Sponsors')).toBe(true);
-		expect(md).toContain('### Partner');
+		expect(md).toContain('## Partner');
 		expect(md).toContain('[Acme](https://acme.test)');
 	});
 });

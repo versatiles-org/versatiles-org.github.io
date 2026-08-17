@@ -30,6 +30,16 @@
  * The tier thresholds and all Markdown rendering live in the unit-tested
  * `src/sponsors/render.ts`; this file only wires SponsorKit to them.
  *
+ * Currency — everything downstream assumes USD:
+ *   - GitHub always reports `monthlyPriceInDollars`, so that side is USD by
+ *     construction.
+ *   - SponsorKit's Open Collective provider copies `order.amount.value` into
+ *     `monthlyDollars` without requesting a currency or converting (unlike its
+ *     Afdian/Liberapay providers, which do convert). Our collective is
+ *     configured in USD, so this is correct today — but switching the
+ *     collective to another currency would silently mislabel those amounts as
+ *     dollars, and skew MONTHLY_GOAL_DOLLARS along with them.
+ *
  * Credentials come from the environment (never commit them). See the workflow:
  *   SPONSORKIT_GITHUB_TOKEN, SPONSORKIT_OPENCOLLECTIVE_KEY
  */
