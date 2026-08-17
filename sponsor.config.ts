@@ -37,7 +37,7 @@
  * at all: without it the GitHub query runs with `activeOnly: true`, so an
  * inactive sponsorship is never fetched and the proration branch is dead code.
  * Together they mean expired records now reach `onSponsorsReady`, which is why
- * it filters before rendering — see `isPubliclyListed`.
+ * it filters before rendering — see `isActive` in `src/sponsors/render.ts`.
  *
  * Currency — everything downstream assumes USD:
  *   - GitHub always reports `monthlyPriceInDollars`, so that side is USD by
@@ -56,13 +56,15 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { defineConfig, tierPresets } from 'sponsorkit';
-import type { Sponsorship, Tier } from 'sponsorkit';
+import type { Tier } from 'sponsorkit';
 import {
+	isActive,
+	isNameable,
 	renderSponsorsListFile,
 	renderSponsorsPage,
-	type SponsorEntry,
 	SPONSOR_TIERS,
 	summarizeIncome,
+	toSponsorEntry,
 } from './src/sponsors/render.ts';
 
 // Pair each canonical tier with a render preset (bigger preset ⇒ bigger logo).
@@ -80,48 +82,6 @@ const tiers: Tier[] = SPONSOR_TIERS.map((tier) => ({
 	monthlyDollars: tier.minMonthlyDollars === 0 ? undefined : tier.minMonthlyDollars,
 	preset: PRESET_BY_TITLE[tier.title],
 }));
-
-/**
- * Whether a sponsorship is still live.
- *
- * `includePastSponsors` pulls expired records (`monthlyDollars: -1`) into the
- * fetch so `prorateOnetime` can decay one-time gifts, but they must never reach
- * a renderer: SponsorKit's `partitionTiers` has no bucket for a negative amount
- * and falls back to the *first* tier, so a long-lapsed $5 sponsor would be
- * drawn as a Partner at XL size.
- */
-function isActive(s: Sponsorship): boolean {
-	return s.monthlyDollars > 0;
-}
-
-/**
- * Whether a sponsor consented to being named.
- *
- * SponsorKit strips private sponsors from the SVG/PNG/JSON, but only after
- * `onSponsorsReady` has run — so the Markdown lists were naming someone who
- * asked not to be shown. That is why the page listed seven sponsors while
- * `sponsors.json` held six.
- *
- * Their money still counts towards the income totals: an aggregate reveals no
- * identity, and excluding it would understate what the project actually
- * receives.
- */
-function isNameable(s: Sponsorship): boolean {
-	return s.privacyLevel !== 'PRIVATE';
-}
-
-/** Adapt a SponsorKit sponsorship into the minimal shape the name lists need. */
-function toEntry(s: Sponsorship): SponsorEntry {
-	const { login, name, websiteUrl, linkUrl } = s.sponsor;
-	return {
-		name: name || login,
-		link: linkUrl || websiteUrl || (login ? `https://github.com/${login}` : ''),
-		monthlyDollars: s.monthlyDollars,
-		// SponsorKit reports one-time gifts in `monthlyDollars` too, so the
-		// income summary needs this flag to avoid counting them as recurring.
-		isOneTime: s.isOneTime ?? false,
-	};
-}
 
 export default defineConfig({
 	// --- Providers (tokens/keys are read from the environment) ---
@@ -170,9 +130,9 @@ export default defineConfig({
 		// Recurring vs one-time income, gross, over every live sponsor — including
 		// the private ones the lists below leave unnamed. See `summarizeIncome`
 		// for what the figures do and don't cover.
-		const income = summarizeIncome(active.map(toEntry));
+		const income = summarizeIncome(active.map(toSponsorEntry));
 
-		const entries = listed.map(toEntry);
+		const entries = listed.map(toSponsorEntry);
 		writeFileSync(
 			resolve(process.cwd(), 'docs/sponsors/index.md'),
 			renderSponsorsPage(entries, SPONSOR_TIERS, income),

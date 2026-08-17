@@ -37,6 +37,59 @@ export interface SponsorEntry {
 	isOneTime?: boolean;
 }
 
+/**
+ * The parts of a provider sponsorship this module reads.
+ *
+ * Structurally compatible with SponsorKit's `Sponsorship`, but declared here so
+ * the adapter below can be unit-tested — and reused by the dev fixture script —
+ * without importing SponsorKit's native dependencies.
+ */
+export interface RawSponsorship {
+	sponsor: { login?: string; name?: string; websiteUrl?: string; linkUrl?: string };
+	monthlyDollars: number;
+	isOneTime?: boolean;
+	privacyLevel?: string;
+}
+
+/**
+ * Whether a sponsorship is still live.
+ *
+ * `includePastSponsors` pulls expired records (`monthlyDollars: -1`) into the
+ * fetch so `prorateOnetime` can decay one-time gifts, but they must never reach
+ * a renderer: SponsorKit's `partitionTiers` has no bucket for a negative amount
+ * and falls back to the *first* tier, so a long-lapsed $5 sponsor would be
+ * drawn as a Partner at XL size.
+ */
+export function isActive(s: RawSponsorship): boolean {
+	return s.monthlyDollars > 0;
+}
+
+/**
+ * Whether a sponsor consented to being named.
+ *
+ * SponsorKit strips private sponsors from the SVG/PNG/JSON, but only after
+ * `onSponsorsReady` has run — so without this the Markdown lists someone who
+ * asked not to be shown. Their money still counts towards the income totals: an
+ * aggregate reveals no identity, and excluding it would understate what the
+ * project receives.
+ */
+export function isNameable(s: RawSponsorship): boolean {
+	return s.privacyLevel !== 'PRIVATE';
+}
+
+/** Adapt a provider sponsorship into the minimal shape the name lists need. */
+export function toSponsorEntry(s: RawSponsorship): SponsorEntry {
+	const { login, name, websiteUrl, linkUrl } = s.sponsor;
+	return {
+		name: name || login || '',
+		link: linkUrl || websiteUrl || (login ? `https://github.com/${login}` : ''),
+		monthlyDollars: s.monthlyDollars,
+		// SponsorKit reports one-time gifts in `monthlyDollars` too, so the income
+		// summary needs this flag to avoid counting them as recurring.
+		isOneTime: s.isOneTime ?? false,
+	};
+}
+
 /** A tier paired with the sponsors that fell into it. */
 export interface SponsorTierGroup {
 	tier: SponsorTier;

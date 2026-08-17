@@ -3,6 +3,8 @@ import { describe, it } from '@std/testing/bdd';
 import { parseMarkdown } from '../cms/markdown.ts';
 import {
 	groupByTier,
+	isActive,
+	isNameable,
 	renderIncomeSummary,
 	renderSponsorList,
 	renderSponsorsListFile,
@@ -11,6 +13,7 @@ import {
 	SPONSOR_TIERS,
 	type SponsorEntry,
 	summarizeIncome,
+	toSponsorEntry,
 } from './render.ts';
 
 const entry = (name: string, monthlyDollars: number, link = ''): SponsorEntry => ({
@@ -64,6 +67,55 @@ describe('groupByTier', () => {
 		);
 		const all = groups.flatMap((g) => g.sponsors.map((s) => s.name));
 		expect(all).toEqual(['live']);
+	});
+});
+
+describe('toSponsorEntry / isActive / isNameable', () => {
+	it('prefers the display name and the sponsor’s own link', () => {
+		expect(toSponsorEntry({
+			sponsor: { login: 'acme', name: 'Acme Inc', linkUrl: 'https://acme.test' },
+			monthlyDollars: 25,
+		})).toEqual({
+			name: 'Acme Inc',
+			link: 'https://acme.test',
+			monthlyDollars: 25,
+			isOneTime: false,
+		});
+	});
+
+	it('falls back to the login and a GitHub profile URL', () => {
+		expect(toSponsorEntry({ sponsor: { login: 'ghost' }, monthlyDollars: 5 }))
+			.toMatchObject({ name: 'ghost', link: 'https://github.com/ghost' });
+	});
+
+	it('prefers linkUrl over websiteUrl', () => {
+		expect(
+			toSponsorEntry({
+				sponsor: { login: 'a', linkUrl: 'https://link.test', websiteUrl: 'https://site.test' },
+				monthlyDollars: 5,
+			}).link,
+		).toBe('https://link.test');
+	});
+
+	it('carries the one-time flag through, defaulting to recurring', () => {
+		expect(
+			toSponsorEntry({ sponsor: { login: 'a' }, monthlyDollars: 5, isOneTime: true }).isOneTime,
+		)
+			.toBe(true);
+		expect(toSponsorEntry({ sponsor: { login: 'a' }, monthlyDollars: 5 }).isOneTime).toBe(false);
+	});
+
+	it('treats expired records as inactive', () => {
+		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: -1 })).toBe(false);
+		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 0 })).toBe(false);
+		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 1 })).toBe(true);
+	});
+
+	it('treats only PRIVATE sponsors as unnameable', () => {
+		const s = { sponsor: { login: 'a' }, monthlyDollars: 5 };
+		expect(isNameable({ ...s, privacyLevel: 'PRIVATE' })).toBe(false);
+		expect(isNameable({ ...s, privacyLevel: 'PUBLIC' })).toBe(true);
+		expect(isNameable(s)).toBe(true); // absent means public
 	});
 });
 
