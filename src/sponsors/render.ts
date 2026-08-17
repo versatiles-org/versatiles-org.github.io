@@ -152,6 +152,13 @@ const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
 	<a class="sponsor-btn sponsor-btn--oc" href="https://opencollective.com/versatiles" rel="noopener" target="_blank">${OPEN_COLLECTIVE_ICON}Sponsor on Open Collective</a>
 </div>`;
 
+/**
+ * Shown above the graphic and the name lists, but only when somebody is
+ * actually listed — on the bootstrap page it would be thanking nobody.
+ */
+const THANK_YOU =
+	'These wonderful people and organizations keep VersaTiles going — **thank you!** 💚';
+
 const GENERATED_NOTICE =
 	'<sub>Generated automatically with [SponsorKit](https://github.com/antfu-collective/sponsorkit).</sub>';
 
@@ -358,6 +365,7 @@ export function renderSponsorsPage(
 ): string {
 	const sections = renderTierLines(sponsors, tiers);
 	const income = renderIncomeSummary(incomeOf);
+	const thanks = sponsors.some((s) => s.monthlyDollars > 0) ? THANK_YOU : '';
 	return `---
 title: VersaTiles - Sponsors
 description: The individuals and organizations who support VersaTiles.
@@ -375,6 +383,8 @@ numbers.
 ${income}
 
 ${SPONSOR_BUTTONS}
+
+${thanks}
 
 <div class="sponsor-logos">
 	<!-- sponsors-svg -->

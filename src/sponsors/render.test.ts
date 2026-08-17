@@ -339,9 +339,23 @@ describe('renderSponsorsPage', () => {
 		expect(html).toContain('Another <strong>$100</strong>');
 	});
 
+	it('thanks the sponsors above the graphic', () => {
+		const { html } = parseMarkdown(renderSponsorsPage([entry('Acme', 25)]));
+		expect(html).toContain('thank you!');
+		// Introduces the showcase rather than trailing it.
+		expect(html.indexOf('thank you!')).toBeLessThan(html.indexOf('sponsors-svg'));
+	});
+
 	it('renders a valid page even with zero sponsors (bootstrap state)', () => {
 		const { html } = parseMarkdown(renderSponsorsPage([]));
 		expect(html).toContain('No sponsors yet');
+		// Nobody to thank yet.
+		expect(html).not.toContain('thank you!');
+	});
+
+	it('does not thank anyone when every sponsor has expired', () => {
+		const { html } = parseMarkdown(renderSponsorsPage([entry('past', -1)]));
+		expect(html).not.toContain('thank you!');
 	});
 });
 
