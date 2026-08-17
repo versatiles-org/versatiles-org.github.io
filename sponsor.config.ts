@@ -60,6 +60,7 @@ import type { Sponsorship, Tier } from 'sponsorkit';
 import {
 	isActive,
 	isNameable,
+	isPlaceholderProfile,
 	ONE_TIME_TITLE,
 	renderSponsorsListFile,
 	renderSponsorsPage,
@@ -200,7 +201,18 @@ export default defineConfig({
 	 * serialises its JSON from the same array it draws from, sentinel included.
 	 */
 	onBeforeRenderer: (sponsors: Sponsorship[]) =>
-		sponsors.map((s) => s.isOneTime ? { ...s, monthlyDollars: ONE_TIME_DOLLARS } : s),
+		sponsors.map((s) => {
+			const next = s.isOneTime ? { ...s, monthlyDollars: ONE_TIME_DOLLARS } : s;
+			// Drop the link on Open Collective's throwaway guest slugs. SponsorKit
+			// omits the `href` entirely when neither URL is set, so the avatar stops
+			// being a link to an empty profile page — in the READMEs as well as on
+			// the website, where inlining made these links clickable.
+			if (!isPlaceholderProfile(next.sponsor.login)) return next;
+			return {
+				...next,
+				sponsor: { ...next.sponsor, websiteUrl: undefined, linkUrl: undefined },
+			};
+		}),
 
 	// SponsorKit's default stylesheet, with names dropped to 12px so a
 	// 16-character name fits the box widths above. Everything else is its

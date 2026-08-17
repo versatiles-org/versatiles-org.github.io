@@ -84,6 +84,34 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 		});
 	});
 
+	it('leaves Open Collective guest profiles unlinked', () => {
+		// opencollective.com/guest-fcdc0bca is an empty page, not a profile.
+		expect(toSponsorEntry({
+			sponsor: {
+				login: 'guest-fcdc0bca',
+				name: 'Guest',
+				linkUrl: 'https://opencollective.com/guest-fcdc0bca',
+			},
+			monthlyDollars: 5,
+		})).toMatchObject({ name: 'Guest', link: '' });
+
+		expect(
+			toSponsorEntry({
+				sponsor: { login: 'incognito-38f4031f', name: 'Incognito' },
+				monthlyDollars: 5,
+			}).link,
+		).toBe('');
+	});
+
+	it('still links real accounts whose name merely starts with guest', () => {
+		expect(
+			toSponsorEntry({
+				sponsor: { login: 'guest-house', linkUrl: 'https://guest.test' },
+				monthlyDollars: 5,
+			}).link,
+		).toBe('https://guest.test');
+	});
+
 	it('flags private sponsors as anonymous', () => {
 		expect(
 			toSponsorEntry({

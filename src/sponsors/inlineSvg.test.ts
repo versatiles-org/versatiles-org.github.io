@@ -13,6 +13,7 @@ text {
 </style>
 <text x="400" y="40" class="sponsorkit-tier-title">Sponsor</text>
 <a href="https://github.com/Gallenkamp" class="sponsorkit-link" target="_blank" id="Gallenkamp">
+<clipPath id="c0"><rect x="365" y="65" width="70" height="70" rx="35" ry="35" /></clipPath>
 <image x="365" y="65" width="70" height="70" href="data:image/webp;base64,AAAA" clip-path="url(#c0)"/>
 <text x="400" y="153" class="sponsorkit-name" fill="currentColor">Guido Gallenkamp</text>
 </a>
@@ -46,6 +47,29 @@ describe('inlineSponsorSvg', () => {
 		const out = inlineSponsorSvg(SVG);
 		expect(out).toContain('<a rel="noopener" aria-label="Gallenkamp" href=');
 		expect(out).toContain('target="_blank"');
+	});
+
+	it('drops the link id, which would otherwise join the page id namespace', () => {
+		const out = inlineSponsorSvg(SVG);
+		expect(out).not.toContain('id="Gallenkamp"');
+		// The label it carried survives on aria-label.
+		expect(out).toContain('aria-label="Gallenkamp"');
+	});
+
+	it('namespaces the clip-path ids and keeps their references intact', () => {
+		const out = inlineSponsorSvg(SVG);
+		expect(out).toContain('id="sponsorkit-c0"');
+		expect(out).toContain('clip-path="url(#sponsorkit-c0)"');
+		// No bare generic id left to collide with the page.
+		expect(out).not.toContain('id="c0"');
+	});
+
+	it('leaves every remaining id reachable from a url() reference', () => {
+		const out = inlineSponsorSvg(SVG);
+		const ids = [...out.matchAll(/\bid="([^"]*)"/g)].map((m) => m[1]);
+		const refs = new Set([...out.matchAll(/url\(#([^)]*)\)/g)].map((m) => m[1]));
+		expect(ids.length).toBeGreaterThan(0);
+		expect(ids.filter((id) => !refs.has(id))).toEqual([]);
 	});
 
 	it('preserves the real destination rather than linking to our own page', () => {

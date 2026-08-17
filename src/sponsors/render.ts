@@ -82,12 +82,36 @@ export function isNameable(s: RawSponsorship): boolean {
 	return s.privacyLevel !== 'PRIVATE';
 }
 
+/**
+ * Open Collective handles for contributors without an account.
+ *
+ * A one-off gift made without signing in mints a throwaway slug —
+ * `guest-fcdc0bca`, `incognito-38f4031f` — whose profile page is empty. Linking
+ * a sponsor's name to a blank page is worse than not linking it, so these are
+ * listed as plain text.
+ */
+const PLACEHOLDER_PROFILE = /^(?:guest|incognito)-[0-9a-f]+$/i;
+
+/**
+ * Whether a handle is one of those throwaway Open Collective slugs.
+ *
+ * Exported because the graphic needs the same judgement: `sponsor.config.ts`
+ * strips the link before rendering, so the SVG does not send README readers to
+ * a blank page either.
+ */
+export function isPlaceholderProfile(login?: string): boolean {
+	return !!login && PLACEHOLDER_PROFILE.test(login);
+}
+
 /** Adapt a provider sponsorship into the minimal shape the name lists need. */
 export function toSponsorEntry(s: RawSponsorship): SponsorEntry {
 	const { login, name, websiteUrl, linkUrl } = s.sponsor;
+	const placeholder = isPlaceholderProfile(login);
 	return {
 		name: name || login || '',
-		link: linkUrl || websiteUrl || (login ? `https://github.com/${login}` : ''),
+		link: placeholder
+			? ''
+			: linkUrl || websiteUrl || (login ? `https://github.com/${login}` : ''),
 		monthlyDollars: s.monthlyDollars,
 		// SponsorKit reports one-time gifts in `monthlyDollars` too, so the income
 		// summary needs this flag to avoid counting them as recurring.

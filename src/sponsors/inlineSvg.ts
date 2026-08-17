@@ -12,6 +12,9 @@
  * Only the inlined copy is rewritten here.
  */
 
+/** Prefix keeping the graphic's remaining ids out of the page's namespace. */
+const ID_PREFIX = 'sponsorkit-';
+
 /** Escape a string for use inside a double-quoted HTML attribute. */
 function escapeAttr(value: string): string {
 	return value
@@ -63,8 +66,26 @@ export function inlineSponsorSvg(svg: string, label = 'VersaTiles sponsors'): st
 		if (/\btarget="_blank"/i.test(next) && !/\brel=/i.test(next)) {
 			next = next.replace(/^<a\b/i, '<a rel="noopener"');
 		}
-		return next;
+		// Drop the link's own id. SponsorKit sets it to the sponsor's login, which
+		// nothing references — but inlined it joins the page's global id namespace,
+		// where a login like "main-content" would collide with the real element.
+		// The label it carried has already been copied to `aria-label` above.
+		return next.replace(/\s+id="[^"]*"/i, '');
 	});
+
+	// Whatever ids remain are load-bearing: SponsorKit's avatar clip paths, which
+	// `clip-path="url(#…)"` depends on for the circular crop. They cannot just be
+	// deleted, and they are numbered c0, c1, … — generic enough to clash with the
+	// page or with a second inlined graphic — so namespace them instead.
+	out = out
+		.replace(
+			/\bid="([^"]*)"/g,
+			(m, id: string) => id.startsWith(ID_PREFIX) ? m : `id="${ID_PREFIX}${id}"`,
+		)
+		.replace(
+			/url\(#([^)]*)\)/g,
+			(m, id: string) => id.startsWith(ID_PREFIX) ? m : `url(#${ID_PREFIX}${id})`,
+		);
 
 	return out;
 }
