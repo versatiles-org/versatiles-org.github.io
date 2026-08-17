@@ -170,38 +170,47 @@ describe('summarizeIncome', () => {
 });
 
 describe('renderIncomeSummary', () => {
-	it('measures recurring income against the goal and reports one-time money separately', () => {
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)]), 500))
+	it('measures recurring income against the infrastructure target', () => {
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)])))
 			.toBe(
 				'VersaTiles currently receives **$30/month** from 1 recurring sponsor — ' +
-					'**6%** of our **$500/month** goal. ' +
+					'**6%** of the **$500/month** we need for server infrastructure. ' +
 					'Another **$180** arrived as 1 one-time contribution.',
 			);
 	});
 
-	it('never counts one-time money towards the goal', () => {
-		// $1000 of one-time gifts must not read as 200% of a $500/month goal.
-		const md = renderIncomeSummary(summarizeIncome([oneTime('whale', 1000)]), 500);
-		expect(md).toContain('no recurring sponsors yet');
-		expect(md).toContain('Another **$1000** arrived as 1 one-time contribution.');
-		expect(md).not.toContain('%');
-	});
-
-	it('pluralises both counts', () => {
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 250), entry('b', 250)]), 500))
+	it('advances to the maintenance target once infrastructure is covered', () => {
+		// Not "120% of $500" — the page should show the milestone still ahead.
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 600)])))
 			.toBe(
-				'VersaTiles currently receives **$500/month** from 2 recurring sponsors — ' +
-					'**100%** of our **$500/month** goal.',
+				'VersaTiles currently receives **$600/month** from 1 recurring sponsor — ' +
+					'**40%** of the **$1,500/month** we need for infrastructure and minimum maintenance.',
 			);
 	});
 
-	it('drops the goal clause when no goal is set', () => {
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 30)]), 0))
-			.toBe('VersaTiles currently receives **$30/month** from 1 recurring sponsor.');
+	it('stops quoting a percentage once both targets are met', () => {
+		const md = renderIncomeSummary(summarizeIncome([entry('a', 1500)]));
+		expect(md).toBe(
+			'VersaTiles currently receives **$1,500/month** from 1 recurring sponsor, ' +
+				'covering infrastructure and maintenance — thank you!',
+		);
+		expect(md).not.toContain('%');
 	});
 
-	it('returns an empty string when there is nothing at all to report', () => {
-		expect(renderIncomeSummary(summarizeIncome([]), 0)).toBe('');
+	it('never counts one-time money towards the target', () => {
+		// $1,000 of one-time gifts must not read as 200% of the $500/month level.
+		const md = renderIncomeSummary(summarizeIncome([oneTime('whale', 1000)]));
+		expect(md).toContain('no recurring sponsors yet');
+		expect(md).toContain('Another **$1,000** arrived as 1 one-time contribution.');
+		expect(md).not.toContain('%');
+	});
+
+	it('asks for the first target when there is nothing at all', () => {
+		expect(renderIncomeSummary(summarizeIncome([])))
+			.toBe(
+				'VersaTiles has no recurring sponsors yet — help us reach the **$500/month** ' +
+					'we need for server infrastructure.',
+			);
 	});
 });
 
