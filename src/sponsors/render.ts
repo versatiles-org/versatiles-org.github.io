@@ -15,7 +15,7 @@
 
 /** A tier bucket: sponsors at `minMonthlyDollars` and above (until the next tier). */
 export interface SponsorTier {
-	/** Display label, also used as the Markdown section heading. */
+	/** Display label, also used as the bold lead-in on the tier's line. */
 	title: string;
 	/** Inclusive lower bound in USD/month. The catch-all base tier uses 0. */
 	minMonthlyDollars: number;
@@ -121,7 +121,7 @@ export const SPONSOR_TIERS: SponsorTier[] = [
  */
 export const MONTHLY_GOAL_DOLLARS = 500;
 
-/** Heading for the flat list of one-time givers, who sit outside the tiers. */
+/** Label for the line of one-time givers, who sit outside the tiers. */
 const ONE_TIME_TITLE = 'One-time contributions';
 
 /** Sponsor call-to-action buttons, styled by `docs/assets/style/sponsor.less`. */
@@ -255,44 +255,42 @@ export function renderIncomeSummary(
 	return sentences.join(' ');
 }
 
-/** Render one tier's sponsors as a Markdown bullet list of linked names. */
-export function renderSponsorList(sponsors: SponsorEntry[]): string {
+/** Render sponsors as one comma-separated run of linked names. */
+export function renderSponsorLinks(sponsors: SponsorEntry[]): string {
 	return sponsors
-		.map((s) => (s.link ? `- [${s.name}](${s.link})` : `- ${s.name}`))
-		.join('\n');
+		.map((s) => (s.link ? `[${s.name}](${s.link})` : s.name))
+		.join(', ');
 }
 
 /**
- * Render a heading per non-empty tier, highest first, followed by a flat
- * "One-time contributions" section.
+ * Render one line per non-empty tier, highest first, followed by a line of
+ * one-time givers — each a bold title followed by the sponsors' names.
+ *
+ * A line per tier rather than a heading and a bullet list: with a handful of
+ * names per tier the headings dominated the page, and the graphic above already
+ * carries the visual weight.
  *
  * Only recurring sponsors are placed in tiers. The tiers are monthly rates, and
  * upstream reports a one-time gift in `monthlyDollars` as though it recurred —
  * so bucketing them together would rank a single $100 gift above a standing
  * $25/month pledge. One-time givers are listed by amount instead.
- *
- * @param headingLevel Markdown heading depth; the default `2` sits directly
- * under the `#` page title, leaving no gap for screen readers.
  */
-export function renderTierSections(
-	sponsors: SponsorEntry[],
-	tiers: SponsorTier[],
-	headingLevel = 2,
-): string {
-	const hashes = '#'.repeat(headingLevel);
+export function renderTierLines(sponsors: SponsorEntry[], tiers: SponsorTier[]): string {
+	const line = (title: string, group: SponsorEntry[]) =>
+		`**${title}:** ${renderSponsorLinks(group)}`;
 
-	const sections = groupByTier(sponsors.filter((s) => !s.isOneTime), tiers)
+	const lines = groupByTier(sponsors.filter((s) => !s.isOneTime), tiers)
 		.filter((g) => g.sponsors.length > 0)
-		.map((g) => `${hashes} ${g.tier.title}\n\n${renderSponsorList(g.sponsors)}`);
+		.map((g) => line(g.tier.title, g.sponsors));
 
 	const oneTime = sponsors
 		.filter((s) => s.isOneTime && s.monthlyDollars > 0)
 		.sort((a, b) => b.monthlyDollars - a.monthlyDollars);
-	if (oneTime.length > 0) {
-		sections.push(`${hashes} ${ONE_TIME_TITLE}\n\n${renderSponsorList(oneTime)}`);
-	}
+	if (oneTime.length > 0) lines.push(line(ONE_TIME_TITLE, oneTime));
 
-	return sections.length > 0 ? sections.join('\n\n') : EMPTY_STATE;
+	// Blank lines between: each tier becomes its own paragraph, rather than
+	// Markdown running them all together into one.
+	return lines.length > 0 ? lines.join('\n\n') : EMPTY_STATE;
 }
 
 /**
@@ -313,7 +311,7 @@ export function renderSponsorsPage(
 	tiers = SPONSOR_TIERS,
 	incomeOf = summarizeIncome(sponsors),
 ): string {
-	const sections = renderTierSections(sponsors, tiers);
+	const sections = renderTierLines(sponsors, tiers);
 	const income = renderIncomeSummary(incomeOf);
 	return `---
 title: VersaTiles - Sponsors
@@ -347,7 +345,7 @@ ${GENERATED_NOTICE}
  * keeps the CMS from rendering it to HTML.
  */
 export function renderSponsorsListFile(sponsors: SponsorEntry[], tiers = SPONSOR_TIERS): string {
-	const sections = renderTierSections(sponsors, tiers);
+	const sections = renderTierLines(sponsors, tiers);
 	return `# Sponsors
 
 VersaTiles is free and open source. These wonderful people and organizations help

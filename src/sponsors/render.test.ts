@@ -6,10 +6,10 @@ import {
 	isActive,
 	isNameable,
 	renderIncomeSummary,
-	renderSponsorList,
+	renderSponsorLinks,
 	renderSponsorsListFile,
 	renderSponsorsPage,
-	renderTierSections,
+	renderTierLines,
 	SPONSOR_TIERS,
 	type SponsorEntry,
 	summarizeIncome,
@@ -205,49 +205,49 @@ describe('renderIncomeSummary', () => {
 	});
 });
 
-describe('renderSponsorList', () => {
-	it('links names when a link is present, plain otherwise', () => {
-		expect(renderSponsorList([entry('Acme', 25, 'https://acme.test'), entry('Nobody', 5)]))
-			.toBe('- [Acme](https://acme.test)\n- Nobody');
+describe('renderSponsorLinks', () => {
+	it('joins names with commas, linking those that have a link', () => {
+		expect(renderSponsorLinks([entry('Acme', 25, 'https://acme.test'), entry('Nobody', 5)]))
+			.toBe('[Acme](https://acme.test), Nobody');
+	});
+
+	it('renders a single sponsor without a trailing comma', () => {
+		expect(renderSponsorLinks([entry('Solo', 5)])).toBe('Solo');
 	});
 });
 
-describe('renderTierSections', () => {
-	it('emits only non-empty tiers, highest first', () => {
-		const md = renderTierSections(
-			[entry('Big', 500, 'https://big.test'), entry('Small', 5)],
+describe('renderTierLines', () => {
+	it('emits one bold-led line per non-empty tier, highest first', () => {
+		const md = renderTierLines(
+			[entry('Big', 500, 'https://big.test'), entry('Small', 5), entry('Other', 5)],
 			SPONSOR_TIERS,
 		);
-		expect(md).toBe('## Partner\n\n- [Big](https://big.test)\n\n## Supporter\n\n- Small');
+		expect(md).toBe(
+			'**Partner:** [Big](https://big.test)\n\n**Supporter:** Small, Other',
+		);
 	});
 
-	it('accepts a deeper heading level', () => {
-		expect(renderTierSections([entry('Big', 500)], SPONSOR_TIERS, 3))
-			.toBe('### Partner\n\n- Big');
-	});
-
-	it('keeps one-time givers out of the tiers, in their own section by amount', () => {
-		const md = renderTierSections(
+	it('keeps one-time givers out of the tiers, on their own line by amount', () => {
+		const md = renderTierLines(
 			[oneTime('Gift', 100), entry('Pledge', 25), oneTime('Small gift', 5)],
 			SPONSOR_TIERS,
 		);
 		// The $100 gift must not outrank the standing $25/month pledge.
 		expect(md).toBe(
-			'## Backer\n\n- Pledge\n\n## One-time contributions\n\n- Gift\n- Small gift',
+			'**Backer:** Pledge\n\n**One-time contributions:** Gift, Small gift',
 		);
 	});
 
-	it('omits the one-time section when there is none', () => {
-		expect(renderTierSections([entry('Pledge', 25)], SPONSOR_TIERS))
-			.not.toContain('One-time');
+	it('omits the one-time line when there is none', () => {
+		expect(renderTierLines([entry('Pledge', 25)], SPONSOR_TIERS)).not.toContain('One-time');
 	});
 
 	it('falls back to an empty-state line when there are no sponsors', () => {
-		expect(renderTierSections([], SPONSOR_TIERS)).toContain('No sponsors yet');
+		expect(renderTierLines([], SPONSOR_TIERS)).toContain('No sponsors yet');
 	});
 
 	it('falls back to the empty state when every sponsor has expired', () => {
-		expect(renderTierSections([entry('past', -1), oneTime('gone', -1)], SPONSOR_TIERS))
+		expect(renderTierLines([entry('past', -1), oneTime('gone', -1)], SPONSOR_TIERS))
 			.toContain('No sponsors yet');
 	});
 });
@@ -264,7 +264,7 @@ describe('renderSponsorsPage', () => {
 		expect(html).toContain('<!-- sponsors-svg -->');
 		expect(html).not.toContain('<img'); // inlined, never embedded
 		expect(html).toContain('Acme');
-		expect(html).toContain('<h2>Sponsor</h2>'); // tier heading, no h1 -> h3 gap
+		expect(html).toContain('<strong>Sponsor:</strong>'); // tier line, not a heading
 		expect(html).toContain('$100/month'); // income summary
 	});
 
@@ -286,8 +286,8 @@ describe('renderSponsorsPage', () => {
 			entry('Pledger', 25),
 			{ name: 'Gifter', link: '', monthlyDollars: 100, isOneTime: true },
 		]));
-		expect(html).toContain('<h2>Backer</h2>');
-		expect(html).toContain('<h2>One-time contributions</h2>');
+		expect(html).toContain('<strong>Backer:</strong>');
+		expect(html).toContain('<strong>One-time contributions:</strong>');
 		// $25/month recurring is the only income measured against the goal.
 		expect(html).toContain('$25/month');
 		expect(html).toContain('Another <strong>$100</strong>');
@@ -303,7 +303,7 @@ describe('renderSponsorsListFile', () => {
 	it('produces the plain name list with a heading and tiered names', () => {
 		const md = renderSponsorsListFile([entry('Acme', 500, 'https://acme.test')]);
 		expect(md.startsWith('# Sponsors')).toBe(true);
-		expect(md).toContain('## Partner');
+		expect(md).toContain('**Partner:**');
 		expect(md).toContain('[Acme](https://acme.test)');
 	});
 });

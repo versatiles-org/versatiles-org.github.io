@@ -117,7 +117,10 @@ export default class CMS {
 			const dstFileName = resolve(this.dstPath, relativePath);
 			try {
 				ensureDirSync(dirname(dstFileName));
-				copySync(entry.path, dstFileName);
+				// `overwrite` because a clean dist is not guaranteed: `deno task dev`
+				// can start a second build while the first is still copying, and
+				// copySync otherwise throws AlreadyExists on the file it already wrote.
+				copySync(entry.path, dstFileName, { overwrite: true });
 			} catch (error) {
 				throw new Error(`Failed to copy asset "${entry.path}" to "${dstFileName}"`, {
 					cause: error,
