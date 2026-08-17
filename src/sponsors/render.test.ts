@@ -216,6 +216,19 @@ describe('renderSponsorsPage', () => {
 		expect(html).toContain('$100/month'); // income summary
 	});
 
+	it('can report income wider than the names it lists', () => {
+		// Private sponsors are counted but never named, so the headline figure
+		// must be able to exceed the sum of the listed sponsors.
+		const { html } = parseMarkdown(renderSponsorsPage(
+			[entry('Public', 25)],
+			SPONSOR_TIERS,
+			summarizeIncome([entry('Public', 25), entry('Private', 75)]),
+		));
+		expect(html).toContain('$100/month');
+		expect(html).toContain('2 recurring sponsors');
+		expect(html).not.toContain('Private');
+	});
+
 	it('separates one-time givers from tiered sponsors on the page', () => {
 		const { html } = parseMarkdown(renderSponsorsPage([
 			entry('Pledger', 25),

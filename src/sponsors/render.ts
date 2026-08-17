@@ -250,10 +250,18 @@ export function renderTierSections(
  * generated `docs/sponsors/sponsors.svg` at build time. The graphic is inlined
  * rather than referenced with an `img` element so that the per-sponsor links
  * SponsorKit puts inside it are actually clickable — see `./inlineSvg.ts`.
+ *
+ * @param incomeOf Income figures for the headline sentence. Defaults to the
+ * sponsors being listed, but the caller can pass a wider total — the site
+ * counts private sponsors' money while leaving them unnamed.
  */
-export function renderSponsorsPage(sponsors: SponsorEntry[], tiers = SPONSOR_TIERS): string {
+export function renderSponsorsPage(
+	sponsors: SponsorEntry[],
+	tiers = SPONSOR_TIERS,
+	incomeOf = summarizeIncome(sponsors),
+): string {
 	const sections = renderTierSections(sponsors, tiers);
-	const income = renderIncomeSummary(summarizeIncome(sponsors));
+	const income = renderIncomeSummary(incomeOf);
 	return `---
 title: VersaTiles - Sponsors
 description: The individuals and organizations who support VersaTiles.
