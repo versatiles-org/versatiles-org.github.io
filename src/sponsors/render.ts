@@ -35,6 +35,11 @@ export interface SponsorEntry {
 	 * income must check this flag — see {@link summarizeIncome}.
 	 */
 	isOneTime?: boolean;
+	/**
+	 * True for a sponsor who asked not to be named. They are counted — in the
+	 * income totals and in the tally at the foot of the list — but never named.
+	 */
+	isAnonymous?: boolean;
 }
 
 /**
@@ -87,6 +92,7 @@ export function toSponsorEntry(s: RawSponsorship): SponsorEntry {
 		// SponsorKit reports one-time gifts in `monthlyDollars` too, so the income
 		// summary needs this flag to avoid counting them as recurring.
 		isOneTime: s.isOneTime ?? false,
+		isAnonymous: !isNameable(s),
 	};
 }
 
@@ -125,6 +131,9 @@ function usd(dollars: number): string {
  * graphic and the text list should never disagree on the wording.
  */
 export const ONE_TIME_TITLE = 'One-time contributions';
+
+/** Label for the tally of sponsors who asked not to be named. */
+const ANONYMOUS_TITLE = 'Anonymous';
 
 /**
  * Provider marks for the call-to-action buttons, sized by the `.icon` rule in
@@ -285,8 +294,9 @@ export function renderSponsorLinks(sponsors: SponsorEntry[]): string {
 }
 
 /**
- * Render one line per non-empty tier, highest first, followed by a line of
- * one-time givers — each a bold title followed by the sponsors' names.
+ * Render one line per non-empty tier, highest first, then a line of one-time
+ * givers, then a tally of anonymous sponsors — each a bold title followed by
+ * the sponsors' names.
  *
  * A line per tier rather than a heading and a bullet list: with a handful of
  * names per tier the headings dominated the page, and the graphic above already
@@ -296,19 +306,32 @@ export function renderSponsorLinks(sponsors: SponsorEntry[]): string {
  * upstream reports a one-time gift in `monthlyDollars` as though it recurred —
  * so bucketing them together would rank a single $100 gift above a standing
  * $25/month pledge. One-time givers are listed by amount instead.
+ *
+ * Anonymous sponsors are counted rather than named. Without that tally the page
+ * contradicts itself: the income sentence counts everyone, so it would claim
+ * more sponsors than the lines below it name.
  */
 export function renderTierLines(sponsors: SponsorEntry[], tiers: SponsorTier[]): string {
 	const line = (title: string, group: SponsorEntry[]) =>
 		`**${title}:** ${renderSponsorLinks(group)}`;
 
-	const lines = groupByTier(sponsors.filter((s) => !s.isOneTime), tiers)
+	const named = sponsors.filter((s) => !s.isAnonymous);
+
+	const lines = groupByTier(named.filter((s) => !s.isOneTime), tiers)
 		.filter((g) => g.sponsors.length > 0)
 		.map((g) => line(g.tier.title, g.sponsors));
 
-	const oneTime = sponsors
+	const oneTime = named
 		.filter((s) => s.isOneTime && s.monthlyDollars > 0)
 		.sort((a, b) => b.monthlyDollars - a.monthlyDollars);
 	if (oneTime.length > 0) lines.push(line(ONE_TIME_TITLE, oneTime));
+
+	const anonymous = sponsors.filter((s) => s.isAnonymous && s.monthlyDollars > 0).length;
+	if (anonymous > 0) {
+		lines.push(
+			`**${ANONYMOUS_TITLE}:** ${plural(anonymous, 'sponsor')} who asked not to be named`,
+		);
+	}
 
 	// Blank lines between: each tier becomes its own paragraph, rather than
 	// Markdown running them all together into one.

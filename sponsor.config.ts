@@ -227,12 +227,12 @@ text {
 		const active = sponsors.filter(isActive);
 		const listed = active.filter(isNameable);
 
-		// Recurring vs one-time income, gross, over every live sponsor — including
-		// the private ones the lists below leave unnamed. See `summarizeIncome`
-		// for what the figures do and don't cover.
-		const income = summarizeIncome(active.map(toSponsorEntry));
-
-		const entries = listed.map(toSponsorEntry);
+		// Every live sponsor, private ones flagged `isAnonymous` rather than
+		// dropped: they are counted in the income totals and tallied at the foot
+		// of the lists, but never named. See `summarizeIncome` for what the
+		// figures do and don't cover.
+		const entries = active.map(toSponsorEntry);
+		const income = summarizeIncome(entries);
 		writeFileSync(
 			resolve(process.cwd(), 'docs/sponsors/index.md'),
 			renderSponsorsPage(entries, SPONSOR_TIERS, income),

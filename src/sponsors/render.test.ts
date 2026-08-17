@@ -80,7 +80,20 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 			link: 'https://acme.test',
 			monthlyDollars: 25,
 			isOneTime: false,
+			isAnonymous: false,
 		});
+	});
+
+	it('flags private sponsors as anonymous', () => {
+		expect(
+			toSponsorEntry({
+				sponsor: { login: 'shy' },
+				monthlyDollars: 5,
+				privacyLevel: 'PRIVATE',
+			}).isAnonymous,
+		).toBe(true);
+		expect(toSponsorEntry({ sponsor: { login: 'open' }, monthlyDollars: 5 }).isAnonymous)
+			.toBe(false);
 	});
 
 	it('falls back to the login and a GitHub profile URL', () => {
@@ -245,6 +258,30 @@ describe('renderTierLines', () => {
 		expect(md).toBe(
 			'**Backer:** Pledge\n\n**One-time contributions:** Gift, Small gift',
 		);
+	});
+
+	it('tallies anonymous sponsors instead of naming them', () => {
+		const md = renderTierLines([
+			entry('Public', 25),
+			{ name: 'Secret Corp', link: 'https://secret.test', monthlyDollars: 5, isAnonymous: true },
+		], SPONSOR_TIERS);
+		expect(md).toBe(
+			'**Backer:** Public\n\n**Anonymous:** 1 sponsor who asked not to be named',
+		);
+		expect(md).not.toContain('Secret Corp');
+		expect(md).not.toContain('secret.test');
+	});
+
+	it('pluralises the anonymous tally and counts one-time givers too', () => {
+		const md = renderTierLines([
+			{ name: 'a', link: '', monthlyDollars: 5, isAnonymous: true },
+			{ name: 'b', link: '', monthlyDollars: 100, isOneTime: true, isAnonymous: true },
+		], SPONSOR_TIERS);
+		expect(md).toBe('**Anonymous:** 2 sponsors who asked not to be named');
+	});
+
+	it('omits the anonymous line when everyone is named', () => {
+		expect(renderTierLines([entry('Public', 25)], SPONSOR_TIERS)).not.toContain('Anonymous');
 	});
 
 	it('omits the one-time line when there is none', () => {

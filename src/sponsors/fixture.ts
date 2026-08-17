@@ -81,12 +81,12 @@ async function main() {
 
 	const fetched = demo ? [...json, ...DEMO_SPONSORS] : json;
 
-	// Mirrors sponsor.config.ts: income counts every live sponsor, the name
-	// lists only those who consented to being named.
+	// Mirrors sponsor.config.ts: every live sponsor is passed through, private
+	// ones flagged `isAnonymous` so they are counted and tallied but never named.
 	const active = fetched.filter(isActive);
 	const listed = active.filter(isNameable);
-	const income = summarizeIncome(active.map(toSponsorEntry));
-	const entries = listed.map(toSponsorEntry);
+	const entries = active.map(toSponsorEntry);
+	const income = summarizeIncome(entries);
 
 	ensureDirSync(OUT_DIR);
 	Deno.writeTextFileSync(resolve(OUT_DIR, 'sponsors.svg'), svg);
