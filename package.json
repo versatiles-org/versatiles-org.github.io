@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"build": "node src/build.ts",
-		"dev": "node --watch-path=src --watch-path=docs src/dev.ts",
+		"dev": "vite",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"coverage": "vitest run --coverage",
@@ -28,8 +28,7 @@
 		"cheerio_cms": "^1.1.0",
 		"clean-css": "^5.3.3",
 		"less": "^4.8.1",
-		"sharp": "^0.35.3",
-		"sirv": "^3.0.2"
+		"sharp": "^0.35.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.10",
@@ -39,6 +38,7 @@
 		"@vitest/coverage-v8": "^4.1.11",
 		"sponsorkit": "^18.0.0",
 		"typescript": "^7.0.2",
+		"vite": "^8.2.2",
 		"vitest": "^4.1.11"
 	}
 }

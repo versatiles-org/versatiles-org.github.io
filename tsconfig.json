@@ -31,6 +31,6 @@
 		// their own declarations — neither is worth re-checking on every run.
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*.ts", "sponsor.config.ts"],
+	"include": ["src/**/*.ts", "sponsor.config.ts", "vite.config.ts", "vitest.config.ts"],
 	"exclude": ["node_modules", "dist", "coverage"]
 }
