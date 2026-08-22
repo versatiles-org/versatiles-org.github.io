@@ -9,6 +9,13 @@
     "upgrade": "deno outdated --update --latest"
   },
   "nodeModulesDir": "none",
+  // TRANSITIONAL — removed together with this file at the end of the Node
+  // migration. Deno auto-discovers the root package.json and applies its
+  // minimum-dependency-age policy to every entry, including devDependencies it
+  // never imports, so any freshly published tool blocks the build. Deno 2.9
+  // also reads tsconfig.json, whose Node-oriented "lib" hides the Deno globals
+  // — so run `deno test -A --no-check` until the migration lands.
+  "minimumDependencyAge": 0,
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.12.0",
     "@jsquash/png": "npm:@jsquash/png@^3.1.1",

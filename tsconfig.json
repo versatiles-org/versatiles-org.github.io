@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		// Node 24 runs the TypeScript sources directly via type stripping, so
+		// tsc is only ever a type checker here — it never emits.
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
+
+		// Type stripping erases types without rewriting code, so any syntax
+		// that needs a real transform (enums, namespaces, decorators,
+		// constructor parameter properties) has to stay out of the codebase.
+		"erasableSyntaxOnly": true,
+		"verbatimModuleSyntax": true,
+
+		"target": "esnext",
+		"lib": ["esnext"],
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"moduleDetection": "force",
+		"types": ["node"],
+
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"noFallthroughCasesInSwitch": true,
+		"isolatedModules": true,
+
+		// @types/clean-css tracks v4 while we run v5, and the JSR packages ship
+		// their own declarations — neither is worth re-checking on every run.
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*.ts", "sponsor.config.ts"],
+	"exclude": ["node_modules", "dist", "coverage"]
+}
