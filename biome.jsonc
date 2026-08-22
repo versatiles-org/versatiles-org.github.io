@@ -10,15 +10,7 @@
 		// repo's own JSON config. Biome 2.5 formats neither Markdown nor HTML, and
 		// pointing its linter at docs/ would bolt on a11y checks that this
 		// migration never signed up for.
-		"includes": [
-			"src/**/*.ts",
-			"*.ts",
-			"*.json",
-			"*.jsonc",
-			"!package-lock.json",
-			// Removed in the final step of the Node migration.
-			"!deno.json"
-		]
+		"includes": ["src/**/*.ts", "*.ts", "*.json", "*.jsonc", "!package-lock.json"]
 	},
 	"formatter": {
 		"enabled": true,

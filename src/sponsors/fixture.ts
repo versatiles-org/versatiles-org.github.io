@@ -14,8 +14,8 @@
  * what CI will produce from the same input.
  *
  * Usage:
- *   deno task sponsors:fixture          # live data from versatiles.org
- *   deno task sponsors:fixture --demo   # plus synthetic edge cases
+ *   npm run sponsors:fixture             # live data from versatiles.org
+ *   npm run sponsors:fixture -- --demo   # plus synthetic edge cases
  *
  * The `--demo` flag appends sponsors the live feed cannot show you, because
  * SponsorKit filters them before publishing: a private sponsor (counted in the
@@ -101,7 +101,7 @@ async function main() {
 			`$${income.oneTimeDollars} one-time (${income.oneTimeCount})`,
 	);
 	console.log(`[fixture] wrote ${OUT_DIR}${demo ? ' (with demo sponsors)' : ''}`);
-	console.log('[fixture] now run: deno task dev');
+	console.log('[fixture] now run: npm run dev');
 }
 
 if (import.meta.main) await main();

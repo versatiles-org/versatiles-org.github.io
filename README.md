@@ -11,11 +11,16 @@ Clone the repository and install the dependencies:
 ```bash
 git clone "https://github.com/versatiles-org/versatiles-org.github.io.git
 cd versatiles-org.github.io
+npm install
 ```
+
+Requires Node.js 24 or newer — the sources are TypeScript and run directly via
+Node's type stripping, with no build step.
 
 ## Development Scripts
 
-This repository comes with deno scripts for building, previewing and developing the site:
-
-- `deno task build`: Builds the site and outputs it to the `/dist/` directory for production use.
-- `deno task dev`: Combines watching files and serving the site locally, automatically updating the site on file changes - basically a "**developer mode**".
+- `npm run dev`: Watches `src/` and `docs/`, rebuilds on change and serves the site
+  locally with live reload - basically a "**developer mode**".
+- `npm run build`: Builds the site and outputs it to the `/dist/` directory for production use.
+- `npm test`: Runs the test suite.
+- `npm run check`: Formats, lints, typechecks and tests - everything CI runs.

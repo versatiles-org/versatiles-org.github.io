@@ -8,7 +8,7 @@
  *   - Open Collective  → https://opencollective.com/versatiles
  *
  * Generated fresh on every deploy and never committed to git — the CI build
- * runs SponsorKit before `deno task build` so the assets are baked into the
+ * runs SponsorKit before `npm run build` so the assets are baked into the
  * GitHub Pages artifact (see `.github/workflows/gh-release.yml`). Outputs, all
  * served under https://versatiles.org/sponsors/:
  *   - docs/sponsors/sponsors.svg   → embedded on the website (crisp, scalable)

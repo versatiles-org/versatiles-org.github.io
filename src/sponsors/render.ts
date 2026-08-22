@@ -2,8 +2,8 @@
  * Pure presentation helpers for the generated sponsor lists.
  *
  * This module is intentionally free of any `sponsorkit` import, so the Markdown
- * generation can be unit-tested under Deno without SponsorKit's native
- * dependencies (sharp/resvg). The root `sponsor.config.ts` adapts SponsorKit's
+ * generation can be unit-tested without pulling in SponsorKit and its native
+ * rendering dependencies. The root `sponsor.config.ts` adapts SponsorKit's
  * fetched data into these types and writes the output in its `onSponsorsReady`
  * hook.
  *

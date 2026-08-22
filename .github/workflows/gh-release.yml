@@ -27,56 +27,48 @@ jobs:
          - name: Checkout
            uses: actions/checkout@v7
 
-         - name: Set up Deno
-           uses: denoland/setup-deno@v2
-           with:
-              deno-version: v2.x
-              cache: true
-
-         - name: Lint
-           run: deno lint
-
-         - name: Format
-           run: deno fmt --check
-
-         - name: Test
-           run: deno test -A
-
-         # Sponsor assets are generated fresh on every deploy and are never
-         # committed (see .gitignore). Main-only so fork PRs never touch secrets.
-         # Runs after `deno fmt --check` so the generated Markdown isn't linted.
-         # Deliberately NOT continue-on-error: because the assets aren't committed,
-         # deploying without them would ship a 404'd sponsors image. Failing the
-         # job instead leaves the last good deploy — sponsors intact — live.
-         - name: Set up Node (sponsor assets)
-           if: github.ref == 'refs/heads/main'
+         - name: Set up Node
            uses: actions/setup-node@v7
            with:
               node-version: 24
+              cache: npm
 
+         - name: Install dependencies
+           run: npm ci
+
+         # Biome replaces `deno lint` + `deno fmt --check`; `ci` runs both
+         # without writing to the working tree.
+         - name: Lint and format
+           run: npm run lint
+
+         # Node runs the TypeScript sources via type stripping, which never
+         # type-checks — so tsc has to be its own step.
+         - name: Typecheck
+           run: npm run typecheck
+
+         - name: Test
+           run: npm test
+
+         # Sponsor assets are generated fresh on every deploy and are never
+         # committed (see .gitignore). Main-only so fork PRs never touch secrets.
+         # Deliberately NOT continue-on-error: because the assets aren't committed,
+         # deploying without them would ship a 404'd sponsors image. Failing the
+         # job instead leaves the last good deploy — sponsors intact — live.
+         #
+         # SponsorKit is a normal devDependency now, so the version is pinned by
+         # package.json + package-lock.json and updated by Dependabot. It once
+         # moved silently from 17 to 18, whose new duplicate-render-name check
+         # failed the deploy; check sponsor.config.ts against the release notes
+         # when accepting a major bump.
          - name: Generate sponsor assets
            if: github.ref == 'refs/heads/main'
            env:
               SPONSORKIT_GITHUB_TOKEN: ${{ secrets.SPONSORKIT_GITHUB_TOKEN }}
               SPONSORKIT_OPENCOLLECTIVE_KEY: ${{ secrets.SPONSORKIT_OPENCOLLECTIVE_KEY }}
-           # Pinned to a major version. Unpinned, this silently moved from 17 to
-           # 18, whose new duplicate-render-name check failed the deploy. Bump
-           # deliberately after checking sponsor.config.ts against the release.
-           run: |
-              npm init -y >/dev/null 2>&1
-              npm install sponsorkit@^18.0.0
-              npx sponsorkit
-
-         # Deno auto-discovers a root package.json and resolves its dependencies,
-         # where its minimum-dependency-age policy rejects a SponsorKit release
-         # younger than 24h — even though nothing in src/ imports it. The npm
-         # artifacts have done their job by now, so remove them before Deno runs.
-         - name: Remove npm artifacts
-           if: github.ref == 'refs/heads/main'
-           run: rm -rf node_modules package.json package-lock.json
+           run: npx sponsorkit
 
          - name: Build
-           run: deno task build
+           run: npm run build
 
          - name: Upload Pages artifact
            if: github.ref == 'refs/heads/main'
