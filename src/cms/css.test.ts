@@ -31,6 +31,21 @@ describe('buildCSS', () => {
 		expect(lines[2]).toBe('h1 a{color:green}');
 	});
 
+	it('drops the GFM backdrop behind markdown images but keeps their layout rules', async () => {
+		writeFileSync(`${tempDirectory}/base.css`, 'body{color:red}');
+		const dstFile = `${tempDirectory}/img.css`;
+
+		await buildCSS([`${tempDirectory}/base.css`], dstFile);
+
+		const imgRules = readFileSync(dstFile, 'utf8')
+			.split('\n')
+			.filter((line) => line.startsWith('.markdown-body img{'));
+
+		expect(imgRules.length).toBeGreaterThan(0);
+		expect(imgRules.some((rule) => rule.includes('background-color'))).toBe(false);
+		expect(imgRules.some((rule) => rule.includes('max-width:100%'))).toBe(true);
+	});
+
 	it('should throw error when source file does not exist', async () => {
 		const srcFiles = [`${tempDirectory}/nonexistent.css`];
 		const dstFile = `${tempDirectory}/out.css`;

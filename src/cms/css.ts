@@ -57,6 +57,37 @@ function shouldKeepMarkdownRule(line: string): boolean {
 }
 
 /**
+ * Strips the opaque backdrop `@deno/gfm` puts behind markdown images.
+ *
+ * GitHub renders markdown on a light canvas, so its stylesheet gives every
+ * `<img>` a `background-color`. Here it resolves to GitHub's own canvas colour
+ * (#fff, or #0d1117 in dark mode), neither of which is this site's #1b1b1f — so
+ * anything transparent, such as the sponsors graphic, sits on a visible slab.
+ *
+ * Only that one declaration goes; the rule's `max-width` and `box-sizing` still
+ * matter, which is why the selector is not simply excluded outright.
+ *
+ * @param line - One minified rule, as produced by the CleanCSS pass
+ * @returns The rule without its `background-color`, or `''` if nothing remains
+ */
+function dropMarkdownImageBackground(line: string): string {
+	if (!line.startsWith('.markdown-body img{')) return line;
+
+	const open = line.indexOf('{');
+	const close = line.lastIndexOf('}');
+	if (open < 0 || close < open) return line;
+
+	// Safe to split on ';' because none of these values contain one.
+	const declarations = line
+		.slice(open + 1, close)
+		.split(';')
+		.filter((declaration) => declaration && !declaration.startsWith('background-color:'));
+
+	if (declarations.length === 0) return '';
+	return `${line.slice(0, open)}{${declarations.join(';')}}`;
+}
+
+/**
  * Builds a single minified CSS file from multiple source files.
  *
  * This function reads the provided source CSS or LESS files, compiles LESS files to CSS,
@@ -93,7 +124,12 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 	}
 
 	// Filter out unwanted markdown-body rules
-	const css = (minified.styles as string).split('\n').filter(shouldKeepMarkdownRule).join('\n');
+	const css = (minified.styles as string)
+		.split('\n')
+		.filter(shouldKeepMarkdownRule)
+		.map(dropMarkdownImageBackground)
+		.filter((line) => line !== '')
+		.join('\n');
 
 	await writeFile(dstFilename, css);
 }
