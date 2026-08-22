@@ -6,11 +6,22 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		// Matches what `deno lint`/`deno fmt` covered: TypeScript sources and the
-		// repo's own JSON config. Biome 2.5 formats neither Markdown nor HTML, and
-		// pointing its linter at docs/ would bolt on a11y checks that this
-		// migration never signed up for.
-		"includes": ["src/**/*.ts", "*.ts", "*.json", "*.jsonc", "!package-lock.json"]
+		// TypeScript sources, the repo's own JSON config, and the page templates.
+		// Biome 2.5 has no Markdown or HTML *formatter*, so the HTML entries here
+		// only feed its a11y linter.
+		"includes": [
+			"src/**/*.ts",
+			"*.ts",
+			"*.json",
+			"*.jsonc",
+			"docs/**/*.html",
+			"templates/**/*.html",
+			"!package-lock.json",
+			// The CMS lets a page carry YAML front matter, which Biome accepts only
+			// inside Astro files and otherwise rejects as a parse error. This is the
+			// one HTML page using it, so it cannot be linted.
+			"!docs/index.html"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -30,6 +41,16 @@
 			"preset": "recommended"
 		}
 	},
+	"overrides": [
+		{
+			// menu.less sets `list-style: none` on the nav <ul>, and Safari/VoiceOver
+			// then stop announcing it as a list — the explicit role="list" restores
+			// that, so it is not really redundant. Suppressed here rather than with an
+			// inline biome-ignore comment, which would ship into every built page.
+			"includes": ["templates/page.html"],
+			"linter": { "rules": { "a11y": { "noRedundantRoles": "off" } } }
+		}
+	],
 	"assist": {
 		"actions": {
 			"source": {
