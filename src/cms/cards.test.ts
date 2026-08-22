@@ -1,22 +1,23 @@
-import { join } from '@std/path/join';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { renderCardsFromFile } from './cards.ts';
-import { afterEach, beforeEach, describe, it } from '@std/testing/bdd';
-import { expect } from '@std/expect';
 
 describe('renderCardsFromFile', () => {
 	let dir: string;
 	let path: string;
 
 	beforeEach(() => {
-		dir = Deno.makeTempDirSync({ prefix: 'cards_test_' });
+		dir = mkdtempSync(join(tmpdir(), 'cards_test_'));
 		path = join(dir, 'cards.yaml');
 	});
 
 	afterEach(() => {
-		Deno.removeSync(dir, { recursive: true });
+		rmSync(dir, { recursive: true });
 	});
 
-	const write = (yaml: string) => Deno.writeTextFileSync(path, yaml);
+	const write = (yaml: string) => writeFileSync(path, yaml);
 
 	it('renders sections, cards, and the stretched-link wrapper', () => {
 		write(`
@@ -31,8 +32,8 @@ sections:
 `);
 		// Create the referenced image so the renderer emits an <img> instead
 		// of falling back to a placeholder.
-		Deno.mkdirSync(join(dir, 'assets/cards'), { recursive: true });
-		Deno.writeTextFileSync(join(dir, 'assets/cards/tile-server.webp'), '');
+		mkdirSync(join(dir, 'assets/cards'), { recursive: true });
+		writeFileSync(join(dir, 'assets/cards/tile-server.webp'), '');
 
 		const html = renderCardsFromFile(path, { imageBaseDir: dir });
 		expect(html).toContain('<section class="cards-section">');

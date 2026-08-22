@@ -1,28 +1,30 @@
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { buildCSS } from './css.ts';
-import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
-import { expect } from '@std/expect';
 
 describe('buildCSS', () => {
 	let tempDirectory: string;
 
 	beforeAll(() => {
-		tempDirectory = Deno.makeTempDirSync({ prefix: 'css_test_' });
+		tempDirectory = mkdtempSync(join(tmpdir(), 'css_test_'));
 	});
 
 	afterAll(() => {
-		Deno.removeSync(tempDirectory, { recursive: true });
+		rmSync(tempDirectory, { recursive: true });
 	});
 
 	it('should build and minify CSS from multiple CSS files', async () => {
-		Deno.writeTextFileSync(`${tempDirectory}/a.css`, 'body { color: red; }');
-		Deno.writeTextFileSync(`${tempDirectory}/b.less`, 'h1 { color: blue; a { color:green } }');
+		writeFileSync(`${tempDirectory}/a.css`, 'body { color: red; }');
+		writeFileSync(`${tempDirectory}/b.less`, 'h1 { color: blue; a { color:green } }');
 
 		const srcFiles = [`${tempDirectory}/a.css`, `${tempDirectory}/b.less`];
 		const dstFile = `${tempDirectory}/out.css`;
 
 		await buildCSS(srcFiles, dstFile);
 
-		const lines = Deno.readTextFileSync(dstFile).split('\n');
+		const lines = readFileSync(dstFile, 'utf8').split('\n');
 		expect(lines.length).toBe(139);
 		expect(lines[0]).toBe('body{color:red}');
 		expect(lines[1]).toBe('h1{color:#00f}');
@@ -37,7 +39,7 @@ describe('buildCSS', () => {
 	});
 
 	it('should throw error on invalid LESS syntax', async () => {
-		Deno.writeTextFileSync(`${tempDirectory}/invalid.less`, 'body { color: }');
+		writeFileSync(`${tempDirectory}/invalid.less`, 'body { color: }');
 
 		const srcFiles = [`${tempDirectory}/invalid.less`];
 		const dstFile = `${tempDirectory}/out.css`;

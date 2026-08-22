@@ -1,22 +1,23 @@
-import { join } from '@std/path/join';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { buildDynamicPage } from './dynamic.ts';
-import { afterEach, beforeEach, describe, it } from '@std/testing/bdd';
-import { expect } from '@std/expect';
 
 describe('buildDynamicPage', () => {
 	let tempDir: string;
 
 	beforeEach(() => {
-		tempDir = Deno.makeTempDirSync({ prefix: 'dynamic_test_' });
+		tempDir = mkdtempSync(join(tmpdir(), 'dynamic_test_'));
 	});
 
 	afterEach(() => {
-		Deno.removeSync(tempDir, { recursive: true });
+		rmSync(tempDir, { recursive: true });
 	});
 
 	it('successfully generates page from valid .page.ts file', async () => {
 		const filePath = join(tempDir, 'test.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default async function() {
 				return {
@@ -38,7 +39,7 @@ describe('buildDynamicPage', () => {
 
 	it('includes optional githubLink when provided', async () => {
 		const filePath = join(tempDir, 'with-github.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default async function() {
 				return {
@@ -58,7 +59,7 @@ describe('buildDynamicPage', () => {
 
 	it('throws error when module has no default export', async () => {
 		const filePath = join(tempDir, 'no-default.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export function notDefault() {
 				return { title: 'T', description: 'D', menuEntry: 'M', html: '' };
@@ -72,7 +73,7 @@ describe('buildDynamicPage', () => {
 
 	it('throws error when default export is not a function', async () => {
 		const filePath = join(tempDir, 'not-function.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default { title: 'T', description: 'D', menuEntry: 'M', html: '' };`,
 		);
@@ -84,7 +85,7 @@ describe('buildDynamicPage', () => {
 
 	it('throws error when return value is missing required fields', async () => {
 		const filePath = join(tempDir, 'missing-fields.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default async function() {
 				return { title: 'Only Title' };
@@ -98,7 +99,7 @@ describe('buildDynamicPage', () => {
 
 	it('throws error when return value has wrong field types', async () => {
 		const filePath = join(tempDir, 'wrong-types.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default async function() {
 				return {
@@ -117,7 +118,7 @@ describe('buildDynamicPage', () => {
 
 	it('throws error when function returns null', async () => {
 		const filePath = join(tempDir, 'returns-null.page.ts');
-		Deno.writeTextFileSync(
+		writeFileSync(
 			filePath,
 			`export default async function() {
 				return null;

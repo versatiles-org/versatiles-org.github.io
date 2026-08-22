@@ -1,8 +1,9 @@
-import { join } from '@std/path/join';
-import { existsSync, walkSync } from '@std/fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import CMS, { canonicalUrl } from './index.ts';
-import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
-import { expect } from '@std/expect';
+import { walkFiles } from './walk.ts';
 
 describe('CMS builds site structure', () => {
 	let srcPath: string;
@@ -10,21 +11,21 @@ describe('CMS builds site structure', () => {
 
 	beforeAll(() => {
 		// Use temp directories to avoid polluting project root
-		srcPath = Deno.makeTempDirSync({ prefix: 'cms_test_src_' });
-		dstPath = Deno.makeTempDirSync({ prefix: 'cms_test_dst_' });
+		srcPath = mkdtempSync(join(tmpdir(), 'cms_test_src_'));
+		dstPath = mkdtempSync(join(tmpdir(), 'cms_test_dst_'));
 
 		// Arrange
-		Deno.mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
-		Deno.writeTextFileSync(join(srcPath, 'assets/style/ignore.png'), '');
-		Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
-		Deno.writeTextFileSync(
+		mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
+		writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
+		writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
+		writeFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
+		writeFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
+		writeFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
+		writeFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
+		writeFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
+		writeFileSync(join(srcPath, 'assets/style/ignore.png'), '');
+		writeFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
+		writeFileSync(
 			join(srcPath, 'test.md'),
 			[
 				'---',
@@ -39,8 +40,8 @@ describe('CMS builds site structure', () => {
 
 	afterAll(() => {
 		// Cleanup temp directories
-		Deno.removeSync(srcPath, { recursive: true });
-		Deno.removeSync(dstPath, { recursive: true });
+		rmSync(srcPath, { recursive: true });
+		rmSync(dstPath, { recursive: true });
 	});
 
 	it('builds the site structure', async () => {
@@ -54,14 +55,14 @@ describe('CMS builds site structure', () => {
 		expect(existsSync(join(dstPath, 'assets', 'style.css'))).toBe(true);
 		expect(existsSync(join(dstPath, 'test.html'))).toBe(true);
 
-		const html = Deno.readTextFileSync(join(dstPath, 'test.html'));
+		const html = readFileSync(join(dstPath, 'test.html'), 'utf8');
 		expect(html).toContain('<html lang="en">');
 		expect(html).toContain('<title>Test Title</title>');
 		expect(html).toContain('<meta name="description" content="Test Desc">');
 		expect(html).toContain('<p>Hello World!</p>');
 
 		// .less files should be removed
-		for (const entry of walkSync(join(dstPath, 'assets', 'style'))) {
+		for (const entry of walkFiles(join(dstPath, 'assets', 'style'))) {
 			expect(entry.name.endsWith('.less')).toBe(false);
 		}
 	});
@@ -91,23 +92,23 @@ describe('canonicalUrl', () => {
 
 describe('CMS error handling', () => {
 	it('throws descriptive error for invalid markdown front matter', async () => {
-		const srcPath = Deno.makeTempDirSync({ prefix: 'cms_error_test_src_' });
-		const dstPath = Deno.makeTempDirSync({ prefix: 'cms_error_test_dst_' });
+		const srcPath = mkdtempSync(join(tmpdir(), 'cms_error_test_src_'));
+		const dstPath = mkdtempSync(join(tmpdir(), 'cms_error_test_dst_'));
 
 		try {
 			// Create required LESS files and an asset (to ensure assets dir is created)
-			Deno.mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/logo.png'), 'PNG');
+			mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
+			writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
+			writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
+			writeFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
+			writeFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
+			writeFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
+			writeFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
+			writeFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
+			writeFileSync(join(srcPath, 'assets/logo.png'), 'PNG');
 
 			// Create markdown file with missing required front matter (missing description and menuEntry)
-			Deno.writeTextFileSync(
+			writeFileSync(
 				join(srcPath, 'invalid.md'),
 				['---', 'title: Only Title', '---', 'Content'].join('\n'),
 			);
@@ -115,27 +116,27 @@ describe('CMS error handling', () => {
 			const cms = new CMS(srcPath, dstPath);
 			await expect(cms.build()).rejects.toThrow('Failed to process page');
 		} finally {
-			Deno.removeSync(srcPath, { recursive: true });
-			Deno.removeSync(dstPath, { recursive: true });
+			rmSync(srcPath, { recursive: true });
+			rmSync(dstPath, { recursive: true });
 		}
 	});
 
 	it('throws descriptive error for missing CSS source files', async () => {
-		const srcPath = Deno.makeTempDirSync({ prefix: 'cms_css_error_test_src_' });
-		const dstPath = Deno.makeTempDirSync({ prefix: 'cms_css_error_test_dst_' });
+		const srcPath = mkdtempSync(join(tmpdir(), 'cms_css_error_test_src_'));
+		const dstPath = mkdtempSync(join(tmpdir(), 'cms_css_error_test_dst_'));
 
 		try {
 			// Create only some of the required LESS files (missing hero.less)
-			Deno.mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-			Deno.writeTextFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
+			mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
+			writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
+			writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
 			// Intentionally NOT creating hero.less
 
 			const cms = new CMS(srcPath, dstPath);
 			await expect(cms.build()).rejects.toThrow('Failed to build CSS');
 		} finally {
-			Deno.removeSync(srcPath, { recursive: true });
-			Deno.removeSync(dstPath, { recursive: true });
+			rmSync(srcPath, { recursive: true });
+			rmSync(dstPath, { recursive: true });
 		}
 	});
 });

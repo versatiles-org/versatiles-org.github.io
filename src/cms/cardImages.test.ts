@@ -1,18 +1,16 @@
-import { join } from '@std/path/join';
-import { existsSync } from '@std/fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import sharp from 'sharp';
 import { processCardImages } from './cardImages.ts';
-import { afterEach, beforeEach, describe, it } from '@std/testing/bdd';
-import { expect } from '@std/expect';
-import { encode as encodePng } from '@jsquash/png';
-import { decode as decodeWebp } from '@jsquash/webp';
 
 /**
  * Builds a synthetic PNG of the given size (alternating-stripe fill so a
- * resize step has something distinguishable to work on) and writes it to
- * `path`. Returns the encoded buffer in case the caller needs it.
+ * resize step has something distinguishable to work on) and writes it to `path`.
  */
 async function writeSyntheticPng(path: string, width: number, height: number): Promise<void> {
-	const data = new Uint8ClampedArray(width * height * 4);
+	const data = Buffer.alloc(width * height * 4);
 	for (let y = 0; y < height; y++) {
 		for (let x = 0; x < width; x++) {
 			const i = (y * width + x) * 4;
@@ -23,8 +21,13 @@ async function writeSyntheticPng(path: string, width: number, height: number): P
 			data[i + 3] = 0xff;
 		}
 	}
-	const png = await encodePng({ data, width, height } as unknown as ImageData);
-	await Deno.writeFile(path, new Uint8Array(png));
+	await sharp(data, { raw: { width, height, channels: 4 } }).png().toFile(path);
+}
+
+/** Reads back the pixel dimensions of an encoded image. */
+async function dimensions(path: string): Promise<{ width?: number; height?: number }> {
+	const { width, height } = await sharp(path).metadata();
+	return { width, height };
 }
 
 describe('processCardImages', () => {
@@ -32,13 +35,13 @@ describe('processCardImages', () => {
 	let dstDir: string;
 
 	beforeEach(() => {
-		srcDir = Deno.makeTempDirSync({ prefix: 'card_images_src_' });
-		dstDir = Deno.makeTempDirSync({ prefix: 'card_images_dst_' });
+		srcDir = mkdtempSync(join(tmpdir(), 'card_images_src_'));
+		dstDir = mkdtempSync(join(tmpdir(), 'card_images_dst_'));
 	});
 
 	afterEach(() => {
-		Deno.removeSync(srcDir, { recursive: true });
-		Deno.removeSync(dstDir, { recursive: true });
+		rmSync(srcDir, { recursive: true });
+		rmSync(dstDir, { recursive: true });
 	});
 
 	it('returns empty when the source directory does not exist', async () => {
@@ -47,7 +50,7 @@ describe('processCardImages', () => {
 	});
 
 	it('returns empty when the source directory has no PNGs', async () => {
-		Deno.writeTextFileSync(join(srcDir, 'note.txt'), 'ignored');
+		writeFileSync(join(srcDir, 'note.txt'), 'ignored');
 		const result = await processCardImages(srcDir, dstDir);
 		expect(result).toEqual([]);
 	});
@@ -65,10 +68,7 @@ describe('processCardImages', () => {
 		const out = join(dstDir, 'sample.webp');
 		expect(existsSync(out)).toBe(true);
 
-		const webp = await Deno.readFile(out);
-		const decoded = await decodeWebp(webp.buffer as ArrayBuffer);
-		expect(decoded.width).toBe(20);
-		expect(decoded.height).toBe(10);
+		expect(await dimensions(out)).toEqual({ width: 20, height: 10 });
 	});
 
 	it('top-crops sources that are taller than the target aspect ratio', async () => {
@@ -80,9 +80,6 @@ describe('processCardImages', () => {
 
 		await processCardImages(srcDir, dstDir, { width: 160, height: 90 });
 
-		const webp = await Deno.readFile(join(dstDir, 'tall.webp'));
-		const decoded = await decodeWebp(webp.buffer as ArrayBuffer);
-		expect(decoded.width).toBe(160);
-		expect(decoded.height).toBe(90);
+		expect(await dimensions(join(dstDir, 'tall.webp'))).toEqual({ width: 160, height: 90 });
 	});
 });

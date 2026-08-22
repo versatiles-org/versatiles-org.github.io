@@ -1,6 +1,5 @@
-import { expect } from '@std/expect';
 import { parseMarkdown } from './markdown.ts';
-import { describe, it } from '@std/testing/bdd';
+import { describe, expect, it } from 'vitest';
 
 describe('parseMarkdown', () => {
 	it('parseMarkdown extracts YAML front matter and renders markdown', () => {
