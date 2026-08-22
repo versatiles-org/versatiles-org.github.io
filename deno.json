@@ -18,9 +18,6 @@
   "minimumDependencyAge": 0,
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.12.0",
-    "@jsquash/png": "npm:@jsquash/png@^3.1.1",
-    "@jsquash/resize": "npm:@jsquash/resize@^2.1.1",
-    "@jsquash/webp": "npm:@jsquash/webp@^1.5.0",
     "@std/expect": "jsr:@std/expect@^1.0.20",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "@std/fs": "jsr:@std/fs@^1.0.24",
