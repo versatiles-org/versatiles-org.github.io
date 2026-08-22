@@ -53,6 +53,43 @@ export function canonicalUrl(relativePath: string): string {
  * await cms.build();
  * ```
  */
+/** Front matter fields a page must supply. */
+interface PageAttrs {
+	menuEntry: string;
+	title: string;
+	description: string;
+	githubLink?: string;
+}
+
+/**
+ * Validates the YAML front matter of an `.html` page.
+ *
+ * `parseMarkdown` already does this for `.md` pages. Without the same check
+ * here, a missing field reached the template as `undefined` and rendered
+ * literally into the page instead of failing the build.
+ *
+ * @param attrs - Parsed front matter
+ * @param filePath - Page being processed, for the error message
+ * @throws {TypeError} If a required field is missing or not a string
+ */
+function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
+	const fail = (reason: string): never => {
+		throw new TypeError(`Front matter of "${filePath}" ${reason}`);
+	};
+
+	if (typeof attrs !== 'object' || attrs === null) return fail('must be an object');
+	const { menuEntry, title, description, githubLink } = attrs as Record<string, unknown>;
+
+	if (typeof menuEntry !== 'string') return fail('must contain a string "menuEntry"');
+	if (typeof title !== 'string') return fail('must contain a string "title"');
+	if (typeof description !== 'string') return fail('must contain a string "description"');
+	if (githubLink !== undefined && typeof githubLink !== 'string') {
+		return fail('must contain a string "githubLink", if present');
+	}
+
+	return { menuEntry, title, description, githubLink };
+}
+
 export default class CMS {
 	/** Source directory containing markdown files and assets */
 	private readonly srcPath: string;
@@ -213,7 +250,7 @@ export default class CMS {
 					const content = readFileSync(entry.path, 'utf8');
 					if (content.startsWith('---\n')) {
 						const { body, attrs } = extractYaml(content);
-						const a = attrs as Record<string, string>;
+						const a = readPageAttrs(attrs, entry.path);
 						pageHTML = this.renderPage(
 							relativePath,
 							a.menuEntry,

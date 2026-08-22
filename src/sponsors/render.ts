@@ -196,11 +196,15 @@ export function groupByTier(sponsors: SponsorEntry[], tiers: SponsorTier[]): Spo
 		.sort((a, b) => b.minMonthlyDollars - a.minMonthlyDollars)
 		.map((tier) => ({ tier, sponsors: [] as SponsorEntry[] }));
 
+	// Sponsors below every threshold fall back to the lowest tier. With no tiers
+	// configured there is no such fallback, and nowhere to put anyone.
+	const lowest = groups.at(-1);
+	if (!lowest) return groups;
+
 	for (const sponsor of sponsors) {
 		if (sponsor.monthlyDollars <= 0) continue;
 		const group =
-			groups.find((g) => sponsor.monthlyDollars >= g.tier.minMonthlyDollars) ??
-			groups[groups.length - 1];
+			groups.find((g) => sponsor.monthlyDollars >= g.tier.minMonthlyDollars) ?? lowest;
 		group.sponsors.push(sponsor);
 	}
 

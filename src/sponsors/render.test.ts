@@ -29,6 +29,10 @@ const oneTime = (name: string, monthlyDollars: number): SponsorEntry => ({
 });
 
 describe('groupByTier', () => {
+	it('returns no groups when no tiers are configured', () => {
+		expect(groupByTier([entry('someone', 50)], [])).toEqual([]);
+	});
+
 	it('returns tiers highest-first regardless of input order', () => {
 		const groups = groupByTier([], SPONSOR_TIERS);
 		expect(groups.map((g) => g.tier.title)).toEqual([

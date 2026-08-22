@@ -40,8 +40,10 @@ function shouldKeepMarkdownRule(line: string): boolean {
 	// Keep non-markdown-body rules
 	if (!line.startsWith('.markdown-body')) return true;
 
-	// Extract the selector part after ".markdown-body"
-	const selectorPart = line.split('{')[0].slice('.markdown-body'.length).trim();
+	// Extract the selector part after ".markdown-body". `split` always yields at
+	// least one element, so the default only exists to satisfy the type checker.
+	const [beforeBrace = ''] = line.split('{');
+	const selectorPart = beforeBrace.slice('.markdown-body'.length).trim();
 
 	// Remove empty .markdown-body{} rules
 	if (!selectorPart) return false;

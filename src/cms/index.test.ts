@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { config } from '../config.ts';
 import CMS, { canonicalUrl } from './index.ts';
 import { walkFiles } from './walk.ts';
 
@@ -111,6 +112,32 @@ describe('CMS error handling', () => {
 			writeFileSync(
 				join(srcPath, 'invalid.md'),
 				['---', 'title: Only Title', '---', 'Content'].join('\n'),
+			);
+
+			const cms = new CMS(srcPath, dstPath);
+			await expect(cms.build()).rejects.toThrow('Failed to process page');
+		} finally {
+			rmSync(srcPath, { recursive: true });
+			rmSync(dstPath, { recursive: true });
+		}
+	});
+
+	it('throws descriptive error for incomplete .html front matter', async () => {
+		const srcPath = mkdtempSync(join(tmpdir(), 'cms_html_fm_test_src_'));
+		const dstPath = mkdtempSync(join(tmpdir(), 'cms_html_fm_test_dst_'));
+
+		try {
+			mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
+			for (const file of config.cssSourceFiles) {
+				writeFileSync(join(srcPath, file), 'body{}');
+			}
+			// An asset so copyAssets creates dist/assets/, which buildCSS writes into.
+			writeFileSync(join(srcPath, 'assets/logo.png'), 'PNG');
+
+			// Front matter present but missing description and menuEntry.
+			writeFileSync(
+				join(srcPath, 'page.html'),
+				['---', 'title: Only Title', '---', '<p>Content</p>'].join('\n'),
 			);
 
 			const cms = new CMS(srcPath, dstPath);

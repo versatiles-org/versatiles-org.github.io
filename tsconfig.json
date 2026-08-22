@@ -18,11 +18,8 @@
 		"moduleDetection": "force",
 		"types": ["node"],
 
-		// Mirrors what Deno enforced. Deliberately NOT adding
-		// noUncheckedIndexedAccess: it flags three pre-existing indexing patterns
-		// that are safe in practice, and tightening type rules is not this
-		// migration's job.
 		"strict": true,
+		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"noFallthroughCasesInSwitch": true,
 		"isolatedModules": true,
