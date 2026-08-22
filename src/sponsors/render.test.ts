@@ -49,9 +49,10 @@ describe('groupByTier', () => {
 			entry('whale', 5000),
 		];
 		const byTitle = Object.fromEntries(
-			groupByTier(sponsors, SPONSOR_TIERS).map((
-				g,
-			) => [g.tier.title, g.sponsors.map((s) => s.name)]),
+			groupByTier(sponsors, SPONSOR_TIERS).map((g) => [
+				g.tier.title,
+				g.sponsors.map((s) => s.name),
+			]),
 		);
 		expect(byTitle.Supporter).toEqual(['base']);
 		expect(byTitle.Backer).toEqual(['edge-backer', 'just-under-sponsor']);
@@ -71,10 +72,12 @@ describe('groupByTier', () => {
 
 describe('toSponsorEntry / isActive / isNameable', () => {
 	it('prefers the display name and the sponsor’s own link', () => {
-		expect(toSponsorEntry({
-			sponsor: { login: 'acme', name: 'Acme Inc', linkUrl: 'https://acme.test' },
-			monthlyDollars: 25,
-		})).toEqual({
+		expect(
+			toSponsorEntry({
+				sponsor: { login: 'acme', name: 'Acme Inc', linkUrl: 'https://acme.test' },
+				monthlyDollars: 25,
+			}),
+		).toEqual({
 			name: 'Acme Inc',
 			link: 'https://acme.test',
 			monthlyDollars: 25,
@@ -85,14 +88,16 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 
 	it('leaves Open Collective guest profiles unlinked', () => {
 		// opencollective.com/guest-fcdc0bca is an empty page, not a profile.
-		expect(toSponsorEntry({
-			sponsor: {
-				login: 'guest-fcdc0bca',
-				name: 'Guest',
-				linkUrl: 'https://opencollective.com/guest-fcdc0bca',
-			},
-			monthlyDollars: 5,
-		})).toMatchObject({ name: 'Guest', link: '' });
+		expect(
+			toSponsorEntry({
+				sponsor: {
+					login: 'guest-fcdc0bca',
+					name: 'Guest',
+					linkUrl: 'https://opencollective.com/guest-fcdc0bca',
+				},
+				monthlyDollars: 5,
+			}),
+		).toMatchObject({ name: 'Guest', link: '' });
 
 		expect(
 			toSponsorEntry({
@@ -119,13 +124,16 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 				privacyLevel: 'PRIVATE',
 			}).isAnonymous,
 		).toBe(true);
-		expect(toSponsorEntry({ sponsor: { login: 'open' }, monthlyDollars: 5 }).isAnonymous)
-			.toBe(false);
+		expect(toSponsorEntry({ sponsor: { login: 'open' }, monthlyDollars: 5 }).isAnonymous).toBe(
+			false,
+		);
 	});
 
 	it('falls back to the login and a GitHub profile URL', () => {
-		expect(toSponsorEntry({ sponsor: { login: 'ghost' }, monthlyDollars: 5 }))
-			.toMatchObject({ name: 'ghost', link: 'https://github.com/ghost' });
+		expect(toSponsorEntry({ sponsor: { login: 'ghost' }, monthlyDollars: 5 })).toMatchObject({
+			name: 'ghost',
+			link: 'https://github.com/ghost',
+		});
 	});
 
 	it('prefers linkUrl over websiteUrl', () => {
@@ -140,8 +148,7 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 	it('carries the one-time flag through, defaulting to recurring', () => {
 		expect(
 			toSponsorEntry({ sponsor: { login: 'a' }, monthlyDollars: 5, isOneTime: true }).isOneTime,
-		)
-			.toBe(true);
+		).toBe(true);
 		expect(toSponsorEntry({ sponsor: { login: 'a' }, monthlyDollars: 5 }).isOneTime).toBe(false);
 	});
 
@@ -180,8 +187,9 @@ describe('summarizeIncome', () => {
 	});
 
 	it('treats a missing isOneTime flag as recurring', () => {
-		expect(summarizeIncome([entry('Acme', 25)].map((e) => ({ ...e, isOneTime: undefined }))))
-			.toMatchObject({ recurringMonthlyDollars: 25, oneTimeDollars: 0 });
+		expect(
+			summarizeIncome([entry('Acme', 25)].map((e) => ({ ...e, isOneTime: undefined }))),
+		).toMatchObject({ recurringMonthlyDollars: 25, oneTimeDollars: 0 });
 	});
 
 	it('drops non-positive amounts, like the tier lists do', () => {
@@ -211,21 +219,19 @@ describe('summarizeIncome', () => {
 
 describe('renderIncomeSummary', () => {
 	it('measures recurring income against the infrastructure target', () => {
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)])))
-			.toBe(
-				'VersaTiles currently receives **$30/month** from 1 recurring sponsor — ' +
-					'**6%** of the **$500/month** we need for server infrastructure. ' +
-					'Another **$180** arrived as 1 one-time contribution.',
-			);
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 30), oneTime('b', 180)]))).toBe(
+			'VersaTiles currently receives **$30/month** from 1 recurring sponsor — ' +
+				'**6%** of the **$500/month** we need for server infrastructure. ' +
+				'Another **$180** arrived as 1 one-time contribution.',
+		);
 	});
 
 	it('advances to the maintenance target once infrastructure is covered', () => {
 		// Not "120% of $500" — the page should show the milestone still ahead.
-		expect(renderIncomeSummary(summarizeIncome([entry('a', 600)])))
-			.toBe(
-				'VersaTiles currently receives **$600/month** from 1 recurring sponsor — ' +
-					'**40%** of the **$1,500/month** we need for infrastructure and minimum maintenance.',
-			);
+		expect(renderIncomeSummary(summarizeIncome([entry('a', 600)]))).toBe(
+			'VersaTiles currently receives **$600/month** from 1 recurring sponsor — ' +
+				'**40%** of the **$1,500/month** we need for infrastructure and minimum maintenance.',
+		);
 	});
 
 	it('stops quoting a percentage once both targets are met', () => {
@@ -246,18 +252,18 @@ describe('renderIncomeSummary', () => {
 	});
 
 	it('asks for the first target when there is nothing at all', () => {
-		expect(renderIncomeSummary(summarizeIncome([])))
-			.toBe(
-				'VersaTiles has no recurring sponsors yet — help us reach the **$500/month** ' +
-					'we need for server infrastructure.',
-			);
+		expect(renderIncomeSummary(summarizeIncome([]))).toBe(
+			'VersaTiles has no recurring sponsors yet — help us reach the **$500/month** ' +
+				'we need for server infrastructure.',
+		);
 	});
 });
 
 describe('renderSponsorLinks', () => {
 	it('joins names with commas, linking those that have a link', () => {
-		expect(renderSponsorLinks([entry('Acme', 25, 'https://acme.test'), entry('Nobody', 5)]))
-			.toBe('[Acme](https://acme.test), Nobody');
+		expect(renderSponsorLinks([entry('Acme', 25, 'https://acme.test'), entry('Nobody', 5)])).toBe(
+			'[Acme](https://acme.test), Nobody',
+		);
 	});
 
 	it('renders a single sponsor without a trailing comma', () => {
@@ -271,9 +277,7 @@ describe('renderTierLines', () => {
 			[entry('Big', 500, 'https://big.test'), entry('Small', 5), entry('Other', 5)],
 			SPONSOR_TIERS,
 		);
-		expect(md).toBe(
-			'**Partner:** [Big](https://big.test)\n\n**Supporter:** Small, Other',
-		);
+		expect(md).toBe('**Partner:** [Big](https://big.test)\n\n**Supporter:** Small, Other');
 	});
 
 	it('keeps one-time givers out of the tiers, on their own line by amount', () => {
@@ -282,28 +286,35 @@ describe('renderTierLines', () => {
 			SPONSOR_TIERS,
 		);
 		// The $100 gift must not outrank the standing $25/month pledge.
-		expect(md).toBe(
-			'**Backer:** Pledge\n\n**One-time contributions:** Gift, Small gift',
-		);
+		expect(md).toBe('**Backer:** Pledge\n\n**One-time contributions:** Gift, Small gift');
 	});
 
 	it('tallies anonymous sponsors instead of naming them', () => {
-		const md = renderTierLines([
-			entry('Public', 25),
-			{ name: 'Secret Corp', link: 'https://secret.test', monthlyDollars: 5, isAnonymous: true },
-		], SPONSOR_TIERS);
-		expect(md).toBe(
-			'**Backer:** Public\n\n**Anonymous:** 1 sponsor who asked not to be named',
+		const md = renderTierLines(
+			[
+				entry('Public', 25),
+				{
+					name: 'Secret Corp',
+					link: 'https://secret.test',
+					monthlyDollars: 5,
+					isAnonymous: true,
+				},
+			],
+			SPONSOR_TIERS,
 		);
+		expect(md).toBe('**Backer:** Public\n\n**Anonymous:** 1 sponsor who asked not to be named');
 		expect(md).not.toContain('Secret Corp');
 		expect(md).not.toContain('secret.test');
 	});
 
 	it('pluralises the anonymous tally and counts one-time givers too', () => {
-		const md = renderTierLines([
-			{ name: 'a', link: '', monthlyDollars: 5, isAnonymous: true },
-			{ name: 'b', link: '', monthlyDollars: 100, isOneTime: true, isAnonymous: true },
-		], SPONSOR_TIERS);
+		const md = renderTierLines(
+			[
+				{ name: 'a', link: '', monthlyDollars: 5, isAnonymous: true },
+				{ name: 'b', link: '', monthlyDollars: 100, isOneTime: true, isAnonymous: true },
+			],
+			SPONSOR_TIERS,
+		);
 		expect(md).toBe('**Anonymous:** 2 sponsors who asked not to be named');
 	});
 
@@ -320,8 +331,9 @@ describe('renderTierLines', () => {
 	});
 
 	it('falls back to the empty state when every sponsor has expired', () => {
-		expect(renderTierLines([entry('past', -1), oneTime('gone', -1)], SPONSOR_TIERS))
-			.toContain('No sponsors yet');
+		expect(renderTierLines([entry('past', -1), oneTime('gone', -1)], SPONSOR_TIERS)).toContain(
+			'No sponsors yet',
+		);
 	});
 });
 
@@ -344,21 +356,25 @@ describe('renderSponsorsPage', () => {
 	it('can report income wider than the names it lists', () => {
 		// Private sponsors are counted but never named, so the headline figure
 		// must be able to exceed the sum of the listed sponsors.
-		const { html } = parseMarkdown(renderSponsorsPage(
-			[entry('Public', 25)],
-			SPONSOR_TIERS,
-			summarizeIncome([entry('Public', 25), entry('Private', 75)]),
-		));
+		const { html } = parseMarkdown(
+			renderSponsorsPage(
+				[entry('Public', 25)],
+				SPONSOR_TIERS,
+				summarizeIncome([entry('Public', 25), entry('Private', 75)]),
+			),
+		);
 		expect(html).toContain('$100/month');
 		expect(html).toContain('2 recurring sponsors');
 		expect(html).not.toContain('Private');
 	});
 
 	it('separates one-time givers from tiered sponsors on the page', () => {
-		const { html } = parseMarkdown(renderSponsorsPage([
-			entry('Pledger', 25),
-			{ name: 'Gifter', link: '', monthlyDollars: 100, isOneTime: true },
-		]));
+		const { html } = parseMarkdown(
+			renderSponsorsPage([
+				entry('Pledger', 25),
+				{ name: 'Gifter', link: '', monthlyDollars: 100, isOneTime: true },
+			]),
+		);
 		expect(html).toContain('<strong>Backer:</strong>');
 		expect(html).toContain('<strong>One-time contributions:</strong>');
 		// $25/month recurring is the only income measured against the goal.

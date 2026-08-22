@@ -21,7 +21,9 @@ async function writeSyntheticPng(path: string, width: number, height: number): P
 			data[i + 3] = 0xff;
 		}
 	}
-	await sharp(data, { raw: { width, height, channels: 4 } }).png().toFile(path);
+	await sharp(data, { raw: { width, height, channels: 4 } })
+		.png()
+		.toFile(path);
 }
 
 /** Reads back the pixel dimensions of an encoded image. */

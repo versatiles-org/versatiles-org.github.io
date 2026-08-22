@@ -67,13 +67,15 @@ function shouldKeepMarkdownRule(line: string): boolean {
  */
 export async function buildCSS(srcFilenames: string[], dstFilename: string): Promise<void> {
 	// Read and compile all source files
-	const cssList = await Promise.all(srcFilenames.map(async (cssFilename) => {
-		let content = await readFile(cssFilename, 'utf8');
-		if (cssFilename.endsWith('.less')) {
-			content = (await less.render(content)).css;
-		}
-		return content;
-	}));
+	const cssList = await Promise.all(
+		srcFilenames.map(async (cssFilename) => {
+			let content = await readFile(cssFilename, 'utf8');
+			if (cssFilename.endsWith('.less')) {
+				content = (await less.render(content)).css;
+			}
+			return content;
+		}),
+	);
 
 	// Add GFM styles, removing the base .markdown-body{} rule which sets unwanted defaults
 	const gfmStyles = CSS.replace(/\.markdown-body\s*\{[^}]*\}/g, '');
@@ -89,10 +91,7 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 	}
 
 	// Filter out unwanted markdown-body rules
-	const css = (minified.styles as string)
-		.split('\n')
-		.filter(shouldKeepMarkdownRule)
-		.join('\n');
+	const css = (minified.styles as string).split('\n').filter(shouldKeepMarkdownRule).join('\n');
 
 	await writeFile(dstFilename, css);
 }

@@ -1,0 +1,50 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		// Matches what `deno lint`/`deno fmt` covered: TypeScript sources and the
+		// repo's own JSON config. Biome 2.5 formats neither Markdown nor HTML, and
+		// pointing its linter at docs/ would bolt on a11y checks that this
+		// migration never signed up for.
+		"includes": [
+			"src/**/*.ts",
+			"*.ts",
+			"*.json",
+			"*.jsonc",
+			"!package-lock.json",
+			// Removed in the final step of the Node migration.
+			"!deno.json"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 3,
+		"lineWidth": 100
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "always"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "recommended"
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				// Deno never sorted imports and the migration is not the place to
+				// start; flip to "on" separately if you want it enforced.
+				"organizeImports": "off"
+			}
+		}
+	}
+}

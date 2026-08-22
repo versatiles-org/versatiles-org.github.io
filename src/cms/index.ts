@@ -34,9 +34,7 @@ try {
  * ```
  */
 export function canonicalUrl(relativePath: string): string {
-	const path = relativePath
-		.replace(/\.page\.ts$|\.md$|\.html$/, '')
-		.replace(/(^|\/)index$/, '');
+	const path = relativePath.replace(/\.page\.ts$|\.md$|\.html$/, '').replace(/(^|\/)index$/, '');
 	return `${config.baseUrl}/${path ? `${path}/` : ''}`;
 }
 
@@ -252,29 +250,33 @@ export default class CMS {
 		html: string,
 		githubLink?: string,
 	): string {
-		const resolvedGithubLink = githubLink ||
+		const resolvedGithubLink =
+			githubLink ||
 			`${config.githubRepo}/tree/${config.githubBranch}/${config.docsDir}/${relativePath}`;
 
-		return new Page(template)
-			.setSocialImage(`${config.baseUrl}/assets/social.png`)
-			.setMenu(config.menu, menuEntry, config.githubOrg)
-			.setTitle(title, description)
-			.setContent(html)
-			.setGithubLink(resolvedGithubLink)
-			.render()
-			// cheerio_cms has no setter for og:url/canonical, so the template carries a
-			// placeholder that we fill in with this page's own URL.
-			.replaceAll('{{canonicalUrl}}', canonicalUrl(relativePath))
-			// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
-			.replace('<li class="github-icon"><a ', '<li class="github-icon"><a aria-label="GitHub" ')
-			// Add rel="noopener" to target="_blank" links without it. The check has
-			// to span the whole tag: `rel` may be written before `target`, and only
-			// looking after it appended a second, duplicate attribute.
-			.replace(
-				/<a\s([^>]*\btarget="_blank"[^>]*)>/g,
-				(tag, attrs: string) =>
+		return (
+			new Page(template)
+				.setSocialImage(`${config.baseUrl}/assets/social.png`)
+				.setMenu(config.menu, menuEntry, config.githubOrg)
+				.setTitle(title, description)
+				.setContent(html)
+				.setGithubLink(resolvedGithubLink)
+				.render()
+				// cheerio_cms has no setter for og:url/canonical, so the template carries a
+				// placeholder that we fill in with this page's own URL.
+				.replaceAll('{{canonicalUrl}}', canonicalUrl(relativePath))
+				// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
+				.replace(
+					'<li class="github-icon"><a ',
+					'<li class="github-icon"><a aria-label="GitHub" ',
+				)
+				// Add rel="noopener" to target="_blank" links without it. The check has
+				// to span the whole tag: `rel` may be written before `target`, and only
+				// looking after it appended a second, duplicate attribute.
+				.replace(/<a\s([^>]*\btarget="_blank"[^>]*)>/g, (tag, attrs: string) =>
 					/(?:^|\s)rel=/.test(attrs) ? tag : `<a ${attrs} rel="noopener">`,
-			);
+				)
+		);
 	}
 
 	/** Removes temporary files (.DS_Store, .less) from the built assets folder. */

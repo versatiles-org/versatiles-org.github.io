@@ -45,7 +45,8 @@ function escapeAttr(value: string): string {
  * @returns Inline-ready SVG markup.
  */
 export function inlineSponsorSvg(svg: string, label = 'VersaTiles sponsors'): string {
-	let out = svg.trim()
+	let out = svg
+		.trim()
 		.replace(/^<\?xml[^>]*\?>\s*/i, '')
 		.replace(/^<!DOCTYPE[^>]*>\s*/i, '')
 		.replace(/<style>[\s\S]*?<\/style>\s*/i, '');
@@ -78,13 +79,11 @@ export function inlineSponsorSvg(svg: string, label = 'VersaTiles sponsors'): st
 	// deleted, and they are numbered c0, c1, … — generic enough to clash with the
 	// page or with a second inlined graphic — so namespace them instead.
 	out = out
-		.replace(
-			/\bid="([^"]*)"/g,
-			(m, id: string) => id.startsWith(ID_PREFIX) ? m : `id="${ID_PREFIX}${id}"`,
+		.replace(/\bid="([^"]*)"/g, (m, id: string) =>
+			id.startsWith(ID_PREFIX) ? m : `id="${ID_PREFIX}${id}"`,
 		)
-		.replace(
-			/url\(#([^)]*)\)/g,
-			(m, id: string) => id.startsWith(ID_PREFIX) ? m : `url(#${ID_PREFIX}${id})`,
+		.replace(/url\(#([^)]*)\)/g, (m, id: string) =>
+			id.startsWith(ID_PREFIX) ? m : `url(#${ID_PREFIX}${id})`,
 		);
 
 	return out;

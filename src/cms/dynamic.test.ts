@@ -66,9 +66,7 @@ describe('buildDynamicPage', () => {
 			}`,
 		);
 
-		await expect(buildDynamicPage(filePath)).rejects.toThrow(
-			'must export a default function',
-		);
+		await expect(buildDynamicPage(filePath)).rejects.toThrow('must export a default function');
 	});
 
 	it('throws error when default export is not a function', async () => {
@@ -78,9 +76,7 @@ describe('buildDynamicPage', () => {
 			`export default { title: 'T', description: 'D', menuEntry: 'M', html: '' };`,
 		);
 
-		await expect(buildDynamicPage(filePath)).rejects.toThrow(
-			'must export a default function',
-		);
+		await expect(buildDynamicPage(filePath)).rejects.toThrow('must export a default function');
 	});
 
 	it('throws error when return value is missing required fields', async () => {
@@ -92,9 +88,7 @@ describe('buildDynamicPage', () => {
 			}`,
 		);
 
-		await expect(buildDynamicPage(filePath)).rejects.toThrow(
-			'must return a valid PageResult',
-		);
+		await expect(buildDynamicPage(filePath)).rejects.toThrow('must return a valid PageResult');
 	});
 
 	it('throws error when return value has wrong field types', async () => {
@@ -111,9 +105,7 @@ describe('buildDynamicPage', () => {
 			}`,
 		);
 
-		await expect(buildDynamicPage(filePath)).rejects.toThrow(
-			'must return a valid PageResult',
-		);
+		await expect(buildDynamicPage(filePath)).rejects.toThrow('must return a valid PageResult');
 	});
 
 	it('throws error when function returns null', async () => {
@@ -125,8 +117,6 @@ describe('buildDynamicPage', () => {
 			}`,
 		);
 
-		await expect(buildDynamicPage(filePath)).rejects.toThrow(
-			'must return a valid PageResult',
-		);
+		await expect(buildDynamicPage(filePath)).rejects.toThrow('must return a valid PageResult');
 	});
 });

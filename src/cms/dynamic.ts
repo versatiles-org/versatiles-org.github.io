@@ -19,9 +19,7 @@ export async function buildDynamicPage(filePath: string): Promise<PageResult> {
 	const module = await import(filePath);
 
 	if (typeof module.default !== 'function') {
-		throw new Error(
-			`Dynamic page "${filePath}" must export a default function`,
-		);
+		throw new Error(`Dynamic page "${filePath}" must export a default function`);
 	}
 
 	const result = await module.default();

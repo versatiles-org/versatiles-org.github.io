@@ -1,5 +1,5 @@
 import { extractYaml } from '@std/front-matter';
-import { Marked, render, Renderer } from '@deno/gfm';
+import { type Marked, render, Renderer } from '@deno/gfm';
 
 /**
  * Custom Markdown renderer that outputs clean heading tags without anchor links.
@@ -94,5 +94,8 @@ export function renderInlineMarkdown(text: string): string {
 		disableHtmlSanitization: true,
 		renderer: new MarkdownRenderer(),
 	}).trim();
-	return html.replace(/^<p>/, '').replace(/<\/p>$/, '').trim();
+	return html
+		.replace(/^<p>/, '')
+		.replace(/<\/p>$/, '')
+		.trim();
 }

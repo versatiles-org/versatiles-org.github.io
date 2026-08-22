@@ -67,13 +67,9 @@ describe('parseMarkdown', () => {
 	});
 
 	it('errors when menuEntry is missing', () => {
-		const input = [
-			'---',
-			'title: Test',
-			'description: Test description',
-			'---',
-			'Content',
-		].join('\n');
+		const input = ['---', 'title: Test', 'description: Test description', '---', 'Content'].join(
+			'\n',
+		);
 
 		expect(() => parseMarkdown(input)).toThrow(
 			'Markdown attributes must contain a string "menuEntry"',
@@ -95,13 +91,7 @@ describe('parseMarkdown', () => {
 	});
 
 	it('errors when description is missing', () => {
-		const input = [
-			'---',
-			'title: Test',
-			'menuEntry: test',
-			'---',
-			'Content',
-		].join('\n');
+		const input = ['---', 'title: Test', 'menuEntry: test', '---', 'Content'].join('\n');
 
 		expect(() => parseMarkdown(input)).toThrow(
 			'Markdown attributes must contain a string "description"',

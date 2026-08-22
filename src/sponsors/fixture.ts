@@ -91,15 +91,9 @@ async function main() {
 
 	mkdirSync(OUT_DIR, { recursive: true });
 	writeFileSync(resolve(OUT_DIR, 'sponsors.svg'), svg);
-	writeFileSync(
-		resolve(OUT_DIR, 'index.md'),
-		renderSponsorsPage(entries, SPONSOR_TIERS, income),
-	);
+	writeFileSync(resolve(OUT_DIR, 'index.md'), renderSponsorsPage(entries, SPONSOR_TIERS, income));
 	writeFileSync(resolve(OUT_DIR, 'sponsors.txt'), renderSponsorsListFile(entries));
-	writeFileSync(
-		resolve(OUT_DIR, 'income.json'),
-		JSON.stringify(income, null, '\t') + '\n',
-	);
+	writeFileSync(resolve(OUT_DIR, 'income.json'), JSON.stringify(income, null, '\t') + '\n');
 
 	console.log(
 		`[fixture] ${listed.length} listed of ${fetched.length} fetched — ` +

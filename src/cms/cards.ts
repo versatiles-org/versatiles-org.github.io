@@ -89,9 +89,9 @@ function renderCard(card: Card, options: RenderOptions): string {
 		? `<img class="card__thumb" src="/${card.image}" alt="" loading="lazy">`
 		: `<div class="card__thumb card__thumb--placeholder" aria-hidden="true"></div>`;
 	const repo = card.repo
-		? `<a class="card__repo" href="${escapeAttr(card.repo)}" rel="noopener" aria-label="${
-			escapeAttr(card.title)
-		} source on GitHub">Source</a>`
+		? `<a class="card__repo" href="${escapeAttr(card.repo)}" rel="noopener" aria-label="${escapeAttr(
+				card.title,
+			)} source on GitHub">Source</a>`
 		: '';
 	return `<article class="card">
 ${thumb}
@@ -142,12 +142,7 @@ function validateSection(value: unknown, index: number, filePath: string): Secti
 	return { title: obj.title, cards };
 }
 
-function validateCard(
-	value: unknown,
-	sectionTitle: string,
-	index: number,
-	filePath: string,
-): Card {
+function validateCard(value: unknown, sectionTitle: string, index: number, filePath: string): Card {
 	if (typeof value !== 'object' || value === null) {
 		throw new Error(`Card #${index} in section "${sectionTitle}" must be an object`);
 	}

@@ -260,7 +260,10 @@ text {
 		);
 		// `.txt` so the CMS copies it verbatim; a `.md` here would be rendered to
 		// HTML (and would need YAML front matter to build at all).
-		writeFileSync(resolve(process.cwd(), 'docs/sponsors/sponsors.txt'), renderSponsorsListFile(entries));
+		writeFileSync(
+			resolve(process.cwd(), 'docs/sponsors/sponsors.txt'),
+			renderSponsorsListFile(entries),
+		);
 
 		// Written here rather than via `formats`, so it records the real amounts
 		// instead of the one-time sentinel `onBeforeRenderer` applies. Avatars are

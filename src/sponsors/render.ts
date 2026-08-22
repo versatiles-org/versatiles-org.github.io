@@ -164,11 +164,9 @@ const ANONYMOUS_TITLE = 'Anonymous';
  * `docs/assets/style/sponsor.less`. `currentColor` so they follow the button
  * text, and `aria-hidden` because the adjacent label already names the target.
  */
-const GITHUB_ICON =
-	`<svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8Z"/></svg>`;
+const GITHUB_ICON = `<svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8Z"/></svg>`;
 
-const OPEN_COLLECTIVE_ICON =
-	`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M16.75 3.77a9.5 9.5 0 1 0 0 16.46"/><path d="M20.23 7.25a9.5 9.5 0 0 1 0 9.5"/></svg>`;
+const OPEN_COLLECTIVE_ICON = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M16.75 3.77a9.5 9.5 0 1 0 0 16.46"/><path d="M20.23 7.25a9.5 9.5 0 0 1 0 9.5"/></svg>`;
 
 /** Sponsor call-to-action buttons, styled by `docs/assets/style/sponsor.less`. */
 const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
@@ -200,7 +198,8 @@ export function groupByTier(sponsors: SponsorEntry[], tiers: SponsorTier[]): Spo
 
 	for (const sponsor of sponsors) {
 		if (sponsor.monthlyDollars <= 0) continue;
-		const group = groups.find((g) => sponsor.monthlyDollars >= g.tier.minMonthlyDollars) ??
+		const group =
+			groups.find((g) => sponsor.monthlyDollars >= g.tier.minMonthlyDollars) ??
 			groups[groups.length - 1];
 		group.sponsors.push(sponsor);
 	}
@@ -282,9 +281,10 @@ function plural(count: number, noun: string): string {
 export function renderIncomeSummary(income: SponsorIncome): string {
 	const sentences: string[] = [];
 	const recurring = income.recurringMonthlyDollars;
-	const received = `VersaTiles currently receives **${usd(recurring)}/month** from ${
-		plural(income.recurringCount, 'recurring sponsor')
-	}`;
+	const received = `VersaTiles currently receives **${usd(recurring)}/month** from ${plural(
+		income.recurringCount,
+		'recurring sponsor',
+	)}`;
 
 	if (recurring <= 0) {
 		sentences.push(
@@ -292,15 +292,15 @@ export function renderIncomeSummary(income: SponsorIncome): string {
 		);
 	} else if (recurring < 500) {
 		sentences.push(
-			`${received} — **${
-				Math.round(recurring / 500 * 100)
-			}%** of the **$500/month** we need for server infrastructure.`,
+			`${received} — **${Math.round(
+				(recurring / 500) * 100,
+			)}%** of the **$500/month** we need for server infrastructure.`,
 		);
 	} else if (recurring < 1500) {
 		sentences.push(
-			`${received} — **${
-				Math.round(recurring / 1500 * 100)
-			}%** of the **$1,500/month** we need for infrastructure and minimum maintenance.`,
+			`${received} — **${Math.round(
+				(recurring / 1500) * 100,
+			)}%** of the **$1,500/month** we need for infrastructure and minimum maintenance.`,
 		);
 	} else {
 		sentences.push(`${received}, covering infrastructure and maintenance — thank you!`);
@@ -308,9 +308,10 @@ export function renderIncomeSummary(income: SponsorIncome): string {
 
 	if (income.oneTimeDollars > 0) {
 		sentences.push(
-			`Another **${usd(income.oneTimeDollars)}** arrived as ${
-				plural(income.oneTimeCount, 'one-time contribution')
-			}.`,
+			`Another **${usd(income.oneTimeDollars)}** arrived as ${plural(
+				income.oneTimeCount,
+				'one-time contribution',
+			)}.`,
 		);
 	}
 
@@ -319,9 +320,7 @@ export function renderIncomeSummary(income: SponsorIncome): string {
 
 /** Render sponsors as one comma-separated run of linked names. */
 export function renderSponsorLinks(sponsors: SponsorEntry[]): string {
-	return sponsors
-		.map((s) => (s.link ? `[${s.name}](${s.link})` : s.name))
-		.join(', ');
+	return sponsors.map((s) => (s.link ? `[${s.name}](${s.link})` : s.name)).join(', ');
 }
 
 /**
@@ -348,7 +347,10 @@ export function renderTierLines(sponsors: SponsorEntry[], tiers: SponsorTier[]):
 
 	const named = sponsors.filter((s) => !s.isAnonymous);
 
-	const lines = groupByTier(named.filter((s) => !s.isOneTime), tiers)
+	const lines = groupByTier(
+		named.filter((s) => !s.isOneTime),
+		tiers,
+	)
 		.filter((g) => g.sponsors.length > 0)
 		.map((g) => line(g.tier.title, g.sponsors));
 
