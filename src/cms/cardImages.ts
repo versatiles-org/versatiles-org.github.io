@@ -1,5 +1,7 @@
-import { ensureDirSync, walkSync } from '@std/fs';
-import { basename, resolve } from '@std/path';
+import { mkdirSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
+import { basename, resolve } from 'node:path';
+import { walkFiles } from './walk.ts';
 import { decode as decodePng } from '@jsquash/png';
 import { encode as encodeWebp } from '@jsquash/webp';
 import resize from '@jsquash/resize';
@@ -72,8 +74,8 @@ export async function processCardImages(
 
 	const sources: string[] = [];
 	try {
-		for (const entry of walkSync(srcDir)) {
-			if (entry.isFile && /\.png$/i.test(entry.name)) sources.push(entry.path);
+		for (const entry of walkFiles(srcDir)) {
+			if (/\.png$/i.test(entry.name)) sources.push(entry.path);
 		}
 	} catch {
 		// Source directory does not exist yet — nothing to do.
@@ -82,7 +84,7 @@ export async function processCardImages(
 
 	if (sources.length === 0) return [];
 
-	ensureDirSync(dstDir);
+	mkdirSync(dstDir, { recursive: true });
 
 	const written = await Promise.all(
 		sources.map(async (src) => {
@@ -105,7 +107,10 @@ async function convertOne(
 ): Promise<void> {
 	let png: Uint8Array;
 	try {
-		png = await Deno.readFile(src);
+		// Copied into a fresh Uint8Array because `readFile` hands back a Buffer
+		// carved out of Node's shared pool, whose `.buffer` spans the whole pool
+		// rather than just this file — and `decode` below reads `.buffer`.
+		png = new Uint8Array(await readFile(src));
 	} catch (error) {
 		throw new Error(`Failed to read "${src}"`, { cause: error });
 	}
@@ -141,7 +146,7 @@ async function convertOne(
 	}
 
 	try {
-		await Deno.writeFile(dst, new Uint8Array(webp));
+		await writeFile(dst, new Uint8Array(webp));
 	} catch (error) {
 		throw new Error(`Failed to write "${dst}"`, { cause: error });
 	}

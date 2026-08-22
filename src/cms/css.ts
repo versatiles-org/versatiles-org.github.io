@@ -1,3 +1,4 @@
+import { readFile, writeFile } from 'node:fs/promises';
 import less from 'less';
 import { CSS } from '@deno/gfm';
 import CleanCSS from 'clean-css';
@@ -67,7 +68,7 @@ function shouldKeepMarkdownRule(line: string): boolean {
 export async function buildCSS(srcFilenames: string[], dstFilename: string): Promise<void> {
 	// Read and compile all source files
 	const cssList = await Promise.all(srcFilenames.map(async (cssFilename) => {
-		let content = await Deno.readTextFile(cssFilename);
+		let content = await readFile(cssFilename, 'utf8');
 		if (cssFilename.endsWith('.less')) {
 			content = (await less.render(content)).css;
 		}
@@ -93,5 +94,5 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		.filter(shouldKeepMarkdownRule)
 		.join('\n');
 
-	await Deno.writeTextFile(dstFilename, css);
+	await writeFile(dstFilename, css);
 }

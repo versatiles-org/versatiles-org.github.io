@@ -1,5 +1,5 @@
-import { existsSync } from '@std/fs';
-import { resolve } from '@std/path';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { parse as parseYaml } from '@std/yaml';
 import { renderInlineMarkdown } from './markdown.ts';
 
@@ -54,7 +54,7 @@ interface RenderOptions {
 export function renderCardsFromFile(filePath: string, options: RenderOptions = {}): string {
 	let raw: string;
 	try {
-		raw = Deno.readTextFileSync(filePath);
+		raw = readFileSync(filePath, 'utf8');
 	} catch (error) {
 		throw new Error(`Failed to read cards file "${filePath}"`, { cause: error });
 	}

@@ -1,6 +1,7 @@
-import { copySync, ensureDirSync, existsSync, walkSync } from '@std/fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, relative, resolve } from 'node:path';
 import { extractYaml } from '@std/front-matter';
-import { dirname, relative, resolve } from '@std/path';
+import { walkFiles } from './walk.ts';
 import { buildCSS } from './css.ts';
 import { renderCardsFromFile } from './cards.ts';
 import { processCardImages } from './cardImages.ts';
@@ -12,7 +13,7 @@ import { config } from '../config.ts';
 
 let template: string;
 try {
-	template = Deno.readTextFileSync('./templates/page.html');
+	template = readFileSync('./templates/page.html', 'utf8');
 } catch (error) {
 	throw new Error('Failed to read template file "./templates/page.html"', { cause: error });
 }
@@ -95,8 +96,8 @@ export default class CMS {
 	/** Removes existing destination folder and creates a fresh empty one. */
 	private clearFolder() {
 		try {
-			if (existsSync(this.dstPath)) Deno.removeSync(this.dstPath, { recursive: true });
-			ensureDirSync(this.dstPath);
+			if (existsSync(this.dstPath)) rmSync(this.dstPath, { recursive: true });
+			mkdirSync(this.dstPath, { recursive: true });
 		} catch (error) {
 			throw new Error(`Failed to clear/create destination folder "${this.dstPath}"`, {
 				cause: error,
@@ -107,8 +108,7 @@ export default class CMS {
 	/** Copies image assets from source to destination, preserving directory structure. */
 	private copyAssets() {
 		const cardImagesSrc = resolve(this.srcPath, config.cardImagesSrcDir);
-		for (const entry of walkSync(this.srcPath)) {
-			if (!entry.isFile) continue;
+		for (const entry of walkFiles(this.srcPath)) {
 			if (!config.assetExtensions.test(entry.name)) continue;
 			// Source PNGs for card thumbnails are processed into WebP via the
 			// dedicated card-image pipeline; don't ship the raw PNGs.
@@ -116,11 +116,11 @@ export default class CMS {
 			const relativePath = relative(this.srcPath, entry.path);
 			const dstFileName = resolve(this.dstPath, relativePath);
 			try {
-				ensureDirSync(dirname(dstFileName));
-				// `overwrite` because a clean dist is not guaranteed: `deno task dev`
+				mkdirSync(dirname(dstFileName), { recursive: true });
+				// `force` because a clean dist is not guaranteed: `npm run dev`
 				// can start a second build while the first is still copying, and
-				// copySync otherwise throws AlreadyExists on the file it already wrote.
-				copySync(entry.path, dstFileName, { overwrite: true });
+				// the copy otherwise trips over the file it already wrote.
+				cpSync(entry.path, dstFileName, { force: true });
 			} catch (error) {
 				throw new Error(`Failed to copy asset "${entry.path}" to "${dstFileName}"`, {
 					cause: error,
@@ -174,7 +174,7 @@ export default class CMS {
 		// simply renders without the graphic when it is missing.
 		const sponsorsSvgPath = resolve(srcPath, config.sponsorsSvgFile);
 		const sponsorsSvg = existsSync(sponsorsSvgPath)
-			? inlineSponsorSvg(Deno.readTextFileSync(sponsorsSvgPath))
+			? inlineSponsorSvg(readFileSync(sponsorsSvgPath, 'utf8'))
 			: '';
 
 		const applyPlaceholders = (html: string) =>
@@ -182,8 +182,7 @@ export default class CMS {
 				.replaceAll('<!-- cards -->', cardsHtml)
 				.replaceAll('<!-- sponsors-svg -->', sponsorsSvg);
 
-		for (const entry of walkSync(srcPath)) {
-			if (!entry.isFile) continue;
+		for (const entry of walkFiles(srcPath)) {
 			// The cards data file is consumed via the placeholder, not as a page.
 			if (entry.path === cardsYamlPath) continue;
 
@@ -202,7 +201,7 @@ export default class CMS {
 						result.githubLink,
 					);
 				} else if (entry.name.endsWith('.md')) {
-					const yaml = Deno.readTextFileSync(entry.path);
+					const yaml = readFileSync(entry.path, 'utf8');
 					const { html, attrs } = parseMarkdown(yaml);
 					pageHTML = this.renderPage(
 						relativePath,
@@ -213,7 +212,7 @@ export default class CMS {
 						attrs.githubLink,
 					);
 				} else if (entry.name.endsWith('.html')) {
-					const content = Deno.readTextFileSync(entry.path);
+					const content = readFileSync(entry.path, 'utf8');
 					if (content.startsWith('---\n')) {
 						const { body, attrs } = extractYaml(content);
 						const a = attrs as Record<string, string>;
@@ -236,8 +235,8 @@ export default class CMS {
 					dstPath,
 					relativePath.replace(/\.page\.ts$|\.md$|\.html$/, '.html'),
 				);
-				ensureDirSync(dirname(htmlFileName));
-				Deno.writeTextFileSync(htmlFileName, pageHTML);
+				mkdirSync(dirname(htmlFileName), { recursive: true });
+				writeFileSync(htmlFileName, pageHTML);
 			} catch (error) {
 				throw new Error(`Failed to process page "${entry.path}"`, { cause: error });
 			}
@@ -280,12 +279,11 @@ export default class CMS {
 
 	/** Removes temporary files (.DS_Store, .less) from the built assets folder. */
 	private cleanUp() {
-		for (const entry of walkSync(resolve(this.dstPath, 'assets'))) {
-			if (!entry.isFile) continue;
+		for (const entry of walkFiles(resolve(this.dstPath, 'assets'))) {
 			const extension = entry.name.split('.').pop()?.toLowerCase();
 			if (extension === 'ds_store' || extension === 'less') {
 				try {
-					Deno.removeSync(entry.path);
+					rmSync(entry.path);
 				} catch (error) {
 					throw new Error(`Failed to remove temporary file "${entry.path}"`, { cause: error });
 				}

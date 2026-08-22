@@ -25,8 +25,9 @@
  * Output is gitignored and regenerated on every deploy, so it is always safe to
  * delete: `rm -rf docs/sponsors`.
  */
-import { ensureDirSync } from '@std/fs';
-import { resolve } from '@std/path';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import process from 'node:process';
 import { config } from '../config.ts';
 import {
 	isActive,
@@ -39,7 +40,7 @@ import {
 	toSponsorEntry,
 } from './render.ts';
 
-const OUT_DIR = resolve(Deno.cwd(), 'docs/sponsors');
+const OUT_DIR = resolve(process.cwd(), 'docs/sponsors');
 
 /**
  * Sponsors that never appear in the published feed, so a live fixture cannot
@@ -72,7 +73,7 @@ async function fetchAsset(name: string): Promise<Response> {
 }
 
 async function main() {
-	const demo = Deno.args.includes('--demo');
+	const demo = process.argv.slice(2).includes('--demo');
 
 	const [json, svg] = await Promise.all([
 		fetchAsset('sponsors.json').then((r) => r.json() as Promise<RawSponsorship[]>),
@@ -88,14 +89,14 @@ async function main() {
 	const entries = active.map(toSponsorEntry);
 	const income = summarizeIncome(entries);
 
-	ensureDirSync(OUT_DIR);
-	Deno.writeTextFileSync(resolve(OUT_DIR, 'sponsors.svg'), svg);
-	Deno.writeTextFileSync(
+	mkdirSync(OUT_DIR, { recursive: true });
+	writeFileSync(resolve(OUT_DIR, 'sponsors.svg'), svg);
+	writeFileSync(
 		resolve(OUT_DIR, 'index.md'),
 		renderSponsorsPage(entries, SPONSOR_TIERS, income),
 	);
-	Deno.writeTextFileSync(resolve(OUT_DIR, 'sponsors.txt'), renderSponsorsListFile(entries));
-	Deno.writeTextFileSync(
+	writeFileSync(resolve(OUT_DIR, 'sponsors.txt'), renderSponsorsListFile(entries));
+	writeFileSync(
 		resolve(OUT_DIR, 'income.json'),
 		JSON.stringify(income, null, '\t') + '\n',
 	);

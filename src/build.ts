@@ -1,4 +1,4 @@
-import { resolve } from '@std/path/resolve';
+import { resolve } from 'node:path';
 import CMS from './cms/index.ts';
 import { config } from './config.ts';
 
