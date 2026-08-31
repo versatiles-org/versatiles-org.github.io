@@ -30,4 +30,6 @@ export interface PageResult {
 	githubLink?: string;
 	/** Optional BCP-47 language tag for <html lang>, defaults to "en" */
 	lang?: string;
+	/** Optional layout name, added as a class on <main> (e.g. "prose") */
+	layout?: string;
 }

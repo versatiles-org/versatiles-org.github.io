@@ -29,6 +29,8 @@ interface MarkdownResult {
 		githubLink?: string;
 		/** Optional BCP-47 language tag for <html lang>, defaults to "en" */
 		lang?: string;
+		/** Optional layout name, added as a class on <main> (e.g. "prose") */
+		layout?: string;
 	};
 }
 
@@ -72,6 +74,9 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 	}
 	if ('lang' in attrs && typeof attrs.lang !== 'string') {
 		throw new TypeError('Markdown attribute "lang" must be a string, if present');
+	}
+	if ('layout' in attrs && typeof attrs.layout !== 'string') {
+		throw new TypeError('Markdown attribute "layout" must be a string, if present');
 	}
 
 	return {

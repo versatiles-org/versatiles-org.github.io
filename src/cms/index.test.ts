@@ -17,13 +17,10 @@ describe('CMS builds site structure', () => {
 
 		// Arrange
 		mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-		writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-		writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
-		writeFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
-		writeFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
-		writeFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-		writeFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
-		writeFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
+		// Drive this off the config so a new stylesheet does not break the test.
+		for (const file of config.cssSourceFiles) {
+			writeFileSync(join(srcPath, file), 'body{}');
+		}
 		writeFileSync(join(srcPath, 'assets/style/ignore.png'), '');
 		writeFileSync(join(srcPath, 'assets/logo.png'), 'PNGDATA');
 		writeFileSync(
@@ -45,6 +42,7 @@ describe('CMS builds site structure', () => {
 				'description: Deutsche Beschreibung',
 				'menuEntry: test',
 				'lang: de',
+				'layout: prose',
 				'---',
 				'Hallo Welt!',
 			].join('\n'),
@@ -77,6 +75,10 @@ describe('CMS builds site structure', () => {
 		// A page can override the template's language via front matter.
 		const germanHtml = readFileSync(join(dstPath, 'german.html'), 'utf8');
 		expect(germanHtml).toContain('<html lang="de">');
+		expect(germanHtml).toContain('class="markdown-body prose"');
+
+		// A page without a layout keeps the bare class.
+		expect(html).toContain('class="markdown-body"');
 
 		// .less files should be removed
 		for (const entry of walkFiles(join(dstPath, 'assets', 'style'))) {
@@ -115,13 +117,10 @@ describe('CMS error handling', () => {
 		try {
 			// Create required LESS files and an asset (to ensure assets dir is created)
 			mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-			writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-			writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
-			writeFileSync(join(srcPath, 'assets/style/hero.less'), '.hero{}');
-			writeFileSync(join(srcPath, 'assets/style/roadmap.less'), '#roadmap{}');
-			writeFileSync(join(srcPath, 'assets/style/pipeline.less'), '#pipeline{}');
-			writeFileSync(join(srcPath, 'assets/style/cards.less'), '.cards-section{}');
-			writeFileSync(join(srcPath, 'assets/style/sponsor.less'), '.sponsor-btn{}');
+			// Drive this off the config so a new stylesheet does not break the test.
+			for (const file of config.cssSourceFiles) {
+				writeFileSync(join(srcPath, file), 'body{}');
+			}
 			writeFileSync(join(srcPath, 'assets/logo.png'), 'PNG');
 
 			// Create markdown file with missing required front matter (missing description and menuEntry)
@@ -171,8 +170,10 @@ describe('CMS error handling', () => {
 		try {
 			// Create only some of the required LESS files (missing hero.less)
 			mkdirSync(join(srcPath, 'assets/style'), { recursive: true });
-			writeFileSync(join(srcPath, 'assets/style/main.less'), 'body{}');
-			writeFileSync(join(srcPath, 'assets/style/menu.less'), 'nav{}');
+			// Drive this off the config so a new stylesheet does not break the test.
+			for (const file of config.cssSourceFiles) {
+				writeFileSync(join(srcPath, file), 'body{}');
+			}
 			// Intentionally NOT creating hero.less
 
 			const cms = new CMS(srcPath, dstPath);

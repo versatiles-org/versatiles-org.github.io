@@ -3,6 +3,7 @@ title: Offener Brief an die ARD
 description: Michael Kreil über VersaTiles, fehlende Zuständigkeiten für digitale Infrastruktur und warum am 1. September 2026 Schluss mit der Förderung ist.
 menuEntry: Offener Brief
 lang: de
+layout: prose
 ---
 # Offener Brief an die ARD
 
@@ -12,7 +13,7 @@ Liebe Kolleginnen und Kollegen in der ARD,
 
 vor sechs Jahren, zu Beginn der Coronapandemie, habe ich als Datenjournalist im AI + Automation Lab des Bayerischen Rundfunks den Vorschlag gemacht, eine eigene Karteninfrastruktur auf Open-Source-Basis aufzubauen - für die vielen Karten zu Infektions- und Impfzahlen, aber auch für all die anderen datenjournalistischen Projekte. Eines der Argumente war schlicht Geld: Bei den Zugriffszahlen von tagesschau.de kann eine einzige interaktive Karte bei kommerziellen Anbietern sechsstellige Beträge im Monat kosten. Eine eigene Lösung kostet nur ein Tausendstel davon und hat darüber hinaus viele technische und datenschutzrechtliche Vorteile. Mein Vorschlag wurde jedoch abgelehnt.
 
-Im Jahr 2023 habe ich die Idee im SWR Data Lab erneut aufgebracht. Dort wurde sie angenommen. Die entwickelte Open-Source-Lösung verbreitete sich unter dem Namen "VersaTiles"[^versatiles] schnell. Heute betreiben NDR und SWR VersaTiles in ihrer eigenen Infrastruktur.[^showcases] Sie ist sogar in das ARD-CMS "Unified Sophora" integriert und soll schrittweise weiteren Häusern zur Verfügung stehen. Faktisch ist VersaTiles damit auf dem Weg, die zentrale Kartenlösung der ARD zu werden.
+Im Jahr 2023 habe ich die Idee im SWR Data Lab erneut aufgebracht. Dort wurde sie angenommen. Die entwickelte Open-Source-Lösung verbreitete sich unter dem Namen "VersaTiles"[^versatiles] schnell. Heute betreiben NDR und SWR VersaTiles in ihrer eigenen Infrastruktur. Sie ist sogar in das ARD-CMS "Unified Sophora" integriert und soll schrittweise weiteren Häusern zur Verfügung stehen. Faktisch ist VersaTiles damit auf dem Weg, die zentrale Kartenlösung der ARD zu werden.
 
 Meine Mitarbeit endete 2024 überraschend, ohne dass mir eine Begründung genannt wurde. Relevant ist hier nur die Folge: Die Software wurde weiter ausgerollt, aber es gab niemanden mehr im Haus, der dafür verantwortlich war.
 
@@ -34,7 +35,8 @@ Insgesamt habe ich 54 Organisationen angeschrieben. Eine hat zugesagt. Die meist
 
 Anders ausgedrückt:
 
-**Für die hohen Preise kommerzieller Plattformen lässt sich immer irgendwie ein Budgettopf finden. Für Open Source und digitale Souveränität, selbst wenn dadurch enorme Kosten eingespart werden könnte, gibt es keine Zuständigkeit und keine Kostenstelle.**
+**Für die hohen Preise kommerzieller Plattformen lässt sich immer irgendwie ein Budgettopf finden.  
+Für Open Source und digitale Souveränität, selbst wenn dadurch enorme Kosten eingespart werden könnte, gibt es keinen Plan, keine Zuständigkeit und keine Kostenstelle.**
 
 Das ist keine Eigenart der ARD. Es ist die Lücke, durch die in Europa ein Open-Source-Projekt nach dem anderen fällt. Die ARD ist jedoch eine der wenigen Institutionen, die groß genug wäre, um hier Vorbild zu sein und diese Lücke - zumindest für sich selbst - zu schließen.
 

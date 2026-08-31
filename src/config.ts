@@ -62,6 +62,9 @@ export const config: {
 		'assets/style/pipeline.less',
 		'assets/style/cards.less',
 		'assets/style/sponsor.less',
+		'assets/style/prose.less',
+		// Last: print rules have to win against everything above them.
+		'assets/style/print.less',
 	],
 
 	/** Output CSS file (relative to dist directory) */

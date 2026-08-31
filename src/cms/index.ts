@@ -60,6 +60,7 @@ interface PageAttrs {
 	description: string;
 	githubLink?: string;
 	lang?: string;
+	layout?: string;
 }
 
 /**
@@ -79,7 +80,10 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	};
 
 	if (typeof attrs !== 'object' || attrs === null) return fail('must be an object');
-	const { menuEntry, title, description, githubLink, lang } = attrs as Record<string, unknown>;
+	const { menuEntry, title, description, githubLink, lang, layout } = attrs as Record<
+		string,
+		unknown
+	>;
 
 	if (typeof menuEntry !== 'string') return fail('must contain a string "menuEntry"');
 	if (typeof title !== 'string') return fail('must contain a string "title"');
@@ -90,8 +94,31 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	if (lang !== undefined && typeof lang !== 'string') {
 		return fail('must contain a string "lang", if present');
 	}
+	if (layout !== undefined && typeof layout !== 'string') {
+		return fail('must contain a string "layout", if present');
+	}
 
-	return { menuEntry, title, description, githubLink, lang };
+	return { menuEntry, title, description, githubLink, lang, layout };
+}
+
+/**
+ * Turns a `layout` front-matter value into the class name put on `<main>`.
+ *
+ * The value ends up in the markup verbatim, so anything but a plain identifier
+ * is rejected rather than escaped — a layout name is ours to choose, and a
+ * stray quote would otherwise break the tag it lands in.
+ *
+ * @param layout - Front matter value, e.g. `prose`
+ * @returns The class name to add
+ * @throws {TypeError} If the name is not lowercase letters, digits and dashes
+ */
+function layoutClass(layout: string): string {
+	if (!/^[a-z][a-z0-9-]*$/.test(layout)) {
+		throw new TypeError(
+			`Front matter "layout" must be lowercase letters, digits and dashes, got "${layout}"`,
+		);
+	}
+	return layout;
 }
 
 export default class CMS {
@@ -239,6 +266,7 @@ export default class CMS {
 						applyPlaceholders(result.html),
 						result.githubLink,
 						result.lang,
+						result.layout,
 					);
 				} else if (entry.name.endsWith('.md')) {
 					const yaml = readFileSync(entry.path, 'utf8');
@@ -251,6 +279,7 @@ export default class CMS {
 						applyPlaceholders(html),
 						attrs.githubLink,
 						attrs.lang,
+						attrs.layout,
 					);
 				} else if (entry.name.endsWith('.html')) {
 					const content = readFileSync(entry.path, 'utf8');
@@ -265,6 +294,7 @@ export default class CMS {
 							applyPlaceholders(body),
 							a.githubLink,
 							a.lang,
+							a.layout,
 						);
 					} else {
 						pageHTML = applyPlaceholders(content);
@@ -294,6 +324,7 @@ export default class CMS {
 		html: string,
 		githubLink?: string,
 		lang?: string,
+		layout?: string,
 	): string {
 		const resolvedGithubLink =
 			githubLink ||
@@ -313,6 +344,12 @@ export default class CMS {
 				// The template is English; a page in another language declares it via
 				// front matter so screen readers and translators get the right language.
 				.replace('<html lang="en">', `<html lang="${lang ?? 'en'}">`)
+				// Layout styles (e.g. prose.less) hang off a class on <main>, so a page
+				// can opt into them without the landing page's own styles changing.
+				.replace(
+					'class="markdown-body"',
+					`class="markdown-body${layout ? ` ${layoutClass(layout)}` : ''}"`,
+				)
 				// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 				.replace(
 					'<li class="github-icon"><a ',

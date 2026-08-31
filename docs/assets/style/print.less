@@ -1,0 +1,94 @@
+/*
+ * Print and PDF styles for the whole site.
+ *
+ * These live in their own file, loaded last, because the cascade decides this:
+ * `nav { display: none }` sat in main.less and was overridden by menu.less's
+ * `nav { display: flex }` further down the concatenated stylesheet, so the
+ * navigation was printed on every page. Rules that have to win belong at the
+ * end.
+ */
+@media print {
+	body {
+		background-color: #fff;
+		color: #000;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: #000;
+	}
+
+	main hero {
+		color: #333;
+	}
+
+	a {
+		color: #000;
+		text-decoration: underline;
+	}
+
+	a[href^='http']::after {
+		content: ' (' attr(href) ')';
+		font-size: 0.8em;
+	}
+
+	nav,
+	footer,
+	.skip-link,
+	#map,
+	#map-wrap {
+		display: none;
+	}
+
+	main {
+		width: 100%;
+		padding: 0;
+	}
+
+	// A letter is written to be printed and mailed as a PDF, so it gets a
+	// measure rather than running the full width of the paper.
+	main.prose {
+		width: 100%;
+		max-width: 15cm;
+		margin: 0 auto;
+		font-size: 10.5pt;
+		line-height: 1.5;
+		color: #000;
+
+		h1 + p,
+		.footnotes {
+			color: #333;
+		}
+
+		hr,
+		.footnotes {
+			border-top-color: #999;
+		}
+
+		p:has(> strong:only-child) {
+			border-left-color: #999;
+			color: #000;
+		}
+
+		// The rule above prints every link's href after it. In the footnotes the
+		// URL *is* the link text, so that would set every source twice.
+		.footnotes a[href^='http']::after {
+			content: none;
+		}
+
+		// Keep a heading with the text it introduces.
+		h2,
+		h3 {
+			break-after: avoid;
+		}
+
+		p {
+			orphans: 2;
+			widows: 2;
+		}
+	}
+}

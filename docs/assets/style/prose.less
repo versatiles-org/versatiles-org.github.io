@@ -1,0 +1,150 @@
+/*
+ * Long-form text pages — opt in with `layout: prose` in the front matter.
+ *
+ * The base styles in main.less are tuned for the landing page: tight leading,
+ * centred section headings, justified text and <em> redefined as bold for the
+ * roadmap and highlight lists. None of that works for a thousand words of
+ * continuous prose, so a text page overrides them here rather than main.less
+ * changing under the landing page's feet.
+ */
+main.prose {
+	// Serif for the body text: a text page should read as a document, not as
+	// another section of the site. System faces only — no webfont request.
+	font-family: Charter, 'Bitstream Charter', 'Iowan Old Style', Georgia, 'Times New Roman',
+		serif;
+	// ~68 characters per line at 18px, against ~95 from the base 40rem width.
+	width: min(36rem, 90%);
+	font-size: 1.125rem;
+	line-height: 1.65;
+	color: #d6d6da;
+	// The page declares its language in the front matter, so the browser can
+	// actually hyphenate — German compounds otherwise leave ragged gaps.
+	hyphens: auto;
+	// The base padding puts the title right under the menu bar.
+	padding-top: 2.5rem;
+
+	p {
+		// Justified text needs hyphenation to avoid rivers; ragged-right is the
+		// safer default on a screen, where the measure is not fixed.
+		text-align: left;
+		// The gap between paragraphs has to beat the leading inside them,
+		// otherwise the text reads as one undifferentiated block.
+		margin: 0 0 1.4em;
+	}
+
+	// main.less turns <em> into bold. In prose, italics are italics.
+	em {
+		font-style: italic;
+		font-weight: inherit;
+	}
+
+	h1,
+	h2,
+	h3 {
+		// Centred headings read as landing-page sections, not as a document.
+		text-align: left;
+		line-height: 1.25;
+		hyphens: manual;
+	}
+
+	h1 {
+		font-size: 2rem;
+		margin: 1rem 0 0.5rem;
+	}
+
+	// A heading belongs to the text below it, so most of the space goes above.
+	h2 {
+		font-size: 1.4rem;
+		margin: 3rem 0 0.75rem;
+	}
+
+	h3 {
+		font-size: 1.15rem;
+		margin: 2rem 0 0.5rem;
+	}
+
+	// The dateline: the paragraph directly after the title.
+	h1 + p {
+		color: #9a9aa2;
+		font-size: 0.9em;
+		margin-bottom: 2.5rem;
+	}
+
+	// A paragraph that is entirely bold is the letter's central claim — give it
+	// the weight of a pull quote. Browsers without :has() keep the plain bold.
+	p:has(> strong:only-child) {
+		border-left: 2px solid #4a4a54;
+		padding-left: 1.4rem;
+		margin: 2rem 0;
+		color: #fff;
+	}
+
+	ol,
+	ul {
+		li {
+			margin: 0 0 0.5em;
+		}
+	}
+
+	// Footnote markers in the running text.
+	sup a {
+		text-decoration: none;
+		padding: 0 0.05em;
+	}
+
+	// A letter tends to separate its sources with a rule of its own. @deno/gfm
+	// draws its <hr> as a 0.25em filled block, which reads as a divider bar
+	// rather than a rule, so height and background have to be reset too.
+	hr {
+		height: 0;
+		background: none;
+		border: 0;
+		border-top: 1px solid #3a3a42;
+		margin: 3rem 0 0;
+		padding: 0;
+	}
+
+	// The footnote section GFM appends. Without this it is set at body size and
+	// the bare URLs overflow narrow screens instead of wrapping.
+	.footnotes {
+		margin-top: 3.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid #3a3a42;
+		font-size: 0.85em;
+		color: #9a9aa2;
+
+		// …but where the source already ends with one, a second rule right below
+		// it just looks like a mistake.
+		&:where(hr + *) {
+			margin-top: 1.5rem;
+			padding-top: 0;
+			border-top: 0;
+		}
+
+		li {
+			margin: 0 0 0.7em;
+			// Jumping to a footnote should not park it against the viewport edge.
+			scroll-margin-block: 1.5rem;
+		}
+
+		p {
+			margin: 0;
+		}
+
+		// Full URLs are long and have no spaces to break at.
+		a {
+			overflow-wrap: anywhere;
+		}
+
+		[data-footnote-backref] {
+			text-decoration: none;
+			margin-left: 0.3em;
+		}
+	}
+
+	// The closing salutation and signature. Direct children only — every
+	// footnote wraps its text in a <p> that is the last of its own list item.
+	> p:last-of-type {
+		margin-top: 2rem;
+	}
+}
