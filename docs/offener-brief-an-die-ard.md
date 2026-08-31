@@ -51,7 +51,7 @@ Ich werde VersaTiles nicht aufgeben. Ich habe für dieses Projekt die Verantwort
 Ich schreibe diesen Brief nicht, um mich zu beklagen. Ich bin dankbar dafür, dass wir gemeinsam einen Schritt vorwärts gekommen sind. Aber wir brauchen Strukturen, um auch den zweiten und dritten Schritt gehen zu können.
 Die ARD war beim Aufbau dieser digitalen Infrastruktur Vorreiter, aber für den Erhalt und die Weiterentwicklung muss jemand die Verantwortung übernehmen. Solange ich dabei keine Unterstützung erhalte, muss ich die Verantwortung eben allein tragen.
 
-Mit freundlichen Grüßen
+Mit freundlichen Grüßen  
 Michael Kreil
 
 
