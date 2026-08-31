@@ -48,7 +48,8 @@ Ich könnte die Lizenz ändern und VersaTiles kommerzialisieren. Mit einer Busin
 
 Wie ich mehreren Entscheidungsträgerinnen und Entscheidungsträgern bereits mitgeteilt habe, war der 1. September mein Stichtag. Er ist heute. Die Förderungen sind ausgelaufen und meine Mittel sind aufgebraucht.
 
-Ich werde VersaTiles nicht aufgeben. Ich habe für dieses Projekt die Verantwortung übernommen und werde sie weiter tragen. Allerdings werde ich mir eine Anstellung suchen müssen. Mein Ziel ist es, einen Arbeitgeber zu finden, der dabei hilft, VersaTiles als Open-Source-Projekt weiterzuführen. Dann bliebe es für die ARD und alle anderen weiterhin frei nutzbar.
+Ich werde VersaTiles nicht aufgeben. Ich habe die Verantwortung für dieses Projekt übernommen und werde sie bestmöglich weiter tragen. Allerdings werde ich mir eine Anstellung suchen müssen. Ich hoffe, einen Arbeitgeber zu finden, der dabei hilft, VersaTiles als Open-Source-Projekt weiterzuführen. Wenn mir das nicht gelingt, muss VersaTiles leider wie viele andere Open-Source-Projekte ein reines Ehrenamtsprojekt werden.
+Es bliebe für die ARD und alle anderen frei nutzbar, jedoch würde eine digitale Infrastruktur, die von mehreren Landesrundfunkanstalten produktiv eingesetzt wird, dann von der verfügbaren Freizeit einer einzelnen Person abhängen.
 
 Ich schreibe diesen Brief nicht, um mich zu beklagen. Ich bin dankbar dafür, dass wir gemeinsam einen Schritt vorwärts gekommen sind. Aber wir brauchen Strukturen, um auch den zweiten und dritten Schritt gehen zu können.
 Die ARD war beim Aufbau dieser digitalen Infrastruktur Vorreiter, aber für den Erhalt und die Weiterentwicklung muss jemand die Verantwortung übernehmen. Solange ich dabei keine Unterstützung erhalte, muss ich die Verantwortung eben allein tragen.
