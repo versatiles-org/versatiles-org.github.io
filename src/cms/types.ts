@@ -28,4 +28,6 @@ export interface PageResult {
 	html: string;
 	/** Optional custom GitHub edit link (auto-generated if not provided) */
 	githubLink?: string;
+	/** Optional BCP-47 language tag for <html lang>, defaults to "en" */
+	lang?: string;
 }

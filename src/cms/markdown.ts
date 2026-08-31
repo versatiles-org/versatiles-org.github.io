@@ -27,6 +27,8 @@ interface MarkdownResult {
 		description: string;
 		/** Optional custom GitHub edit link (auto-generated if not provided) */
 		githubLink?: string;
+		/** Optional BCP-47 language tag for <html lang>, defaults to "en" */
+		lang?: string;
 	};
 }
 
@@ -67,6 +69,9 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 	}
 	if (!('description' in attrs) || typeof attrs.description !== 'string') {
 		throw new TypeError('Markdown attributes must contain a string "description"');
+	}
+	if ('lang' in attrs && typeof attrs.lang !== 'string') {
+		throw new TypeError('Markdown attribute "lang" must be a string, if present');
 	}
 
 	return {

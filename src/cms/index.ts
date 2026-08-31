@@ -59,6 +59,7 @@ interface PageAttrs {
 	title: string;
 	description: string;
 	githubLink?: string;
+	lang?: string;
 }
 
 /**
@@ -78,7 +79,7 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	};
 
 	if (typeof attrs !== 'object' || attrs === null) return fail('must be an object');
-	const { menuEntry, title, description, githubLink } = attrs as Record<string, unknown>;
+	const { menuEntry, title, description, githubLink, lang } = attrs as Record<string, unknown>;
 
 	if (typeof menuEntry !== 'string') return fail('must contain a string "menuEntry"');
 	if (typeof title !== 'string') return fail('must contain a string "title"');
@@ -86,8 +87,11 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	if (githubLink !== undefined && typeof githubLink !== 'string') {
 		return fail('must contain a string "githubLink", if present');
 	}
+	if (lang !== undefined && typeof lang !== 'string') {
+		return fail('must contain a string "lang", if present');
+	}
 
-	return { menuEntry, title, description, githubLink };
+	return { menuEntry, title, description, githubLink, lang };
 }
 
 export default class CMS {
@@ -234,6 +238,7 @@ export default class CMS {
 						result.description,
 						applyPlaceholders(result.html),
 						result.githubLink,
+						result.lang,
 					);
 				} else if (entry.name.endsWith('.md')) {
 					const yaml = readFileSync(entry.path, 'utf8');
@@ -245,6 +250,7 @@ export default class CMS {
 						attrs.description,
 						applyPlaceholders(html),
 						attrs.githubLink,
+						attrs.lang,
 					);
 				} else if (entry.name.endsWith('.html')) {
 					const content = readFileSync(entry.path, 'utf8');
@@ -258,6 +264,7 @@ export default class CMS {
 							a.description,
 							applyPlaceholders(body),
 							a.githubLink,
+							a.lang,
 						);
 					} else {
 						pageHTML = applyPlaceholders(content);
@@ -286,6 +293,7 @@ export default class CMS {
 		description: string,
 		html: string,
 		githubLink?: string,
+		lang?: string,
 	): string {
 		const resolvedGithubLink =
 			githubLink ||
@@ -302,6 +310,9 @@ export default class CMS {
 				// cheerio_cms has no setter for og:url/canonical, so the template carries a
 				// placeholder that we fill in with this page's own URL.
 				.replaceAll('{{canonicalUrl}}', canonicalUrl(relativePath))
+				// The template is English; a page in another language declares it via
+				// front matter so screen readers and translators get the right language.
+				.replace('<html lang="en">', `<html lang="${lang ?? 'en'}">`)
 				// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 				.replace(
 					'<li class="github-icon"><a ',

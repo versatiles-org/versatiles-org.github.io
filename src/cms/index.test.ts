@@ -37,6 +37,18 @@ describe('CMS builds site structure', () => {
 				'Hello World!',
 			].join('\n'),
 		);
+		writeFileSync(
+			join(srcPath, 'german.md'),
+			[
+				'---',
+				'title: Deutscher Titel',
+				'description: Deutsche Beschreibung',
+				'menuEntry: test',
+				'lang: de',
+				'---',
+				'Hallo Welt!',
+			].join('\n'),
+		);
 	});
 
 	afterAll(() => {
@@ -61,6 +73,10 @@ describe('CMS builds site structure', () => {
 		expect(html).toContain('<title>Test Title</title>');
 		expect(html).toContain('<meta name="description" content="Test Desc">');
 		expect(html).toContain('<p>Hello World!</p>');
+
+		// A page can override the template's language via front matter.
+		const germanHtml = readFileSync(join(dstPath, 'german.html'), 'utf8');
+		expect(germanHtml).toContain('<html lang="de">');
 
 		// .less files should be removed
 		for (const entry of walkFiles(join(dstPath, 'assets', 'style'))) {
