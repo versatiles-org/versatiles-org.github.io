@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
-import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { resolve, sep } from 'node:path';
 import process from 'node:process';
 import { promisify } from 'node:util';
 import { defineConfig, type Plugin, type ViteDevServer } from 'vite';
@@ -64,6 +65,65 @@ function buildSite(): Plugin {
 	};
 }
 
+/**
+ * Serves `/foo/` from `dist/foo.html`, the way GitHub Pages does.
+ *
+ * Vite serves dist/ as a multi-page app, so `/foo/` looks for
+ * `dist/foo/index.html` and 404s. Pages instead serves `foo.html` there, and
+ * that trailing-slash form is what `canonicalUrl` and the menu link to — so
+ * without this rewrite every page built from a top-level `.md`/`.html` is
+ * unreachable locally under its own production URL.
+ */
+function pagesUrls(): Plugin {
+	const distRoot = resolve(ROOT, config.distDir);
+
+	return {
+		name: 'versatiles-pages-urls',
+		configureServer(server) {
+			// Registered directly (not from the returned post hook) so the rewritten
+			// URL is what Vite's static middleware gets to see.
+			server.middlewares.use((req, _res, next) => {
+				const rewritten = rewriteTrailingSlash(distRoot, req.url);
+				if (rewritten !== undefined) req.url = rewritten;
+				next();
+			});
+		},
+	};
+}
+
+/**
+ * Maps a trailing-slash request URL to the `.html` file that backs it.
+ *
+ * @param distRoot - Absolute path of the served build output
+ * @param url - Request URL, possibly with a query string
+ * @returns The rewritten URL, or `undefined` to leave the request alone
+ */
+function rewriteTrailingSlash(distRoot: string, url: string | undefined): string | undefined {
+	if (!url) return undefined;
+	const queryStart = url.search(/[?#]/);
+	const path = queryStart === -1 ? url : url.slice(0, queryStart);
+	const query = queryStart === -1 ? '' : url.slice(queryStart);
+
+	// The root and non-directory requests are already handled correctly.
+	if (!path.endsWith('/') || path === '/') return undefined;
+
+	let name: string;
+	try {
+		name = decodeURIComponent(path.slice(1, -1));
+	} catch {
+		return undefined; // Malformed percent-encoding; not ours to serve.
+	}
+
+	// A real `foo/index.html` wins, exactly as it does on Pages.
+	if (existsSync(resolve(distRoot, name, 'index.html'))) return undefined;
+
+	const filePath = resolve(distRoot, `${name}.html`);
+	if (!filePath.startsWith(distRoot + sep)) return undefined; // Escaped dist/.
+	if (!existsSync(filePath)) return undefined;
+
+	return `/${name}.html${query}`;
+}
+
 export default defineConfig({
 	root: config.distDir,
 	// The site is a set of independent pages, not a single-page app. Without
@@ -77,5 +137,5 @@ export default defineConfig({
 		// `root` is dist/, but the plugin imports the builder from src/.
 		fs: { allow: [ROOT] },
 	},
-	plugins: [buildSite()],
+	plugins: [buildSite(), pagesUrls()],
 });
