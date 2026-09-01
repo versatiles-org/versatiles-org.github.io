@@ -154,14 +154,15 @@ export default defineConfig({
 	appType: 'mpa',
 	server: {
 		port: config.devServerPort,
-		watch: {
-			// Finder scatters these through docs/; rebuilding for them is pure noise.
-			// dist/ is Vite's own root, and watching it made Vite reload the browser
-			// once per generated file — including while the build was still running,
-			// which showed the page as a 404. The plugin sends one full-reload when
-			// the build is actually done.
-			ignored: ['**/.DS_Store', `${resolve(ROOT, config.distDir)}/**`],
-		},
+		// Finder scatters these through docs/; rebuilding for them is pure noise.
+		//
+		// dist/ deliberately stays watched even though it is Vite's own root and
+		// the builder rewrites all of it: ignoring it stops Vite from invalidating
+		// its transform cache, and the browser then gets stale CSS forever while
+		// the file on disk is current. The reload storm that watching causes is
+		// harmless because the middleware below holds requests until the build is
+		// finished — that, not the watcher, is what fixes the 404 after an edit.
+		watch: { ignored: ['**/.DS_Store'] },
 		// `root` is dist/, but the plugin imports the builder from src/.
 		fs: { allow: [ROOT] },
 	},
