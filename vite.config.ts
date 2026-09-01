@@ -15,6 +15,16 @@ const SOURCES = ['src', 'docs'].map((dir) => resolve(ROOT, dir));
 const run = promisify(execFile);
 
 /**
+ * The rebuild currently in flight, or null when idle.
+ *
+ * Requests wait on this: the builder empties dist/ before it refills it, so a
+ * request that lands in that window gets a 404 for a page that exists. The
+ * browser hits exactly that after an edit, which is why this is shared between
+ * the two plugins below.
+ */
+let rebuilding: Promise<void> | null = null;
+
+/**
  * Runs the static-site build whenever `src/` or `docs/` changes, then tells the
  * browser to reload. Vite itself only ever serves the generated `dist/`.
  *
@@ -25,28 +35,34 @@ const run = promisify(execFile);
  * Spawning costs ~50ms and is exactly what `npm run build` does.
  */
 function buildSite(): Plugin {
-	let building = false;
 	let dirty = false;
 
-	async function rebuild(server: ViteDevServer) {
+	function rebuild(server: ViteDevServer): Promise<void> {
 		// Coalesce edits that land mid-build instead of running them in parallel.
-		if (building) {
+		if (rebuilding) {
 			dirty = true;
-			return;
+			return rebuilding;
 		}
-		building = true;
-		do {
-			dirty = false;
-			try {
-				await run(process.execPath, [BUILD_ENTRY], { cwd: ROOT });
-				server.config.logger.info('[cms] rebuilt');
-				server.hot.send({ type: 'full-reload' });
-			} catch (error) {
-				// Keep serving the last good build rather than dying on a broken edit.
-				server.config.logger.error(`[cms] build failed: ${error}`);
-			}
-		} while (dirty);
-		building = false;
+
+		const pending = (async () => {
+			do {
+				dirty = false;
+				try {
+					await run(process.execPath, [BUILD_ENTRY], { cwd: ROOT });
+					server.config.logger.info('[cms] rebuilt');
+					server.hot.send({ type: 'full-reload' });
+				} catch (error) {
+					// Keep serving the last good build rather than dying on a broken edit.
+					server.config.logger.error(`[cms] build failed: ${error}`);
+				}
+			} while (dirty);
+		})();
+
+		rebuilding = pending;
+		void pending.finally(() => {
+			if (rebuilding === pending) rebuilding = null;
+		});
+		return pending;
 	}
 
 	return {
@@ -83,9 +99,15 @@ function pagesUrls(): Plugin {
 			// Registered directly (not from the returned post hook) so the rewritten
 			// URL is what Vite's static middleware gets to see.
 			server.middlewares.use((req, _res, next) => {
-				const rewritten = rewriteTrailingSlash(distRoot, req.url);
-				if (rewritten !== undefined) req.url = rewritten;
-				next();
+				const proceed = () => {
+					const rewritten = rewriteTrailingSlash(distRoot, req.url);
+					if (rewritten !== undefined) req.url = rewritten;
+					next();
+				};
+				// Hold the request while dist/ is being rewritten, so a reload that
+				// races the build waits ~100ms instead of landing on a 404.
+				if (rebuilding) void rebuilding.then(proceed, proceed);
+				else proceed();
 			});
 		},
 	};
@@ -132,8 +154,14 @@ export default defineConfig({
 	appType: 'mpa',
 	server: {
 		port: config.devServerPort,
-		// Finder scatters these through docs/; rebuilding for them is pure noise.
-		watch: { ignored: ['**/.DS_Store'] },
+		watch: {
+			// Finder scatters these through docs/; rebuilding for them is pure noise.
+			// dist/ is Vite's own root, and watching it made Vite reload the browser
+			// once per generated file — including while the build was still running,
+			// which showed the page as a 404. The plugin sends one full-reload when
+			// the build is actually done.
+			ignored: ['**/.DS_Store', `${resolve(ROOT, config.distDir)}/**`],
+		},
 		// `root` is dist/, but the plugin imports the builder from src/.
 		fs: { allow: [ROOT] },
 	},
