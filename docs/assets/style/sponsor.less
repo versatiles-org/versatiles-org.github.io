@@ -1,10 +1,19 @@
+/* Two rows: the recurring sponsorships side by side, the one-off donation on
+ * its own line below them. */
 #sponsor-buttons {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin: 2rem 0 4rem;
+}
+
+.sponsor-btn-row {
 	display: flex;
 	gap: 1rem;
 	justify-content: center;
 	align-items: stretch;
 	flex-wrap: wrap;
-	margin: 2rem 0 4rem;
 }
 
 /* Centered, responsive wrapper for the inlined sponsors.svg — no background or
@@ -110,6 +119,18 @@
 
 	&:hover {
 		background: #1e6fde;
+		color: #fff;
+	}
+}
+
+/* The site's accent purple, which also clears 4.5:1 against white text —
+ * the roadmap green would not at this font size. */
+.sponsor-btn--once {
+	background: #9d35ff;
+	color: #fff;
+
+	&:hover {
+		background: #8526e6;
 		color: #fff;
 	}
 }
