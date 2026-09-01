@@ -1,0 +1,104 @@
+<!doctype html>
+<!--
+	Source for docs/assets/social/offener-brief-an-die-ard.png — the Open Graph
+	image of the open letter. Not part of the site build; render it by hand after
+	editing, from the repository root:
+
+		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+			--headless --disable-gpu --window-size=1200,675 --default-background-color=00000000 \
+			--screenshot=docs/assets/social/offener-brief-an-die-ard.png \
+			templates/social/offener-brief-an-die-ard.html
+
+	The typography mirrors docs/assets/style/prose.less so the preview card and
+	the page itself read as the same document.
+-->
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				width: 1200px;
+				height: 675px;
+				background: #1b1b1f;
+				color: #d6d6da;
+				font-family: Charter, 'Bitstream Charter', 'Iowan Old Style', Georgia, serif;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				padding: 68px 78px;
+				overflow: hidden;
+			}
+
+			/* A thin band of the brand gradient, as on the site's nav border. */
+			body::before {
+				content: '';
+				position: fixed;
+				inset: 0 0 auto 0;
+				height: 6px;
+				background: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034);
+			}
+
+			header {
+				display: flex;
+				align-items: center;
+				gap: 18px;
+			}
+
+			header img {
+				width: 46px;
+				height: 53px;
+			}
+
+			header span {
+				font-family: system-ui, sans-serif;
+				font-size: 25px;
+				letter-spacing: 0.02em;
+				color: #9a9aa2;
+			}
+
+			h1 {
+				font-size: 84px;
+				line-height: 1.08;
+				font-weight: 600;
+				color: #fff;
+				letter-spacing: -0.01em;
+			}
+
+			.dateline {
+				margin-top: 22px;
+				font-size: 27px;
+				color: #9a9aa2;
+			}
+
+			blockquote {
+				border-left: 3px solid #4a4a54;
+				padding-left: 24px;
+				font-size: 29px;
+				line-height: 1.45;
+				color: #c9c9d0;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<img src="../../docs/assets/logo/versatiles.svg" alt="" />
+			<span>versatiles.org</span>
+		</header>
+
+		<div>
+			<h1>Offener Brief<br />an die ARD</h1>
+			<p class="dateline">Michael Kreil &middot; 1.&#8239;September 2026</p>
+		</div>
+
+		<blockquote>
+			Es gibt zwar Budgets für digitale Projekte,<br />
+			jedoch kein Budget für digitale Infrastruktur.
+		</blockquote>
+	</body>
+</html>

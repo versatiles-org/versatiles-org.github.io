@@ -4,6 +4,8 @@ description: Michael Kreil über VersaTiles, fehlende Zuständigkeiten für digi
 menuEntry: Offener Brief
 lang: de
 layout: prose
+socialImage: /assets/social/offener-brief-an-die-ard.png
+socialImageAlt: "Offener Brief an die ARD – Michael Kreil, 1. September 2026"
 ---
 # Offener Brief an die ARD
 

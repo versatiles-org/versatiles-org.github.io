@@ -64,6 +64,8 @@ interface PageAttrs {
 	githubLink?: string;
 	lang?: string;
 	layout?: string;
+	socialImage?: string;
+	socialImageAlt?: string;
 }
 
 /**
@@ -83,10 +85,8 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	};
 
 	if (typeof attrs !== 'object' || attrs === null) return fail('must be an object');
-	const { menuEntry, title, description, githubLink, lang, layout } = attrs as Record<
-		string,
-		unknown
-	>;
+	const { menuEntry, title, description, githubLink, lang, layout, socialImage, socialImageAlt } =
+		attrs as Record<string, unknown>;
 
 	if (typeof menuEntry !== 'string') return fail('must contain a string "menuEntry"');
 	if (typeof title !== 'string') return fail('must contain a string "title"');
@@ -100,8 +100,23 @@ function readPageAttrs(attrs: unknown, filePath: string): PageAttrs {
 	if (layout !== undefined && typeof layout !== 'string') {
 		return fail('must contain a string "layout", if present');
 	}
+	if (socialImage !== undefined && typeof socialImage !== 'string') {
+		return fail('must contain a string "socialImage", if present');
+	}
+	if (socialImageAlt !== undefined && typeof socialImageAlt !== 'string') {
+		return fail('must contain a string "socialImageAlt", if present');
+	}
 
-	return { menuEntry, title, description, githubLink, lang, layout };
+	return {
+		menuEntry,
+		title,
+		description,
+		githubLink,
+		lang,
+		layout,
+		socialImage,
+		socialImageAlt,
+	};
 }
 
 /**
@@ -270,6 +285,8 @@ export default class CMS {
 						result.githubLink,
 						result.lang,
 						result.layout,
+						result.socialImage,
+						result.socialImageAlt,
 					);
 				} else if (entry.name.endsWith('.md')) {
 					const yaml = readFileSync(entry.path, 'utf8');
@@ -283,6 +300,8 @@ export default class CMS {
 						attrs.githubLink,
 						attrs.lang,
 						attrs.layout,
+						attrs.socialImage,
+						attrs.socialImageAlt,
 					);
 				} else if (entry.name.endsWith('.html')) {
 					const content = readFileSync(entry.path, 'utf8');
@@ -298,6 +317,8 @@ export default class CMS {
 							a.githubLink,
 							a.lang,
 							a.layout,
+							a.socialImage,
+							a.socialImageAlt,
 						);
 					} else {
 						pageHTML = applyPlaceholders(content);
@@ -328,6 +349,8 @@ export default class CMS {
 		githubLink?: string,
 		lang?: string,
 		layout?: string,
+		socialImage?: string,
+		socialImageAlt?: string,
 	): string {
 		const resolvedGithubLink =
 			githubLink ||
@@ -335,7 +358,11 @@ export default class CMS {
 
 		return (
 			new Page(template)
-				.setSocialImage(`${config.baseUrl}/assets/social.png`)
+				.setSocialImage(
+					socialImage
+						? new URL(socialImage, config.baseUrl).href
+						: `${config.baseUrl}/assets/social.png`,
+				)
 				.setMenu(config.menu, menuEntry, config.githubOrg)
 				.setTitle(title, description)
 				.setContent(html)
@@ -352,6 +379,13 @@ export default class CMS {
 				.replace(
 					'class="markdown-body"',
 					`class="markdown-body${layout ? ` ${layoutClass(layout)}` : ''}"`,
+				)
+				// cheerio_cms sets og:image but not its alt text, which the template
+				// carries for the default graphic. A page with its own image needs its
+				// own description of it.
+				.replaceAll(
+					'VersaTiles — a complete FLOSS map stack',
+					socialImageAlt ?? 'VersaTiles — a complete FLOSS map stack',
 				)
 				// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 				.replace(

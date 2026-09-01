@@ -31,6 +31,10 @@ interface MarkdownResult {
 		lang?: string;
 		/** Optional layout name, added as a class on <main> (e.g. "prose") */
 		layout?: string;
+		/** Optional page-specific Open Graph image, absolute or site-root path */
+		socialImage?: string;
+		/** Alt text for socialImage */
+		socialImageAlt?: string;
 	};
 }
 
@@ -77,6 +81,13 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 	}
 	if ('layout' in attrs && typeof attrs.layout !== 'string') {
 		throw new TypeError('Markdown attribute "layout" must be a string, if present');
+	}
+	// `attrs` is narrowed by the checks above, so index it through a plain record.
+	const optional = attrs as Record<string, unknown>;
+	for (const key of ['socialImage', 'socialImageAlt']) {
+		if (key in optional && typeof optional[key] !== 'string') {
+			throw new TypeError(`Markdown attribute "${key}" must be a string, if present`);
+		}
 	}
 
 	return {

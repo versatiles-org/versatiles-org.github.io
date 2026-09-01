@@ -32,4 +32,8 @@ export interface PageResult {
 	lang?: string;
 	/** Optional layout name, added as a class on <main> (e.g. "prose") */
 	layout?: string;
+	/** Optional page-specific Open Graph image, absolute or site-root path */
+	socialImage?: string;
+	/** Alt text for socialImage */
+	socialImageAlt?: string;
 }
