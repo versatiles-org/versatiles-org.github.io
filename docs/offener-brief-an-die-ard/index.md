@@ -31,7 +31,7 @@ Inzwischen entwickeln auch private Medienhäuser eigene Kartenlösungen. So lief
 
 Da sich in der ARD keine Trägerschaft finden ließ, habe ich die Gründung eines Konsortiums vorgeschlagen[^konsortium]. Zehn Organisationen – Medien, Unternehmen und Verwaltung – tragen VersaTiles gemeinsam mit monatlich 700 Euro. Das Modell stellt die geteilte Verantwortung für eine Infrastruktur sicher, die alle Beteiligten nutzen können.
 
-Insgesamt wurden 54 Organisationen von mir angeschrieben. Eine hat zugesagt. Die meisten haben nicht geantwortet. Aus Gesprächen, die ich in dieser Zeit geführt habe, konnte ich eine wichtige Erkenntnis gewinnen: Es gibt zwar Budgets für digitale Projekte, jedoch kein Budget für digitale Infrastruktur. Dabei könnte eine solche Infrastruktur die Basis für viele Projekte sein, stattdessen fehlt die Zuständigkeit, fehlen die Fürsprecher und fehlt der Etat.
+Insgesamt wurden 54 Organisationen von mir angeschrieben. Eine hat zugesagt. Die meisten haben nicht geantwortet. Aus den Gesprächen, die ich in dieser Zeit geführt habe, konnte ich eine wichtige Erkenntnis gewinnen: Es gibt zwar Budgets für digitale Projekte, jedoch kein Budget für digitale Infrastruktur. Dabei ist Infrastruktur die Voraussetzung für die Projekte aller anderen – und genau deshalb die Verantwortung von niemandem. Infrastruktur hat keine Fürsprecher und keinen Etat.
 
 Anders ausgedrückt:
 
