@@ -116,4 +116,4 @@ jobs:
          - name: Trigger playground site update
            env:
               GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-           run: gh workflow run gh-release.yml --repo ${{ env.GITHUB_ORG }}/playground --ref main
+           run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/playground --ref main
