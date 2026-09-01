@@ -21,8 +21,11 @@ try {
 /**
  * Builds the absolute URL a page will be reachable at, for og:url and rel=canonical.
  *
- * GitHub Pages serves `foo.html` at `/foo/` and redirects `/foo` there, so the
- * trailing-slash form is the canonical one — it matches how the menu links pages.
+ * GitHub Pages serves `foo.html` at `/foo` and `/foo.html`, but NOT at `/foo/` —
+ * the trailing-slash form only resolves where a real directory with an
+ * `index.html` exists, and then `/foo` 301s to it. A page that wants the
+ * trailing-slash URL (as `rel=canonical` claims here) therefore has to be
+ * authored as `foo/index.md`, not `foo.md`, or the canonical URL is a 404.
  *
  * @param relativePath - Page path relative to the docs directory, e.g. `sources/index.page.ts`
  * @returns Absolute URL, e.g. `https://versatiles.org/sources/`

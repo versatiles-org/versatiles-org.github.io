@@ -98,8 +98,17 @@ function pagesUrls(): Plugin {
 		configureServer(server) {
 			// Registered directly (not from the returned post hook) so the rewritten
 			// URL is what Vite's static middleware gets to see.
-			server.middlewares.use((req, _res, next) => {
+			server.middlewares.use((req, res, next) => {
 				const proceed = () => {
+					// `/foo` where dist/foo/index.html exists: Pages 301s to `/foo/`,
+					// and that redirect is what makes the trailing-slash URL the one
+					// people end up on. Mirror it so local links behave the same.
+					const redirect = directoryRedirect(distRoot, req.url);
+					if (redirect !== undefined) {
+						res.writeHead(301, { Location: redirect });
+						res.end();
+						return;
+					}
 					const rewritten = rewriteTrailingSlash(distRoot, req.url);
 					if (rewritten !== undefined) req.url = rewritten;
 					next();
@@ -111,6 +120,37 @@ function pagesUrls(): Plugin {
 			});
 		},
 	};
+}
+
+/**
+ * Redirect target for a directory requested without its trailing slash.
+ *
+ * @param distRoot - Absolute path of the served build output
+ * @param url - Request URL, possibly with a query string
+ * @returns The `/foo/` URL to redirect to, or `undefined` to leave it alone
+ */
+function directoryRedirect(distRoot: string, url: string | undefined): string | undefined {
+	if (!url) return undefined;
+	const queryStart = url.search(/[?#]/);
+	const path = queryStart === -1 ? url : url.slice(0, queryStart);
+	const query = queryStart === -1 ? '' : url.slice(queryStart);
+
+	// Only bare paths: a trailing slash is already right, and anything with an
+	// extension is a file request.
+	if (path === '/' || path.endsWith('/') || /\.[^/]+$/.test(path)) return undefined;
+
+	let name: string;
+	try {
+		name = decodeURIComponent(path.slice(1));
+	} catch {
+		return undefined;
+	}
+
+	const indexPath = resolve(distRoot, name, 'index.html');
+	if (!indexPath.startsWith(distRoot + sep)) return undefined;
+	if (!existsSync(indexPath)) return undefined;
+
+	return `${path}/${query}`;
 }
 
 /**
