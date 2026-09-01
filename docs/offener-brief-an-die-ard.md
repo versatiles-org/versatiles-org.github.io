@@ -77,3 +77,16 @@ Michael Kreil
 [^konsortium]: Aufruf zur Gründung des Konsortiums und aktueller Stand: <https://versatiles.org/consortium/de>
 
 [^community]: Mitwirkende und Quellcode: <https://github.com/versatiles-org>
+
+<figure class="showcase-strip">
+	<a href="https://docs.versatiles.org/showcases/">
+		<img src="https://docs.versatiles.org/showcases/zensus-2022.webp" alt="NDR: Zensus 2022 – Mietpreise im Norden" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/ndr-verkehr.webp" alt="NDR: Verkehrsmeldungen für Norddeutschland" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/wetter-ndr.webp" alt="NDR: Wetter" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/dorfgeschichten-mv.webp" alt="NDR: Dorfgeschichten aus Mecklenburg-Vorpommern" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/swr-hochwasser-rlp.webp" alt="SWR: Hochwasser und Starkregen in Rheinland-Pfalz" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/swr-benzin-diesel-preise.webp" alt="SWR: Benzin- und Dieselpreise" width="800" height="450" loading="lazy" decoding="async">
+		<img src="https://docs.versatiles.org/showcases/bw-heizt-fossil.webp" alt="SWR: Baden-Württemberg heizt größtenteils fossil" width="800" height="450" loading="lazy" decoding="async">
+	</a>
+	<figcaption><a href="https://docs.versatiles.org/showcases/">Sieben von über siebzig Projekten, die VersaTiles einsetzen – hier Karten von NDR und SWR.</a></figcaption>
+</figure>

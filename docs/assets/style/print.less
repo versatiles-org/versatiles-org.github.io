@@ -80,6 +80,28 @@
 			content: none;
 		}
 
+		.showcase-strip {
+			width: 100%;
+			margin: 2rem 0 0;
+			transform: none;
+			break-inside: avoid;
+
+			img {
+				filter: none;
+				border-color: #ccc;
+			}
+
+			figcaption {
+				color: #555;
+			}
+
+			// The image link would otherwise print its href across the strip. The
+			// caption's link keeps its URL — on paper that is the only way there.
+			> a[href^='http']::after {
+				content: none;
+			}
+		}
+
 		// Keep a heading with the text it introduces.
 		h2,
 		h3 {

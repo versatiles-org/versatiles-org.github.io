@@ -86,6 +86,53 @@ main.prose {
 		}
 	}
 
+	// A strip of showcase screenshots closing the letter: seven tiles in one row,
+	// wrapped in a single link to the showcase page. Wider than the text column so
+	// the individual map is still recognisable at a seventh of the width.
+	.showcase-strip {
+		width: min(46rem, 100vw - 2rem);
+		margin: 3.5rem 50% 0;
+		transform: translateX(-50%);
+		padding: 0;
+
+		// The link around the images is what lays them out — direct child only,
+		// because the caption has a link of its own that stays inline text.
+		> a {
+			display: flex;
+			gap: 5px;
+			text-decoration: none;
+		}
+
+		img {
+			flex: 1 1 0;
+			min-width: 0;
+			display: block;
+			width: 100%;
+			height: auto;
+			// The 1px border would otherwise add 14px across seven tiles and push
+			// the last one past the edge on a phone.
+			box-sizing: border-box;
+			border: 1px solid rgba(255, 255, 255, 0.09);
+			border-radius: 2px;
+			// Bright screenshots on a dark page; dimming keeps the strip quiet
+			// until it is pointed at.
+			filter: brightness(0.8) saturate(0.88);
+			transition: filter 0.2s;
+		}
+
+		> a:hover img,
+		> a:focus-visible img {
+			filter: none;
+		}
+
+		figcaption {
+			font-size: 0.8rem;
+			color: #9a9aa2;
+			text-align: center;
+			margin: 0.9rem 0 0;
+		}
+	}
+
 	// Footnote markers in the running text.
 	sup a {
 		text-decoration: none;
