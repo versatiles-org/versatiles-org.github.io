@@ -17,7 +17,7 @@ Im Jahr 2023 habe ich die Idee im SWR Data Lab erneut aufgebracht. Dort wurde si
 
 Meine Mitarbeit endete 2024 überraschend, ohne dass mir eine Begründung genannt wurde. Relevant ist hier: VersaTiles wurde weiter ausgerollt, aber es gab niemanden mehr im Haus, der dafür verantwortlich war.
 
-Seitdem habe ich innerhalb der ARD nach einer Abteilung gesucht, in der das Projekt untergebracht werden könnte. Trotz vieler E-Mails und Gespräche ließ ich in den letzten 30 Monaten keine finden. Die Frage wurde von einem Gremium zum nächsten weitergereicht. Niemand fühlte sich zuständig.
+Seitdem habe ich innerhalb der ARD nach einer Abteilung gesucht, in der das Projekt untergebracht werden könnte. Trotz vieler E-Mails und Gespräche ließ sich in den letzten 30 Monaten keine finden. Die Frage wurde von einem Gremium zum nächsten weitergereicht. Niemand fühlte sich zuständig.
 
 Das ist kein Vorwurf. Ähnliche Probleme bei der digitalen Transformation haben viele andere Organisationen auch. Ich stelle nur fest, dass die öffentlich kommunizierte Digitalstrategie der ARD an dieser Stelle noch keine Entsprechung in den Strukturen des Hauses hat.
 
