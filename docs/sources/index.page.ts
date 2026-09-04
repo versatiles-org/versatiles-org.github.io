@@ -139,6 +139,7 @@ ${renderTable(satelliteData)}
 <h2>Elevation Data</h2>
 ${renderTable(elevationData)}
 <h2>Orthophotos</h2>
+<p>More about the status of our orthophoto coverage: <a href="https://versatiles.org/orthophotos/">versatiles.org/orthophotos/</a></p>
 ${renderTable(await fetchOrthophotos())}
 <h2>Other Data</h2>
 ${renderTable(otherData)}
