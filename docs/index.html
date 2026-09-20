@@ -114,49 +114,58 @@ menuEntry: Overview
 	<div id="map-styles">
 		<div id="map-styles-track"></div>
 		<button type="button" class="map-style-btn active" data-style="colorful" aria-pressed="true">Colorful</button>
-		<button type="button" class="map-style-btn" data-style="shadow" aria-pressed="false">Shadow</button>
+		<button type="button" class="map-style-btn" data-style="gray-dark" aria-pressed="false">Gray</button>
 		<button type="button" class="map-style-btn" data-style="satellite" aria-pressed="false">Satellite</button>
 	</div>
 </div>
 <script>
-	const baseUrl = 'https://tiles.versatiles.org';
-	const map = new maplibregl.Map({
-		container: 'map',
-		style: VersaTilesStyle.colorful({ baseUrl }),
-		bounds: [13.09, 52.33, 13.74, 52.68],
-		maxZoom: 18,
-		attributionControl: false,
-	});
+	const urls = { base: 'https://tiles.versatiles.org' };
 
-	map.addControl(new maplibregl.FullscreenControl());
-	map.addControl(new maplibregl.AttributionControl({}));
+	// VersaTiles Style v6: every vector/raster style comes from osm({ theme }) or satellite(),
+	// and inlineSources() folds the TileJSONs in — the relative tile URLs they list would not
+	// resolve otherwise, and it also carries over the attribution.
+	function buildStyle(name) {
+		const style = name === 'satellite'
+			? VersaTilesStyle.satellite({ urls })
+			: VersaTilesStyle.osm({ urls, theme: name });
+		return VersaTilesStyle.inlineSources(style);
+	}
 
-	map.on('load', () => {
-		const container = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
-		if (container) {
-			container.classList.remove('maplibregl-compact-show');
-			container.style.opacity = '1';
-		}
-	});
-
-	const buttons = document.querySelectorAll('.map-style-btn');
-	const track = document.getElementById('map-styles');
-
-	buttons.forEach((btn, i) => {
-		btn.addEventListener('click', async () => {
-			const prev = document.querySelector('.map-style-btn.active');
-			prev.classList.remove('active');
-			prev.setAttribute('aria-pressed', 'false');
-			btn.classList.add('active');
-			btn.setAttribute('aria-pressed', 'true');
-			track.style.setProperty('--pos', i);
-			const name = btn.dataset.style;
-			const style = name === 'satellite'
-				? await VersaTilesStyle.satellite({ baseUrl })
-				: VersaTilesStyle[name]({ baseUrl });
-			map.setStyle(style);
+	(async () => {
+		const map = new maplibregl.Map({
+			container: 'map',
+			style: await buildStyle('colorful'),
+			bounds: [13.09, 52.33, 13.74, 52.68],
+			maxZoom: 18,
+			attributionControl: false,
 		});
-	});
+
+		map.addControl(new maplibregl.FullscreenControl());
+		map.addControl(new maplibregl.AttributionControl({}));
+
+		map.on('load', () => {
+			const container = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
+			if (container) {
+				container.classList.remove('maplibregl-compact-show');
+				container.style.opacity = '1';
+			}
+		});
+
+		const buttons = document.querySelectorAll('.map-style-btn');
+		const track = document.getElementById('map-styles');
+
+		buttons.forEach((btn, i) => {
+			btn.addEventListener('click', async () => {
+				const prev = document.querySelector('.map-style-btn.active');
+				prev.classList.remove('active');
+				prev.setAttribute('aria-pressed', 'false');
+				btn.classList.add('active');
+				btn.setAttribute('aria-pressed', 'true');
+				track.style.setProperty('--pos', i);
+				map.setStyle(await buildStyle(btn.dataset.style));
+			});
+		});
+	})();
 </script>
 
 <h2>Sponsor us</h2>
