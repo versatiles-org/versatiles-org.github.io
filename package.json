@@ -19,7 +19,7 @@
 		"format": "biome check --write",
 		"check": "biome check --write && tsc --noEmit && vitest run",
 		"sponsors:fixture": "node src/sponsors/fixture.ts",
-		"upgrade": "npx npm-check-updates -u && npm install"
+		"upgrade": "npx npm-check-updates -u --peer && npm install"
 	},
 	"dependencies": {
 		"@deno/gfm": "npm:@jsr/deno__gfm@^0.12.0",
@@ -27,18 +27,21 @@
 		"@std/yaml": "npm:@jsr/std__yaml@^1.2.0",
 		"cheerio_cms": "^1.1.0",
 		"clean-css": "^5.3.3",
-		"less": "^4.8.1",
-		"sharp": "^0.35.3"
+		"less": "^4.9.1",
+		"sharp": "^0.35.4"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.10",
+		"@biomejs/biome": "^2.5.14",
 		"@types/clean-css": "^4.2.11",
 		"@types/less": "^3.0.8",
-		"@types/node": "^26.2.0",
-		"@vitest/coverage-v8": "^5.0.0",
+		"@types/node": "^26.6.2",
+		"@vitest/coverage-v8": "^5.0.1",
 		"sponsorkit": "^18.0.0",
 		"typescript": "^7.0.2",
-		"vite": "^8.2.2",
-		"vitest": "^5.0.0"
+		"vite": "^8.3.0",
+		"vitest": "^5.0.1"
+	},
+	"allowScripts": {
+		"fsevents": true
 	}
 }
