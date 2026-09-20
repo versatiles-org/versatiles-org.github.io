@@ -1,98 +1,21 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import less from 'less';
-import { CSS } from '@deno/gfm';
 import CleanCSS from 'clean-css';
 
 /**
- * Selectors from @deno/gfm's markdown-body styles that should be excluded.
- * These either conflict with custom styles or are unnecessary for this CMS.
+ * GitHub's markdown styles for the `.markdown-body` prose wrapper, vendored as
+ * a plain CSS file next to this module — see its header for provenance. Read
+ * through a URL rather than a path so it resolves from the module, not the
+ * working directory the build happens to run in.
  */
-const EXCLUDED_MARKDOWN_SELECTORS = [
-	// Pseudo-elements and pseudo-classes
-	':',
-	// Direct child selectors
-	'>',
-	// Heading styles (handled by custom CSS)
-	'h1',
-	'h2',
-	'h3',
-	'h4',
-	'h5',
-	'h6',
-	// Link styles (handled by custom CSS)
-	'a',
-	// iframe styles (not used)
-	'iframe',
-	// Table styles (handled by custom CSS)
-	'table',
-	'thead',
-	'tbody',
-	'th',
-	'td',
-	'tr',
-];
-
-/**
- * Check if a CSS rule line should be filtered out.
- * Returns true if the line should be KEPT, false if it should be removed.
- */
-function shouldKeepMarkdownRule(line: string): boolean {
-	// Keep non-markdown-body rules
-	if (!line.startsWith('.markdown-body')) return true;
-
-	// Extract the selector part after ".markdown-body". `split` always yields at
-	// least one element, so the default only exists to satisfy the type checker.
-	const [beforeBrace = ''] = line.split('{');
-	const selectorPart = beforeBrace.slice('.markdown-body'.length).trim();
-
-	// Remove empty .markdown-body{} rules
-	if (!selectorPart) return false;
-
-	// Remove rules matching excluded selectors
-	for (const excluded of EXCLUDED_MARKDOWN_SELECTORS) {
-		if (selectorPart.startsWith(excluded)) return false;
-	}
-
-	return true;
-}
-
-/**
- * Strips the opaque backdrop `@deno/gfm` puts behind markdown images.
- *
- * GitHub renders markdown on a light canvas, so its stylesheet gives every
- * `<img>` a `background-color`. Here it resolves to GitHub's own canvas colour
- * (#fff, or #0d1117 in dark mode), neither of which is this site's #1b1b1f — so
- * anything transparent, such as the sponsors graphic, sits on a visible slab.
- *
- * Only that one declaration goes; the rule's `max-width` and `box-sizing` still
- * matter, which is why the selector is not simply excluded outright.
- *
- * @param line - One minified rule, as produced by the CleanCSS pass
- * @returns The rule without its `background-color`, or `''` if nothing remains
- */
-function dropMarkdownImageBackground(line: string): string {
-	if (!line.startsWith('.markdown-body img{')) return line;
-
-	const open = line.indexOf('{');
-	const close = line.lastIndexOf('}');
-	if (open < 0 || close < open) return line;
-
-	// Safe to split on ';' because none of these values contain one.
-	const declarations = line
-		.slice(open + 1, close)
-		.split(';')
-		.filter((declaration) => declaration && !declaration.startsWith('background-color:'));
-
-	if (declarations.length === 0) return '';
-	return `${line.slice(0, open)}{${declarations.join(';')}}`;
-}
+const markdownCSSPath = new URL('./github-markdown.css', import.meta.url);
 
 /**
  * Builds a single minified CSS file from multiple source files.
  *
  * This function reads the provided source CSS or LESS files, compiles LESS files to CSS,
- * appends the default CSS from `@deno/gfm`, minifies the combined CSS using CleanCSS,
- * and writes the result to the specified destination file.
+ * appends the vendored GitHub markdown styles, minifies the combined CSS using
+ * CleanCSS, and writes the result to the specified destination file.
  *
  * @param srcFilenames - An array of source file paths (CSS or LESS files) to include.
  * @param dstFilename - The destination file path where the minified CSS will be written.
@@ -110,11 +33,12 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		}),
 	);
 
-	// Add GFM styles, removing the base .markdown-body{} rule which sets unwanted defaults
-	const gfmStyles = CSS.replace(/\.markdown-body\s*\{[^}]*\}/g, '');
-	cssList.push(gfmStyles);
+	// Markdown styles go last so they win against the site's own rules.
+	cssList.push(await readFile(markdownCSSPath, 'utf8'));
 
-	// Minify with CleanCSS, configured to output one rule per line for filtering
+	// Minify with CleanCSS, configured to output one rule per line so the result
+	// stays diffable — and so the vendored markdown rules keep their one-per-line
+	// shape in the output.
 	const minified = new CleanCSS({
 		format: { breaks: { afterRuleEnds: true } },
 	}).minify(cssList.join('\n'));
@@ -123,13 +47,5 @@ export async function buildCSS(srcFilenames: string[], dstFilename: string): Pro
 		throw new Error(`CSS minification errors: ${minified.errors.join(', ')}`);
 	}
 
-	// Filter out unwanted markdown-body rules
-	const css = (minified.styles as string)
-		.split('\n')
-		.filter(shouldKeepMarkdownRule)
-		.map(dropMarkdownImageBackground)
-		.filter((line) => line !== '')
-		.join('\n');
-
-	await writeFile(dstFilename, css);
+	await writeFile(dstFilename, minified.styles as string);
 }

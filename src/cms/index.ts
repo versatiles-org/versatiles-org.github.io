@@ -1,6 +1,6 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
-import { extractYaml } from '@std/front-matter';
+import { extractYaml } from './frontMatter.ts';
 import { walkFiles } from './walk.ts';
 import { buildCSS } from './css.ts';
 import { renderCardsFromFile } from './cards.ts';

@@ -1,4 +1,4 @@
-import { parseMarkdown } from './markdown.ts';
+import { parseMarkdown, renderInlineMarkdown } from './markdown.ts';
 import { describe, expect, it } from 'vitest';
 
 describe('parseMarkdown', () => {
@@ -173,5 +173,92 @@ describe('parseMarkdown', () => {
 		const result = parseMarkdown(input);
 		expect(result.html).toContain('<div class="custom">');
 		expect(result.html).toContain('<p>Custom HTML</p>');
+	});
+});
+
+describe('markdown rendering', () => {
+	const frontMatter = ['---', 'title: T', 'description: D', 'menuEntry: m', '---'].join('\n');
+	const render = (markdown: string): string => parseMarkdown(`${frontMatter}\n${markdown}`).html;
+
+	it('marks external links as noopener, but leaves anchors alone', () => {
+		const html = render('[ext](https://example.org) and [anchor](#here)');
+
+		expect(html).toBe(
+			'<p><a href="https://example.org" rel="noopener noreferrer">ext</a> and ' +
+				'<a href="#here">anchor</a></p>\n',
+		);
+	});
+
+	it('keeps a link title', () => {
+		expect(render('[t](https://e.org "Tip")')).toContain(
+			'<a href="https://e.org" title="Tip" rel="noopener noreferrer">t</a>',
+		);
+	});
+
+	it('always gives images a title attribute', () => {
+		expect(render('![alt text](foo.png)')).toBe(
+			'<p><img src="foo.png" alt="alt text" title="" /></p>\n',
+		);
+	});
+
+	it('highlights fenced code in a known language', () => {
+		expect(render('```js\nconst a = 1;\n```')).toBe(
+			'<div class="highlight highlight-source-js notranslate"><pre>' +
+				'<span class="token keyword">const</span> a <span class="token operator">=</span> ' +
+				'<span class="token number">1</span><span class="token punctuation">;</span>' +
+				'</pre></div>',
+		);
+	});
+
+	it('names the code title from the info string', () => {
+		expect(render('```js title="example.js"\nlet a;\n```')).toContain(
+			'<div class="markdown-code-title">example.js</div>',
+		);
+	});
+
+	it('escapes fenced code in an unknown language instead of highlighting it', () => {
+		expect(render('```rust\nlet x = "ä";\n```')).toBe(
+			'<pre><code class="notranslate">let x = &#x22;&#xE4;&#x22;;</code></pre>',
+		);
+	});
+
+	it('renders footnotes with a backlinked section', () => {
+		const html = render('Claim.[^src]\n\n[^src]: The source.');
+
+		expect(html).toContain(
+			'<sup><a id="footnote-ref-src" href="#footnote-src" data-footnote-ref',
+		);
+		expect(html).toContain('<section class="footnotes" data-footnotes>');
+		expect(html).toContain('<li id="footnote-src">');
+	});
+
+	it('renders GitHub alert blockquotes', () => {
+		const html = render('> [!NOTE]\n> Remember.');
+
+		expect(html).toContain('<div class="markdown-alert markdown-alert-note">');
+		expect(html).toContain('<p class="markdown-alert-title">');
+		expect(html).toContain('<p>Remember.</p>');
+	});
+
+	it('renders GFM tables', () => {
+		expect(render('| a | b |\n|---|---|\n| 1 | 2 |')).toContain('<th>a</th>');
+	});
+});
+
+describe('renderInlineMarkdown', () => {
+	it('renders inline markup without the paragraph wrapper', () => {
+		expect(renderInlineMarkdown('`BasicMap` for **VersaTiles**')).toBe(
+			'<code>BasicMap</code> for <strong>VersaTiles</strong>',
+		);
+	});
+
+	it('keeps links, with the same rel as block rendering', () => {
+		expect(renderInlineMarkdown('[a](https://e.org)')).toBe(
+			'<a href="https://e.org" rel="noopener noreferrer">a</a>',
+		);
+	});
+
+	it('returns an empty string for empty input', () => {
+		expect(renderInlineMarkdown('')).toBe('');
 	});
 });

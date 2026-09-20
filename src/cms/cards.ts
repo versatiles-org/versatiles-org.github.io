@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { parse as parseYaml } from '@std/yaml';
+import { parse as parseYaml } from 'yaml';
 import { renderInlineMarkdown } from './markdown.ts';
 
 /**

@@ -1,14 +1,91 @@
-import { extractYaml } from '@std/front-matter';
-import { type Marked, render, Renderer } from '@deno/gfm';
+import he from 'he';
+import { Marked, Renderer, type Tokens } from 'marked';
+import markedAlert from 'marked-alert';
+import markedFootnote from 'marked-footnote';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-yaml.js';
+import { extractYaml } from './frontMatter.ts';
 
 /**
- * Custom Markdown renderer that outputs clean heading tags without anchor links.
+ * Markdown engine: GitHub Flavored Markdown, plus GitHub's alert blockquotes
+ * (`> [!NOTE]`) and footnotes, which the content uses.
+ *
+ * The `walkTokens` hook is inherited from `@deno/gfm`, whose renderer this file
+ * reproduces: putting a list inside a `<summary>` needs a blank line after the
+ * closing tag, but that blank line should not end up in the output.
+ */
+const marked = new Marked(markedAlert(), markedFootnote(), {
+	walkTokens: (token) => {
+		if (token.type === 'html' && token.text.endsWith('</summary>\n\n')) {
+			token.text = token.text.replace('</summary>\n\n', '</summary>\n');
+		}
+	},
+});
+
+/**
+ * Markdown renderer matching the HTML this site has always shipped.
+ *
+ * `heading` is this site's own: plain heading tags, without the slug id and
+ * anchor link GitHub adds. The other three keep `@deno/gfm`'s output, which the
+ * stylesheet in `github-markdown.css` is written against — external links carry
+ * `rel="noopener noreferrer"`, images always carry a `title` attribute, and
+ * fenced code is wrapped in the `.highlight` element that the Prism token
+ * colours are scoped to.
  */
 class MarkdownRenderer extends Renderer {
-	override heading({ tokens, depth }: Marked.Tokens.Heading): string {
+	override heading({ tokens, depth }: Tokens.Heading): string {
 		const text = this.parser.parseInline(tokens);
 		return `<h${depth}>${text}</h${depth}>`;
 	}
+
+	override image({ href, title, text }: Tokens.Image): string {
+		return `<img src="${href}" alt="${text}" title="${title ?? ''}" />`;
+	}
+
+	override link({ href, title, tokens }: Tokens.Link): string {
+		const text = this.parser.parseInline(tokens);
+		const titleAttr = title ? ` title="${title}"` : '';
+		if (href.startsWith('#')) return `<a href="${href}"${titleAttr}>${text}</a>`;
+		return `<a href="${href}"${titleAttr} rel="noopener noreferrer">${text}</a>`;
+	}
+
+	override code({ text, lang }: Tokens.Code): string {
+		// An info string is either a bare language, a comma-separated list whose first
+		// entry counts (`ts, ignore` is really `ts`), or a language plus a title
+		// (`js title="example.js"`). Lowercased for parity with GitHub.
+		const titleMatch = lang?.match(/\stitle="(.+)"/);
+		const info = titleMatch ? lang?.split(' ')[0] : lang;
+		const language = info?.split(',')[0]?.toLocaleLowerCase();
+
+		const grammar =
+			language && Object.hasOwn(Prism.languages, language)
+				? Prism.languages[language]
+				: undefined;
+		if (!language || grammar === undefined) {
+			return `<pre><code class="notranslate">${he.encode(text)}</code></pre>`;
+		}
+
+		const titleHTML = titleMatch ? `<div class="markdown-code-title">${titleMatch[1]}</div>` : '';
+		const codeHTML = Prism.highlight(text, grammar, language);
+		return `<div class="highlight highlight-source-${language} notranslate">${titleHTML}<pre>${codeHTML}</pre></div>`;
+	}
+}
+
+/**
+ * Renders Markdown to HTML.
+ *
+ * SECURITY: raw HTML in the source passes through untouched — there is no
+ * sanitization step. All content comes from trusted sources (the `docs/`
+ * directory of this repository), which is what lets markdown files embed HTML
+ * for advanced formatting. Never render untrusted input through this module.
+ */
+function renderMarkdown(markdown: string): string {
+	return marked.parse(markdown, {
+		gfm: true,
+		breaks: false,
+		async: false,
+		renderer: new MarkdownRenderer(),
+	});
 }
 
 /**
@@ -92,11 +169,7 @@ export function parseMarkdown(yaml: string): MarkdownResult {
 
 	return {
 		attrs: attrs as MarkdownResult['attrs'],
-		// SECURITY: HTML sanitization is disabled because all markdown content comes from
-		// trusted sources (docs/ directory in this repository). This allows embedding
-		// raw HTML in markdown files for advanced formatting. Do not use this function
-		// to parse untrusted user-provided content.
-		html: render(body, { disableHtmlSanitization: true, renderer: new MarkdownRenderer() }),
+		html: renderMarkdown(body),
 	};
 }
 
@@ -111,11 +184,8 @@ export function parseMarkdown(yaml: string): MarkdownResult {
  * @returns HTML with inline tags only
  */
 export function renderInlineMarkdown(text: string): string {
-	const html = render(text, {
-		disableHtmlSanitization: true,
-		renderer: new MarkdownRenderer(),
-	}).trim();
-	return html
+	return renderMarkdown(text)
+		.trim()
 		.replace(/^<p>/, '')
 		.replace(/<\/p>$/, '')
 		.trim();

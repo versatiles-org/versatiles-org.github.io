@@ -22,19 +22,24 @@
 		"upgrade": "npx npm-check-updates -u --peer && npm install"
 	},
 	"dependencies": {
-		"@deno/gfm": "npm:@jsr/deno__gfm@^0.12.0",
-		"@std/front-matter": "npm:@jsr/std__front-matter@^1.0.9",
-		"@std/yaml": "npm:@jsr/std__yaml@^1.2.0",
 		"cheerio_cms": "^1.1.0",
 		"clean-css": "^5.3.3",
+		"he": "^1.2.0",
 		"less": "^4.9.1",
-		"sharp": "^0.35.4"
+		"marked": "^18.0.13",
+		"marked-alert": "^2.1.2",
+		"marked-footnote": "^1.4.0",
+		"prismjs": "^1.30.0",
+		"sharp": "^0.35.4",
+		"yaml": "^2.9.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.14",
 		"@types/clean-css": "^4.2.11",
+		"@types/he": "^1.2.3",
 		"@types/less": "^3.0.8",
 		"@types/node": "^26.6.2",
+		"@types/prismjs": "^1.26.6",
 		"@vitest/coverage-v8": "^5.0.1",
 		"sponsorkit": "^18.0.0",
 		"typescript": "^7.0.2",
