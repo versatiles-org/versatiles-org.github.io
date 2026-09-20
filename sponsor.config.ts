@@ -276,7 +276,7 @@ text {
 
 		writeFileSync(
 			resolve(process.cwd(), 'docs/sponsors/income.json'),
-			JSON.stringify(income, null, '\t') + '\n',
+			`${JSON.stringify(income, null, '\t')}\n`,
 		);
 		console.log(
 			`[sponsors] ${listed.length} listed of ${sponsors.length} fetched — ` +
