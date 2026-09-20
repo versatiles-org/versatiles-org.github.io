@@ -99,7 +99,7 @@ sections:
   - title: "Libraries"
     cards:
       - title: "Style toolkit"
-        hook: "Generate MapLibre styles: Colorful, Graybeard, Eclipse, Neutrino, Shadow, Satellite."
+        hook: "Generate MapLibre styles: Colorful, Natural, Muted, Gray, Toner, Satellite."
         url: https://www.npmjs.com/package/@versatiles/style
         repo: https://github.com/versatiles-org/versatiles-style
         image: assets/cards/style-toolkit.webp
