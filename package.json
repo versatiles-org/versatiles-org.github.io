@@ -26,7 +26,7 @@
 		"clean-css": "^5.3.3",
 		"he": "^1.2.0",
 		"less": "^4.9.1",
-		"marked": "^18.0.13",
+		"marked": "^18.0.14",
 		"marked-alert": "^2.1.2",
 		"marked-footnote": "^1.4.0",
 		"prismjs": "^1.30.0",
