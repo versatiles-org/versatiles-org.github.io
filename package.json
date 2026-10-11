@@ -24,7 +24,7 @@
 	"dependencies": {
 		"cheerio_cms": "^1.1.0",
 		"clean-css": "^5.3.3",
-		"he": "^1.2.0",
+		"he": "^2.0.0",
 		"less": "^4.9.1",
 		"marked": "^18.0.14",
 		"marked-alert": "^2.1.2",
