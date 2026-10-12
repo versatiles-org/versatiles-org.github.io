@@ -1,4 +1,4 @@
-import he from 'he';
+import { encode } from 'he';
 import { Marked, Renderer, type Tokens } from 'marked';
 import markedAlert from 'marked-alert';
 import markedFootnote from 'marked-footnote';
@@ -62,7 +62,7 @@ class MarkdownRenderer extends Renderer {
 				? Prism.languages[language]
 				: undefined;
 		if (!language || grammar === undefined) {
-			return `<pre><code class="notranslate">${he.encode(text)}</code></pre>`;
+			return `<pre><code class="notranslate">${encode(text)}</code></pre>`;
 		}
 
 		const titleHTML = titleMatch ? `<div class="markdown-code-title">${titleMatch[1]}</div>` : '';
