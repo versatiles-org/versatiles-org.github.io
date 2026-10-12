@@ -45,8 +45,8 @@ sections:
 
       - title: "Map editor"
         hook: "Drop pins, draw shapes, share editable maps in the browser."
-        url: https://versatiles.org/node-versatiles-svelte/map-editor#FeQRaYxHbYwVB2EvzxiO_xgqOZxXlBuIrhUiQhIiKiWhasWSFiMnWDlO9NkKfkOhNmejdlRhDkWjRmEjBnahLoEhVnddmNhblViLlBjS0MQA
-        repo: https://github.com/versatiles-org/node-versatiles-svelte
+        url: https://versatiles.org/versatiles-map-editor/
+        repo: https://github.com/versatiles-org/versatiles-map-editor
         image: assets/cards/map-editor.webp
 
       - title: "Playground"
@@ -111,7 +111,7 @@ sections:
         image: assets/cards/container.webp
 
       - title: "Svelte components"
-        hook: "`BasicMap`, `BBoxMap`, `LocatorMap`, `MapEditor` for VersaTiles."
+        hook: "`BasicMap`, `BBoxMap`, `LocatorMap` for VersaTiles."
         url: https://versatiles.org/node-versatiles-svelte/
         repo: https://github.com/versatiles-org/node-versatiles-svelte
         image: assets/cards/svelte.webp
