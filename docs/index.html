@@ -127,7 +127,7 @@ menuEntry: Overview
 	function buildStyle(name) {
 		const style = name === 'satellite'
 			? VersaTilesStyle.satellite({ urls })
-			: VersaTilesStyle.osm({ urls, theme: name });
+			: VersaTilesStyle.osm({ urls, theme: name, features: { landcover: true } });
 		return VersaTilesStyle.inlineSources(style);
 	}
 
@@ -185,7 +185,8 @@ menuEntry: Overview
 			</svg>
 			Sponsor on GitHub
 		</a>
-		<a class="sponsor-btn sponsor-btn--oc" href="https://opencollective.com/versatiles" rel="noopener" target="_blank">
+		<a class="sponsor-btn sponsor-btn--oc" href="https://opencollective.com/versatiles" rel="noopener"
+			target="_blank">
 			<svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
 				<path
 					d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002Z" />
@@ -194,8 +195,8 @@ menuEntry: Overview
 		</a>
 	</div>
 	<a class="sponsor-btn sponsor-btn--once"
-		href="https://donate.stripe.com/00w6oJ3EMfca6J35Jb1ck00?client_reference_id=versatiles-startpage"
-		rel="noopener" target="_blank">
+		href="https://donate.stripe.com/00w6oJ3EMfca6J35Jb1ck00?client_reference_id=versatiles-startpage" rel="noopener"
+		target="_blank">
 		<svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
 			<path
 				d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002Z" />
@@ -246,7 +247,8 @@ menuEntry: Overview
 <h2>Highlights</h2>
 
 <ul>
-	<li><strong>2026-09-01</strong> - Michael published an <a href="https://versatiles.org/offener-brief-an-die-ard/">open
+	<li><strong>2026-09-01</strong> - Michael published an <a
+			href="https://versatiles.org/offener-brief-an-die-ard/">open
 			letter to the ARD</a> (in German) on who takes responsibility for open map infrastructure.</li>
 	<li><strong>2026-07-22</strong> - We're forming a <a href="https://versatiles.org/consortium/">VersaTiles
 			consortium</a> - looking for ten organizations to build Europe's first user-funded consortium for open map
@@ -257,7 +259,8 @@ menuEntry: Overview
 			href="https://tiles.versatiles.org/#map=13.86/46.67217/9.54747/-62.6/60&style=satellite&config=eyJ0ZXJyYWluIjp0cnVlfQ">global
 			elevation data</a>, enabling hillshading and 3D terrain visualization in VersaTiles maps.</li>
 	<li><strong>2026-01-02</strong> - <a href="https://github.com/versatiles-org/versatiles-rs/">versatiles-rs</a> got
-		 <a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js bindings</a>.</li>
+		<a href="https://www.npmjs.com/package/@versatiles/versatiles-rs">Node.js bindings</a>.
+	</li>
 	<li><strong>2025-10-08</strong> - We published <strong>global imagery data</strong>, combining free
 		satellite and aerial orthophotos: <a
 			href="https://tiles.versatiles.org/#map=4.17/51.7/11.44&style=satellite">tiles.versatiles.org</a></li>
@@ -266,8 +269,8 @@ menuEntry: Overview
 				maps for everyone</a></em> at FrOSCon 2025.</li>
 	<li><strong>2025-03-04</strong> - The documentation moved to its own site: <a
 			href="https://docs.versatiles.org">docs.versatiles.org</a></li>
-	<li><strong>2025-02-01</strong> - We released our free <a
-			href="https://versatiles.org/versatiles-map-editor/">map editor</a>.</li>
+	<li><strong>2025-02-01</strong> - We released our free <a href="https://versatiles.org/versatiles-map-editor/">map
+			editor</a>.</li>
 	<li><strong>2024-09-25</strong> - German magazine <a
 			href="https://www.heise.de/news/VersaTiles-Open-Source-Projekt-als-Alternative-zu-kommerziellen-Kartendiensten-9952858.html">Heise</a>
 		featured VersaTiles as an open alternative to commercial map providers.</li>
