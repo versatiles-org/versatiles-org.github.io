@@ -27,7 +27,7 @@
 		"clean-css": "^5.3.3",
 		"he": "^2.0.0",
 		"less": "^4.9.1",
-		"marked": "^18.1.0",
+		"marked": "^18.1.1",
 		"marked-alert": "^2.1.2",
 		"marked-footnote": "^1.4.0",
 		"prismjs": "^1.30.0",
@@ -41,11 +41,11 @@
 		"@types/less": "^3.0.8",
 		"@types/node": "^26.6.5",
 		"@types/prismjs": "^1.26.6",
-		"@vitest/coverage-v8": "^5.0.3",
+		"@vitest/coverage-v8": "^5.0.5",
 		"sponsorkit": "^18.0.0",
 		"typescript": "^7.0.2",
 		"vite": "^8.3.4",
-		"vitest": "^5.0.3"
+		"vitest": "^5.0.5"
 	},
 	"allowScripts": {
 		"fsevents": true
