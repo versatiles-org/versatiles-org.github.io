@@ -10,15 +10,15 @@
 	},
 	"scripts": {
 		"build": "node src/build.ts",
-		"dev": "vite",
-		"test": "vitest run",
-		"test:watch": "vitest",
+		"check": "npm run lint && npm run typecheck && npm run test",
 		"coverage": "vitest run --coverage",
-		"typecheck": "tsc --noEmit",
-		"lint": "biome ci",
+		"dev": "vite",
 		"format": "biome check --write",
-		"check": "biome check --write && tsc --noEmit && vitest run",
+		"lint": "biome ci",
 		"sponsors:fixture": "node src/sponsors/fixture.ts",
+		"test:watch": "vitest",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
 		"upgrade": "npx npm-check-updates -u --peer && npm i && npm audit fix"
 	},
 	"dependencies": {
