@@ -102,9 +102,18 @@ jobs:
       if: github.event_name != 'schedule'
       runs-on: ubuntu-latest
       steps:
+         - name: Create GitHub App token
+           id: app-token
+           uses: actions/create-github-app-token@v3
+           with:
+              client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+              private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+              repositories: tools
+              permission-actions: write
+
          - name: Trigger tools site update
            env:
-              GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+              GH_TOKEN: ${{ steps.app-token.outputs.token }}
            run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/tools --ref main
 
    update-playground-sites:
@@ -113,7 +122,16 @@ jobs:
       if: github.event_name != 'schedule'
       runs-on: ubuntu-latest
       steps:
+         - name: Create GitHub App token
+           id: app-token
+           uses: actions/create-github-app-token@v3
+           with:
+              client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+              private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+              repositories: playground
+              permission-actions: write
+
          - name: Trigger playground site update
            env:
-              GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+              GH_TOKEN: ${{ steps.app-token.outputs.token }}
            run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/playground --ref main
