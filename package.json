@@ -19,7 +19,7 @@
 		"format": "biome check --write",
 		"check": "biome check --write && tsc --noEmit && vitest run",
 		"sponsors:fixture": "node src/sponsors/fixture.ts",
-		"upgrade": "npx npm-check-updates -u --peer && npm install"
+		"upgrade": "npx npm-check-updates -u --peer && npm i && npm audit fix"
 	},
 	"dependencies": {
 		"@versatiles/release-tool": "^2.20.0",
