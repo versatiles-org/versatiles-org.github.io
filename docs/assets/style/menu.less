@@ -9,8 +9,10 @@ nav {
 	justify-content: space-between;
 	padding-left: min(32px, 2vw);
 	padding-right: min(32px, 2vw);
+	column-gap: 1em;
 
 	.logo {
+		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		height: 100%;
@@ -29,7 +31,10 @@ nav {
 		align-items: center;
 		display: flex;
 		justify-content: end;
+		/* On phones the links don't fit on one line: two rows still fit in the header. */
+		flex-wrap: wrap;
 		column-gap: 1em;
+		row-gap: 0.25em;
 		margin: 0;
 		padding: 0;
 	}
