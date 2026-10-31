@@ -80,6 +80,12 @@ describe('CMS builds site structure', () => {
 		// A page without a layout keeps the bare class.
 		expect(html).toContain('class="markdown-body"');
 
+		// Every page links to the social accounts, alongside the generated GitHub link.
+		const footer = html.slice(html.indexOf('<footer'));
+		expect(footer).toContain('href="https://mastodon.social/@VersaTiles"');
+		expect(footer).toContain('href="https://bsky.app/profile/versatiles.bsky.social"');
+		expect(footer).toContain('Improve this page on GitHub');
+
 		// .less files should be removed
 		for (const entry of walkFiles(join(dstPath, 'assets', 'style'))) {
 			expect(entry.name.endsWith('.less')).toBe(false);
