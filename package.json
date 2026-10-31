@@ -16,9 +16,10 @@
 		"format": "biome check --write",
 		"lint": "biome ci",
 		"sponsors:fixture": "node src/sponsors/fixture.ts",
+		"test:browsers": "npm run build && vitest run --config vitest.browsers.config.ts",
 		"test:watch": "vitest",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc --noEmit -p tests/browsers",
 		"upgrade": "npx npm-check-updates -u --peer && npm i && biome migrate --write && npm audit fix"
 	},
 	"dependencies": {
@@ -42,6 +43,7 @@
 		"@types/node": "^26.6.6",
 		"@types/prismjs": "^1.26.6",
 		"@vitest/coverage-v8": "^5.0.5",
+		"playwright": "^1.64.1",
 		"sponsorkit": "^19.0.0",
 		"typescript": "^7.0.2",
 		"vite": "^8.3.5",

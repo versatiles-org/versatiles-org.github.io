@@ -23,4 +23,6 @@ Node's type stripping, with no build step.
   locally with live reload - basically a "**developer mode**".
 - `npm run build`: Builds the site and outputs it to the `/dist/` directory for production use.
 - `npm test`: Runs the test suite.
+- `npm run test:browsers`: Builds the site and compares the menu in Chromium, Firefox and WebKit.
+  Run `npx playwright install chromium firefox webkit` once first.
 - `npm run check`: Formats, lints, typechecks and tests - everything CI runs.

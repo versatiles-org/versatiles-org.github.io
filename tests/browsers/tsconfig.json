@@ -1,0 +1,9 @@
+{
+	// These tests run code inside the page, so unlike the rest of the repo they need
+	// the DOM types. Kept apart so the DOM globals don't leak into the site's sources.
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["esnext", "dom", "dom.iterable"]
+	},
+	"include": ["./**/*.ts"]
+}
