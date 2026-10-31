@@ -614,15 +614,26 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 		});
 	});
 
-	it('uses white text and the accent purple on the sponsorships', async () => {
+	it('keeps the labels readable, whichever colour the buttons use', async () => {
+		const luminance = (color: string) => {
+			const [r = 0, g = 0, b = 0] = (color.match(/[\d.]+/g) ?? []).map((value) => {
+				const channel = Number(value) / 255;
+				return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+			});
+			return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+		};
+		const contrast = (a: string, b: string) => {
+			const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+			return ((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05);
+		};
+
 		await withPage(engine, { path: '/index.html' }, async (page) => {
 			const [github, collective, once] = await readButtons(page);
 			for (const button of [github, collective]) {
-				expect(button?.background).toBe('rgb(157, 53, 255)');
+				expect(contrast(button?.color ?? '', button?.background ?? '')).toBeGreaterThanOrEqual(4.5);
 			}
-			for (const button of [github, collective, once]) {
-				expect(button?.color).toBe('rgb(255, 255, 255)');
-			}
+			// The donation button is only an outline, so its label sits on the page itself.
+			expect(contrast(once?.color ?? '', 'rgb(27, 27, 31)')).toBeGreaterThanOrEqual(4.5);
 		});
 	});
 });

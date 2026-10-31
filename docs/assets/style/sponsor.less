@@ -1,3 +1,9 @@
+/* The logo's lime: the one logo colour that stands out clearly against the page.
+ * It needs dark text, as white on it only reaches 2.6:1. */
+@accent: #93a813;
+@accent-hover: #a6bd1a;
+@on-accent: #1b1b1f;
+
 /* Recurring income against the next goal. `main` for the specificity to beat the
  * site's general figure and paragraph rules. */
 main .funding-goal {
@@ -25,7 +31,7 @@ main .funding-goal {
 	height: 12px;
 	border-radius: 4px;
 	overflow: hidden;
-	background: #9d35ff40;
+	background: fade(@accent, 25%);
 }
 
 .funding-goal__fill {
@@ -33,7 +39,7 @@ main .funding-goal {
 	/* However small the income, it stays visible. */
 	min-width: 4px;
 	border-radius: 4px;
-	background: #9d35ff;
+	background: @accent;
 }
 
 .funding-goal__note {
@@ -139,23 +145,24 @@ main .funding-goal {
 	}
 }
 
-/* Monthly support is what the project needs most, so both ways to give it share
- * the site's accent purple, which clears 4.5:1 against white text. */
+/* Monthly support is what the project needs most, so both ways to give it are filled. */
 .sponsor-btn--github,
 .sponsor-btn--oc {
-	background-color: #9d35ff;
+	background-color: @accent;
+	color: @on-accent;
 
 	&:hover {
-		background-color: #8526e6;
+		background-color: @accent-hover;
+		color: @on-accent;
 	}
 }
 
-/* Quieter than the sponsorships: the same purple, but only as an outline. */
+/* Quieter than the sponsorships: the same colour, but only as an outline. */
 .sponsor-btn--once {
 	grid-column: 1 / -1;
-	border-color: #9d35ff;
+	border-color: @accent;
 
 	&:hover {
-		background-color: #9d35ff33;
+		background-color: fade(@accent, 20%);
 	}
 }
