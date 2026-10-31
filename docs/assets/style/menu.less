@@ -199,10 +199,15 @@ nav {
 						background: #2c2c33;
 					}
 
-					/* The gradient comes through the current page's tile. */
+					/* White, like the bar under the current page on wide screens. */
 					&.selected {
-						background: #1b1b1fa6;
+						background: #fff;
 						font-weight: 600;
+
+						a,
+						a:hover {
+							color: @page-background;
+						}
 					}
 
 					&:nth-child(2) {
@@ -228,9 +233,9 @@ nav {
 				a {
 					box-sizing: border-box;
 					height: 100%;
-					min-height: 5.5rem;
-					padding: 0.75rem;
-					align-items: flex-end;
+					min-height: 3.5rem;
+					padding: 0.5rem 0.25rem;
+					justify-content: center;
 					font-size: 1rem;
 
 					/* Neighbouring tiles would paint over an outline outside the tile. */
@@ -243,8 +248,7 @@ nav {
 					grid-column: 1 / -1;
 
 					a {
-						min-height: 3.25rem;
-						align-items: center;
+						min-height: 3rem;
 						column-gap: 0.5em;
 
 						&::after {
