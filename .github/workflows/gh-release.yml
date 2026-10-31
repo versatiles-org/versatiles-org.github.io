@@ -70,6 +70,14 @@ jobs:
          - name: Build
            run: npm run build
 
+         # Compares the built menu across Chromium, Firefox and WebKit. Before the
+         # upload on purpose: a layout broken in one browser should not deploy.
+         - name: Install browsers
+           run: npx playwright install --with-deps chromium firefox webkit
+
+         - name: Cross-browser tests
+           run: npx vitest run --config vitest.browsers.config.ts
+
          - name: Upload Pages artifact
            if: github.ref == 'refs/heads/main'
            uses: actions/upload-pages-artifact@v5
