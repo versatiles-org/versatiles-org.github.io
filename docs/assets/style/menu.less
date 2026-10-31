@@ -152,12 +152,29 @@ nav {
 				background: none;
 				color: #fff;
 				font: inherit;
+				font-size: 1rem;
 				cursor: pointer;
 
+				/* Whole pixels, the size of the rects in its viewBox, so it stays sharp. */
 				svg {
-					width: 1.125em;
-					height: 0.75em;
+					flex-shrink: 0;
+					width: 19px;
+					height: 12px;
 					fill: currentColor;
+				}
+
+				/*
+				 * Centre the capitals, not the line box: where the capitals sit inside the
+				 * line box differs per browser, which left the text beside the icon too high.
+				 */
+				span {
+					text-box: trim-both cap alphabetic;
+				}
+
+				@supports not (text-box: trim-both cap alphabetic) {
+					span {
+						transform: translateY(0.07em);
+					}
 				}
 			}
 
