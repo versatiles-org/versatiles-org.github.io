@@ -85,9 +85,17 @@ beforeAll(async () => {
 }, 60_000);
 
 afterAll(async () => {
-	await Promise.all([...browsers.values()].map((browser) => browser.close()));
+	// By now every check has run, so a browser that is slow to shut down on a busy CI
+	// runner must not fail the run, and with it the deploy. It ends with the test process.
+	const closed = Promise.all([...browsers.values()].map((browser) => browser.close()));
+	const timedOut = new Promise<'timeout'>((done) => {
+		setTimeout(() => done('timeout'), 20_000).unref();
+	});
+	if ((await Promise.race([closed, timedOut])) === 'timeout') {
+		console.warn('A browser did not shut down within 20s; leaving it to the process exit.');
+	}
 	server?.close();
-});
+}, 30_000);
 
 interface OpenOptions extends BrowserContextOptions {
 	path?: string;
