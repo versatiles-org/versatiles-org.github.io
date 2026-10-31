@@ -45,10 +45,11 @@ export const config: {
 	/** Main navigation menu entries */
 	menu: [
 		{ title: 'Overview', url: 'https://versatiles.org/' },
+		{ title: 'Showcase', url: 'https://versatiles.org/showcases/' },
 		{ title: 'Playground', url: 'https://versatiles.org/playground/' },
 		{ title: 'Tools', url: 'https://versatiles.org/tools/' },
-		{ title: 'Showcases', url: 'https://versatiles.org/showcases/' },
-		{ title: 'Documentation', url: 'https://docs.versatiles.org/' },
+		{ title: 'Download', url: 'https://download.versatiles.org/' },
+		{ title: 'Docs', url: 'https://docs.versatiles.org/' },
 	],
 
 	/** File extensions for assets to copy */
