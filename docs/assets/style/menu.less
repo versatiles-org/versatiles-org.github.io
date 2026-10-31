@@ -125,6 +125,27 @@ nav {
  * the gradient and each tile covers it, so the gradient shows only in the 1px seams.
  */
 @supports selector(:popover-open) {
+	/*
+	 * Tapping outside closes the menu, but that tap would also follow a link beneath it:
+	 * a popover's ::backdrop lets pointer events through, so the page has to ignore them.
+	 * On touch screens the click comes after the menu has closed, hence the delay before
+	 * the page responds again.
+	 */
+	@media @compact {
+		main,
+		footer {
+			transition: pointer-events 0s linear 0.15s allow-discrete;
+		}
+
+		body:has(#site-menu:popover-open) {
+			main,
+			footer {
+				pointer-events: none;
+				transition: none;
+			}
+		}
+	}
+
 	/* A phone rotated with the menu open: the list stays in the top layer, so pin it. */
 	@media @wide {
 		nav ul[popover]:popover-open {
@@ -200,7 +221,6 @@ nav {
 				background: @brand-gradient;
 				box-shadow: 0 16px 32px #00000080;
 
-				/* Stops the tap that closes the menu from also following a link beneath it. */
 				&::backdrop {
 					inset: @header-height 0 0;
 					background: #00000066;
