@@ -39,8 +39,8 @@ sections:
 
       - title: "Showcases"
         hook: "Real-world maps and creative uses of VersaTiles."
-        url: https://docs.versatiles.org/showcases/
-        repo: https://github.com/versatiles-org/versatiles-documentation/blob/main/showcases/showcases.yaml
+        url: https://versatiles.org/showcases/
+        repo: https://github.com/versatiles-org/showcases/blob/main/showcases.yaml
         image: assets/cards/showcases.webp
 
       - title: "Map editor"
