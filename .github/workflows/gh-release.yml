@@ -135,3 +135,23 @@ jobs:
            env:
               GH_TOKEN: ${{ steps.app-token.outputs.token }}
            run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/playground --ref main
+
+   update-showcases-sites:
+      needs: gh-release
+      # Only on real changes — the daily sponsor refresh shouldn't rebuild siblings.
+      if: github.event_name != 'schedule'
+      runs-on: ubuntu-latest
+      steps:
+         - name: Create GitHub App token
+           id: app-token
+           uses: actions/create-github-app-token@v3
+           with:
+              client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+              private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+              repositories: showcases
+              permission-actions: write
+
+         - name: Trigger showcases site update
+           env:
+              GH_TOKEN: ${{ steps.app-token.outputs.token }}
+           run: gh workflow run ci.yml --repo ${{ env.GITHUB_ORG }}/showcases --ref main

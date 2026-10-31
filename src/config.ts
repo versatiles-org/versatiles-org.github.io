@@ -47,6 +47,7 @@ export const config: {
 		{ title: 'Overview', url: 'https://versatiles.org/' },
 		{ title: 'Playground', url: 'https://versatiles.org/playground/' },
 		{ title: 'Tools', url: 'https://versatiles.org/tools/' },
+		{ title: 'Showcases', url: 'https://versatiles.org/showcases/' },
 		{ title: 'Documentation', url: 'https://docs.versatiles.org/' },
 	],
 
