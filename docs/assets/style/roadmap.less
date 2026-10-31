@@ -1,3 +1,9 @@
+/* The logo's lime, and lightened versions of its blue and violet: as they are, those
+ * two are too dark to carry dark text or to stand out on the cards. */
+@done: #93a813;
+@planned: #5aa7ea;
+@exploring: #c08bff;
+
 #roadmap {
 	margin: 2rem 0;
 
@@ -6,10 +12,9 @@
 
 		h3 {
 			text-align: left;
-			font-size: 1.1rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
+			font-size: 0.9rem;
+			font-weight: 400;
+			color: #aaa;
 			padding: 0.5rem 0;
 			margin: 0 0 0.75rem;
 			border-bottom: 2px solid #333;
@@ -17,15 +22,22 @@
 			align-items: center;
 			gap: 0.5rem;
 
+			/* No letter-spacing: it adds space after the last letter too, which pushes the
+			 * text off-centre. And the capitals are centred rather than the line box, as
+			 * where they sit inside the line box differs per browser. */
 			.status-badge {
-				display: inline-block;
-				font-size: 0.7rem;
-				font-weight: 700;
-				padding: 0.15rem 0.5rem;
-				border-radius: 3px;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
+				flex-shrink: 0;
+				padding: 0.4rem 0.6rem;
+				border-radius: 4px;
+				font-size: 0.85rem;
+				font-weight: 600;
+				line-height: 1.2;
 				color: #1b1b1f;
+				text-box: trim-both cap alphabetic;
+
+				@supports not (text-box: trim-both cap alphabetic) {
+					padding: 0.3rem 0.6rem 0.2rem;
+				}
 			}
 		}
 	}
@@ -64,37 +76,37 @@
 		em {
 			font-weight: 400;
 			font-style: normal;
-			color: #888;
+			color: #a0a0a0;
 		}
 	}
 
 	// Done category
 	.roadmap-done {
 		h3 .status-badge {
-			background: #3da660;
+			background: @done;
 		}
 		.roadmap-item {
-			border-left-color: #3da660;
+			border-left-color: @done;
 		}
 	}
 
 	// Planned category
 	.roadmap-planned {
 		h3 .status-badge {
-			background: #9d35ff;
+			background: @planned;
 		}
 		.roadmap-item {
-			border-left-color: #9d35ff;
+			border-left-color: @planned;
 		}
 	}
 
 	// Exploring category
 	.roadmap-exploring {
 		h3 .status-badge {
-			background: #c9850a;
+			background: @exploring;
 		}
 		.roadmap-item {
-			border-left-color: #c9850a;
+			border-left-color: @exploring;
 		}
 	}
 }

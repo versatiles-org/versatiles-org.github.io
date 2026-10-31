@@ -638,6 +638,83 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 	});
 });
 
+describe.each(ENGINE_NAMES)('%s roadmap pills', (engine) => {
+	const scale = 4;
+
+	it.each([
+		['Done', 0],
+		['Planned', 1],
+		['Exploring', 2],
+	])('centre the text of "%s"', async (_label, index) => {
+		const options = { path: '/index.html', deviceScaleFactor: scale };
+		await withPage(engine, options, async (page) => {
+			// A viewport shot of the scrolled-to pill: a full-page shot can shift the layout
+			// (lazy images) between measuring the pill and capturing it.
+			const pill = page.locator('.status-badge').nth(index);
+			await pill.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+			await page.waitForTimeout(200);
+			const box = await pill.boundingBox();
+			if (!box) throw new Error('no pill');
+			// With a margin, and the pill's edges found from its colour: the pill can sit at a
+			// fractional position, and a crop to its exact box would round that away.
+			const margin = 2;
+			const pixels = await toPixels(
+				await page.screenshot({
+					clip: {
+						x: box.x - margin,
+						y: box.y - margin,
+						width: box.width + 2 * margin,
+						height: box.height + 2 * margin,
+					},
+				}),
+			);
+
+			// A spot in the left padding is the pill's own colour.
+			const paddingX = (margin + 3) * scale;
+			const middleY = Math.floor(pixels.height / 2);
+			const [red, green, blue] = pixels.at(paddingX, middleY);
+			const difference = (x: number, y: number) => {
+				const [r, g, b] = pixels.at(x, y);
+				return Math.abs(r - red) + Math.abs(g - green) + Math.abs(b - blue);
+			};
+			const isPill = (x: number, y: number) => difference(x, y) < 30;
+			const isText = (x: number, y: number) => difference(x, y) > 150;
+
+			const range = (end: number) => Array.from({ length: end }, (_, i) => i);
+			const inRow = range(pixels.width).filter((x) => isPill(x, middleY));
+			const inColumn = range(pixels.height).filter((y) => isPill(paddingX, y));
+			const pillLeft = inRow[0] ?? 0;
+			const pillRight = inRow.at(-1) ?? 0;
+			const pillTop = inColumn[0] ?? 0;
+			const pillBottom = inColumn.at(-1) ?? 0;
+
+			// Past the rounded corners, whose edge pixels would otherwise count as text.
+			const corner = 5 * scale;
+			const columns = range(pixels.width).filter(
+				(x) =>
+					x > pillLeft + corner &&
+					x < pillRight - corner &&
+					range(pixels.height).some((y) => y > pillTop && y < pillBottom && isText(x, y)),
+			);
+			const left = columns[0] ?? 0;
+			const right = columns.at(-1) ?? 0;
+
+			// Measured on the stem of the first capital alone: the descenders of "Exploring"
+			// hang below the line on purpose, and the "l" of "Planned" rises above the capital.
+			const stem = range(pixels.height).filter(
+				(y) => y > pillTop && y < pillBottom && isText(left + 1, y),
+			);
+			const above = ((stem[0] ?? 0) - pillTop) / scale;
+			const below = (pillBottom - (stem.at(-1) ?? 0)) / scale;
+			const before = (left - pillLeft) / scale;
+			const after = (pillRight - right) / scale;
+
+			expect(Math.abs(above - below)).toBeLessThanOrEqual(1);
+			expect(Math.abs(before - after)).toBeLessThanOrEqual(1);
+		});
+	});
+});
+
 describe('emulated phones', () => {
 	const phones: [string, string, BrowserContextOptions][] = [
 		['Pixel 7', 'chromium', devices['Pixel 7'] ?? {}],
