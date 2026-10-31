@@ -85,6 +85,25 @@ describe('CMS builds site structure', () => {
 			expect(entry.name.endsWith('.less')).toBe(false);
 		}
 	});
+
+	it('marks the current page in the menu and wires up the toggle', async () => {
+		const entry = config.menu[1];
+		if (!entry) throw new Error('expected at least two menu entries');
+		writeFileSync(
+			join(srcPath, 'menu.md'),
+			['---', 'title: T', 'description: D', `menuEntry: ${entry.title}`, '---', 'Hi'].join('\n'),
+		);
+
+		await new CMS(srcPath, dstPath).build();
+
+		const html = readFileSync(join(dstPath, 'menu.html'), 'utf8');
+		expect(html).toContain(
+			`<li class="selected"><a aria-current="page" href="${entry.url}">${entry.title}</a></li>`,
+		);
+		expect(html.match(/aria-current=/g)).toHaveLength(1);
+		expect(html).toContain('popovertarget="site-menu"');
+		expect(html).toMatch(/<ul id="site-menu"[^>]* popover/);
+	});
 });
 
 describe('canonicalUrl', () => {

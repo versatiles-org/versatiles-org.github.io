@@ -1,8 +1,15 @@
+/* The brand gradient: the line under the header, and the seams of the phone menu. */
+@brand-gradient: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034);
+@page-background: #1b1b1f;
+@header-height: 64px; /* 63px of content plus the 1px line */
+@compact: ~'(max-width: 40rem)';
+@wide: ~'(min-width: 40.0625rem)';
+
 nav {
-	font-size: min(1.1rem, 4vw);
+	font-size: 1.1rem;
 	border-style: solid;
 	border-width: 0 0 1px;
-	border-image: linear-gradient(60deg, #6b0075, #9d35ff 40%, #93a813 65%, #005034) 1;
+	border-image: @brand-gradient 1;
 	height: 63px;
 	display: flex;
 	align-items: center;
@@ -25,25 +32,34 @@ nav {
 		}
 	}
 
+	/* Only shown on small screens, where the browser supports popovers. */
+	.menu-toggle {
+		display: none;
+	}
+
 	ul {
-		text-align: right;
-		list-style: none;
-		align-items: center;
-		display: flex;
-		justify-content: end;
-		/* On phones the links don't fit on one line: two rows still fit in the header. */
-		flex-wrap: wrap;
-		column-gap: 1em;
-		row-gap: 0.25em;
+		/* Reset what browsers give [popover]: on wide screens this is a normal list. */
+		position: static;
+		inset: auto;
+		width: auto;
+		height: 100%;
 		margin: 0;
 		padding: 0;
+		border: 0;
+		overflow: visible;
+		background: none;
+		color: inherit;
+
+		list-style: none;
+		display: flex;
+		justify-content: end;
+		column-gap: 1.25em;
 	}
 
 	li {
 		color: #fff;
 		opacity: 0.6;
 		transition: opacity 0.1s;
-		display: inline-block;
 
 		&.selected,
 		&:hover {
@@ -51,20 +67,204 @@ nav {
 		}
 
 		a {
+			position: relative;
+			display: flex;
+			align-items: center;
+			height: 100%;
 			text-decoration: none;
 		}
 
-		&.github-icon {
-			a {
-				font-size: inherit;
-				margin: 0;
-				padding: 0;
-				display: block;
-				height: 1.3em;
-				width: 1.3em;
-				background-image: url(/assets/github.png);
-				background-size: contain;
+		&.github-icon a::before {
+			content: '';
+			flex-shrink: 0;
+			width: 1.3em;
+			height: 1.3em;
+			background: url(/assets/github.png) center / contain no-repeat;
+		}
+	}
+}
+
+/* The current page thickens the header line beneath its own name. */
+@media @wide {
+	nav li.selected a::after,
+	nav li:hover a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 3px;
+		background: #fff;
+	}
+}
+
+/*
+ * Small screens, without popover support or on a page whose markup predates the
+ * toggle: the sister sites load this stylesheet but rebuild their HTML separately.
+ * The links wrap onto two rows, which still fit in the header.
+ */
+@media @compact {
+	nav {
+		font-size: min(1.1rem, 4vw);
+	}
+
+	nav ul {
+		height: auto;
+		flex-wrap: wrap;
+		column-gap: 1em;
+		row-gap: 0.25em;
+	}
+
+	nav li a {
+		height: auto;
+	}
+}
+
+/*
+ * Small screens: the header line opens into a sheet of map tiles. The list carries
+ * the gradient and each tile covers it, so the gradient shows only in the 1px seams.
+ */
+@supports selector(:popover-open) {
+	/* A phone rotated with the menu open: the list stays in the top layer, so pin it. */
+	@media @wide {
+		nav ul[popover]:popover-open {
+			position: absolute;
+			inset: 0 min(32px, 2vw) auto auto;
+			height: 63px;
+		}
+	}
+
+	@media @compact {
+		nav {
+			&:has(.menu-toggle) {
+				padding-left: 16px;
+				padding-right: 16px;
+			}
+
+			.menu-toggle {
+				display: inline-flex;
+				align-items: center;
+				column-gap: 0.5em;
+				min-height: 44px;
+				padding: 0 0.75em;
+				border: 1px solid #ffffff40;
+				border-radius: 4px;
+				background: none;
+				color: #fff;
+				font: inherit;
+				cursor: pointer;
+
+				svg {
+					width: 1.125em;
+					height: 0.75em;
+					fill: currentColor;
+				}
+			}
+
+			&:has(ul:popover-open) .menu-toggle {
+				background: #ffffff1f;
+				border-color: #fff;
+			}
+
+			ul[popover]:not(:popover-open) {
+				display: none;
+			}
+
+			ul[popover]:popover-open {
+				/* Absolute, so the sheet scrolls away with the header it belongs to. */
+				position: absolute;
+				inset: @header-height 0 auto;
+				width: 100%;
+				height: auto;
+				padding-bottom: 1px;
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1px;
+				background: @brand-gradient;
+				box-shadow: 0 16px 32px #00000080;
+
+				/* Stops the tap that closes the menu from also following a link beneath it. */
+				&::backdrop {
+					inset: @header-height 0 0;
+					background: #00000066;
+				}
+
+				li {
+					opacity: 1;
+					background: @page-background;
+					transition: none;
+					animation: menu-tile-in 0.16s ease-out backwards;
+
+					&:hover {
+						background: #2c2c33;
+					}
+
+					/* The gradient comes through the current page's tile. */
+					&.selected {
+						background: #1b1b1fa6;
+						font-weight: 600;
+					}
+
+					&:nth-child(2) {
+						animation-delay: 0.02s;
+					}
+					&:nth-child(3) {
+						animation-delay: 0.04s;
+					}
+					&:nth-child(4) {
+						animation-delay: 0.06s;
+					}
+					&:nth-child(5) {
+						animation-delay: 0.08s;
+					}
+					&:nth-child(6) {
+						animation-delay: 0.1s;
+					}
+					&:nth-child(7) {
+						animation-delay: 0.12s;
+					}
+				}
+
+				a {
+					box-sizing: border-box;
+					height: 100%;
+					min-height: 5.5rem;
+					padding: 0.75rem;
+					align-items: flex-end;
+					font-size: 1rem;
+
+					/* Neighbouring tiles would paint over an outline outside the tile. */
+					&:focus-visible {
+						outline-offset: -3px;
+					}
+				}
+
+				.github-icon {
+					grid-column: 1 / -1;
+
+					a {
+						min-height: 3.25rem;
+						align-items: center;
+						column-gap: 0.5em;
+
+						&::after {
+							content: 'GitHub';
+						}
+					}
+				}
 			}
 		}
+	}
+}
+
+@keyframes menu-tile-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	nav ul[popover] li {
+		animation: none !important;
 	}
 }

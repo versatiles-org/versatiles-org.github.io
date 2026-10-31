@@ -387,6 +387,9 @@ export default class CMS {
 					'VersaTiles — a complete FLOSS map stack',
 					socialImageAlt ?? 'VersaTiles — a complete FLOSS map stack',
 				)
+				// Tell screen readers which menu entry is the current page; cheerio_cms only
+				// marks it with a class.
+				.replace('<li class="selected"><a ', '<li class="selected"><a aria-current="page" ')
 				// Add aria-label to the GitHub nav icon (cheerio_cms generates it without one)
 				.replace(
 					'<li class="github-icon"><a ',
