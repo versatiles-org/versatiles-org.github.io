@@ -19,7 +19,7 @@
 		"test:watch": "vitest",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit",
-		"upgrade": "npx npm-check-updates -u --peer && npm i && npm audit fix"
+		"upgrade": "npx npm-check-updates -u --peer && npm i && biome migrate --write && npm audit fix"
 	},
 	"dependencies": {
 		"@versatiles/release-tool": "^2.20.0",
