@@ -29,8 +29,8 @@ const DIST = resolve(import.meta.dirname, '../../dist');
 const ENGINES: Record<string, BrowserType> = { chromium, firefox, webkit };
 const ENGINE_NAMES = Object.keys(ENGINES);
 
-const COMPACT_WIDTHS = [320, 360, 430, 640];
-const WIDE_WIDTHS = [641, 1024, 1440];
+const COMPACT_WIDTHS = [320, 360, 430, 704];
+const WIDE_WIDTHS = [705, 1024, 1440];
 
 /** Largest allowed difference between engines, in CSS pixels. */
 const BOX_TOLERANCE = 1;
@@ -419,7 +419,7 @@ describe.each(ENGINE_NAMES)('%s', (engine) => {
 		});
 
 		it('does not follow a link under a tap that closes the menu', async () => {
-			await withPage(engine, { path: '/index.html' }, async (page) => {
+			await withPage(engine, {}, async (page) => {
 				const before = page.url();
 				await page.evaluate(() => {
 					const link = document.createElement('a');
@@ -462,7 +462,10 @@ describe.each(ENGINE_NAMES)('%s', (engine) => {
 		});
 
 		it('scrolls away with the header', async () => {
-			await withPage(engine, { path: '/index.html' }, async (page) => {
+			await withPage(engine, {}, async (page) => {
+				await page.evaluate(() => {
+					document.body.style.minHeight = '3000px';
+				});
 				await page.click('.menu-toggle');
 				await page.evaluate(() => window.scrollTo(0, 50));
 				const box = await page.locator('#site-menu').boundingBox();
@@ -514,7 +517,7 @@ describe('emulated phones', () => {
 	];
 
 	it.each(phones)('%s does not follow a link under a tap that closes the menu', async (_, engine, device) => {
-		await withPage(engine, { ...device, path: '/index.html' }, async (page) => {
+		await withPage(engine, device, async (page) => {
 			const before = page.url();
 			await page.evaluate(() => {
 				const link = document.createElement('a');
