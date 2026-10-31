@@ -20,6 +20,7 @@ export const config: {
 	cardImagesSrcDir: string;
 	cardImagesDstDir: string;
 	sponsorsSvgFile: string;
+	sponsorsIncomeFile: string;
 } = {
 	/** Base URL for the website (used for canonical URLs) */
 	baseUrl: 'https://versatiles.org',
@@ -89,4 +90,10 @@ export const config: {
 	 * by URL. Generated at deploy time, so it is absent on a fresh checkout.
 	 */
 	sponsorsSvgFile: 'sponsors/sponsors.svg',
+
+	/**
+	 * SponsorKit's income totals (relative to docs directory), rendered as the funding
+	 * meter into the `<!-- funding-goal -->` placeholder. Also generated at deploy time.
+	 */
+	sponsorsIncomeFile: 'sponsors/income.json',
 };

@@ -529,10 +529,52 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 			}),
 		);
 
-	const pages: [string, number][] = [
-		['/index.html', 3],
-		['/sponsors/index.html', 2],
-	];
+	// The sponsor data is only generated when deploying from main, so pull requests
+	// build without the sponsors page and the funding meter.
+	const pages = (
+		[
+			['/index.html', 3],
+			['/sponsors/index.html', 2],
+		] as [string, number][]
+	).filter(([path]) => existsSync(join(DIST, path)));
+	const hasIncome = existsSync(join(DIST, 'sponsors/income.json'));
+
+	it.skipIf(!hasIncome).each([320, 430, 1024])(
+		'draws the funding meter to scale at %ipx',
+		async (width) => {
+			await withPage(
+				engine,
+				{ path: '/index.html', viewport: { width, height: 640 } },
+				async (page) => {
+					const meter = await page.locator('.funding-goal__track').evaluate((track) => {
+						const box = track.getBoundingClientRect();
+						const fill = track.querySelector('.funding-goal__fill')?.getBoundingClientRect();
+						const buttons = document.querySelector('#sponsor-buttons')?.getBoundingClientRect();
+						return {
+							left: box.left,
+							width: box.width,
+							height: box.height,
+							fillLeft: fill?.left ?? box.left,
+							fillWidth: fill?.width ?? 0,
+							buttonsLeft: buttons?.left,
+							buttonsWidth: buttons?.width,
+							now: Number(track.getAttribute('aria-valuenow')),
+							max: Number(track.getAttribute('aria-valuemax')),
+						};
+					});
+					expect(meter.height).toBe(12);
+					expect(meter.left).toBeCloseTo(meter.buttonsLeft ?? 0, 0);
+					expect(meter.width).toBeCloseTo(meter.buttonsWidth ?? 0, 0);
+					expect(meter.fillLeft).toBeCloseTo(meter.left, 0);
+
+					// The fill may only exceed its true length through its 4px minimum.
+					const trueWidth = (meter.now / meter.max) * meter.width;
+					expect(meter.fillWidth).toBeCloseTo(Math.max(trueWidth, meter.now > 0 ? 4 : 0), 0);
+					expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+				},
+			);
+		},
+	);
 
 	describe.each(pages)('on %s', (path, count) => {
 		it.each([320, 360, 430, 704, 1024])('fit and stay tappable at %ipx', async (width) => {

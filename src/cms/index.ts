@@ -8,6 +8,7 @@ import { processCardImages } from './cardImages.ts';
 import { buildDynamicPage } from './dynamic.ts';
 import { parseMarkdown } from './markdown.ts';
 import { inlineSponsorSvg } from '../sponsors/inlineSvg.ts';
+import { renderFundingGoal } from '../sponsors/render.ts';
 import { Page } from 'cheerio_cms';
 import { config } from '../config.ts';
 
@@ -261,10 +262,17 @@ export default class CMS {
 			? inlineSponsorSvg(readFileSync(sponsorsSvgPath, 'utf8'))
 			: '';
 
+		// Generated at deploy time like the graphic, so also absent on a fresh checkout.
+		const incomePath = resolve(srcPath, config.sponsorsIncomeFile);
+		const fundingGoal = existsSync(incomePath)
+			? renderFundingGoal(JSON.parse(readFileSync(incomePath, 'utf8')))
+			: '';
+
 		const applyPlaceholders = (html: string) =>
 			html
 				.replaceAll('<!-- cards -->', cardsHtml)
-				.replaceAll('<!-- sponsors-svg -->', sponsorsSvg);
+				.replaceAll('<!-- sponsors-svg -->', sponsorsSvg)
+				.replaceAll('<!-- funding-goal -->', fundingGoal);
 
 		for (const entry of walkFiles(srcPath)) {
 			// The cards data file is consumed via the placeholder, not as a page.

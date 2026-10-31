@@ -4,6 +4,7 @@ import {
 	groupByTier,
 	isActive,
 	isNameable,
+	renderFundingGoal,
 	renderIncomeSummary,
 	renderSponsorLinks,
 	renderSponsorsListFile,
@@ -260,6 +261,50 @@ describe('renderIncomeSummary', () => {
 			'VersaTiles has no recurring sponsors yet — help us reach the **$500/month** ' +
 				'we need for server infrastructure.',
 		);
+	});
+});
+
+describe('renderFundingGoal', () => {
+	const meter = (recurringMonthlyDollars: number) =>
+		renderFundingGoal({ recurringMonthlyDollars });
+
+	it('measures against the server goal first', () => {
+		const html = meter(42);
+		expect(html).toContain('<strong>$42</strong> of $500 a month');
+		expect(html).toContain('aria-valuemax="500"');
+		expect(html).toContain('aria-valuenow="42"');
+		expect(html).toContain('style="width:8.40%"');
+		expect(html).toContain('8% of what we need for server infrastructure.');
+		expect(html).toContain('$1,500/month would also cover minimum maintenance');
+	});
+
+	it('moves on to the full goal once the servers are covered', () => {
+		const html = meter(600);
+		expect(html).toContain('<strong>$600</strong> of $1,500 a month');
+		expect(html).toContain('aria-valuemax="1500"');
+		expect(html).toContain('style="width:40.00%"');
+		expect(html).toContain('40% of what we need for server infrastructure and minimum');
+	});
+
+	it('draws no fill and claims nothing without income', () => {
+		const html = meter(0);
+		expect(html).not.toContain('funding-goal__fill');
+		expect(html).toContain('<strong>$0</strong> of $500 a month');
+		expect(html).toContain('0% of what we need');
+	});
+
+	it('never rounds to a goal not yet reached, or down to nothing', () => {
+		expect(meter(499)).toContain('99% of what we need');
+		expect(meter(1499)).toContain('99% of what we need');
+		expect(meter(1)).toContain('1% of what we need');
+	});
+
+	it('caps the fill and says thank you once everything is covered', () => {
+		const html = meter(2000);
+		expect(html).toContain('style="width:100.00%"');
+		expect(html).toContain('aria-valuenow="1500"');
+		expect(html).toContain('<strong>$2,000</strong> of $1,500 a month');
+		expect(html).toContain('are covered. Thank you!');
 	});
 });
 

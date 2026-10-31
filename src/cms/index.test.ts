@@ -92,6 +92,24 @@ describe('CMS builds site structure', () => {
 		}
 	});
 
+	it('fills the funding meter from the income file, or leaves it out without one', async () => {
+		const page = ['---', 'title: T', 'description: D', 'menuEntry: x', '---'];
+		writeFileSync(join(srcPath, 'goal.md'), [...page, '<!-- funding-goal -->'].join('\n'));
+
+		await new CMS(srcPath, dstPath).build();
+		expect(readFileSync(join(dstPath, 'goal.html'), 'utf8')).not.toContain('funding-goal');
+
+		mkdirSync(join(srcPath, 'sponsors'), { recursive: true });
+		writeFileSync(
+			join(srcPath, config.sponsorsIncomeFile),
+			JSON.stringify({ recurringMonthlyDollars: 42 }),
+		);
+		await new CMS(srcPath, dstPath).build();
+		expect(readFileSync(join(dstPath, 'goal.html'), 'utf8')).toContain(
+			'<strong>$42</strong> of $500 a month',
+		);
+	});
+
 	it('marks the current page in the menu and wires up the toggle', async () => {
 		const entry = config.menu[1];
 		if (!entry) throw new Error('expected at least two menu entries');

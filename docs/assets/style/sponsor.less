@@ -1,3 +1,47 @@
+/* Recurring income against the next goal. `main` for the specificity to beat the
+ * site's general figure and paragraph rules. */
+main .funding-goal {
+	margin: 2rem 0;
+	padding: 0;
+	text-align: center;
+}
+
+.funding-goal__headline {
+	/* The site's figcaptions are small, faded notes; this one is the headline. */
+	margin: 0 0 0.5rem;
+	opacity: 1;
+	color: #ccc;
+	font-size: 1.1rem;
+
+	strong {
+		color: #fff;
+		font-size: 2rem;
+		font-weight: 700;
+	}
+}
+
+/* The track is the fill's own colour, faded, so the two read as one measure. */
+.funding-goal__track {
+	height: 12px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #9d35ff40;
+}
+
+.funding-goal__fill {
+	height: 100%;
+	/* However small the income, it stays visible. */
+	min-width: 4px;
+	border-radius: 4px;
+	background: #9d35ff;
+}
+
+.funding-goal__note {
+	margin-top: 0.5rem;
+	color: #aaa;
+	font-size: 0.9rem;
+}
+
 /* The recurring sponsorships share a row, or stack where two would not fit; the
  * one-off donation takes a full row below them. */
 #sponsor-buttons {

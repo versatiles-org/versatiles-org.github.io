@@ -141,10 +141,10 @@ export const SPONSOR_TIERS: SponsorTier[] = [
 	{ title: 'Partner', minMonthlyDollars: 500 },
 ];
 
-/**
- * `$1,500` — thousands separated, no cents. Only for amounts that vary with the
- * sponsor list; fixed figures are written out in the prose that mentions them.
- */
+/** What the project needs per month, in dollars: the page text and the meter read these. */
+export const FUNDING_GOALS = { servers: 500, maintenance: 1500 };
+
+/** `$1,500` — thousands separated, no cents. */
 function usd(dollars: number): string {
 	return `$${dollars.toLocaleString('en-US')}`;
 }
@@ -278,11 +278,10 @@ function plural(count: number, noun: string): string {
  * the next milestone rather than a discouraging fraction of the final one. Only
  * recurring income counts towards it — one-time money is not a monthly rate, so
  * folding it in would overstate what the project can rely on.
- *
- * The $500 and $1,500 figures also appear in the intro text of
- * {@link renderSponsorsPage}; change them in both places.
  */
 export function renderIncomeSummary(income: SponsorIncome): string {
+	const servers = usd(FUNDING_GOALS.servers);
+	const maintenance = usd(FUNDING_GOALS.maintenance);
 	const sentences: string[] = [];
 	const recurring = income.recurringMonthlyDollars;
 	const received = `VersaTiles currently receives **${usd(recurring)}/month** from ${plural(
@@ -292,19 +291,19 @@ export function renderIncomeSummary(income: SponsorIncome): string {
 
 	if (recurring <= 0) {
 		sentences.push(
-			'VersaTiles has no recurring sponsors yet — help us reach the **$500/month** we need for server infrastructure.',
+			`VersaTiles has no recurring sponsors yet — help us reach the **${servers}/month** we need for server infrastructure.`,
 		);
-	} else if (recurring < 500) {
+	} else if (recurring < FUNDING_GOALS.servers) {
 		sentences.push(
 			`${received} — **${Math.round(
-				(recurring / 500) * 100,
-			)}%** of the **$500/month** we need for server infrastructure.`,
+				(recurring / FUNDING_GOALS.servers) * 100,
+			)}%** of the **${servers}/month** we need for server infrastructure.`,
 		);
-	} else if (recurring < 1500) {
+	} else if (recurring < FUNDING_GOALS.maintenance) {
 		sentences.push(
 			`${received} — **${Math.round(
-				(recurring / 1500) * 100,
-			)}%** of the **$1,500/month** we need for infrastructure and minimum maintenance.`,
+				(recurring / FUNDING_GOALS.maintenance) * 100,
+			)}%** of the **${maintenance}/month** we need for infrastructure and minimum maintenance.`,
 		);
 	} else {
 		sentences.push(`${received}, covering infrastructure and maintenance — thank you!`);
@@ -320,6 +319,46 @@ export function renderIncomeSummary(income: SponsorIncome): string {
 	}
 
 	return sentences.join(' ');
+}
+
+/**
+ * The funding meter: recurring income against the next goal, as HTML. Like
+ * {@link renderIncomeSummary}, it measures against the nearest goal still ahead
+ * and leaves one-time money out.
+ */
+export function renderFundingGoal(income: Pick<SponsorIncome, 'recurringMonthlyDollars'>): string {
+	const recurring = Math.max(0, income.recurringMonthlyDollars);
+	const { servers, maintenance } = FUNDING_GOALS;
+	const goal = recurring < servers ? servers : maintenance;
+	const reached = recurring >= goal;
+	const share = Math.min(recurring / goal, 1);
+	// Never round up to a goal not yet reached, or down to nothing when there is income.
+	const percent = reached
+		? 100
+		: recurring > 0
+			? Math.min(Math.max(Math.round(share * 100), 1), 99)
+			: 0;
+
+	let note: string;
+	if (reached) {
+		note = 'Server infrastructure and minimum maintenance are covered. Thank you!';
+	} else if (goal === servers) {
+		note = `${percent}% of what we need for server infrastructure. After that, ${usd(maintenance)}/month would also cover minimum maintenance.`;
+	} else {
+		note = `${percent}% of what we need for server infrastructure and minimum maintenance.`;
+	}
+
+	const fill =
+		recurring > 0
+			? `<div class="funding-goal__fill" style="width:${(share * 100).toFixed(2)}%"></div>`
+			: '';
+	const amounts = `${usd(recurring)} of ${usd(goal)} a month`;
+
+	return `<figure class="funding-goal">
+	<figcaption class="funding-goal__headline"><strong>${usd(recurring)}</strong> of ${usd(goal)} a month</figcaption>
+	<div class="funding-goal__track" role="meter" aria-label="Monthly sponsorship income" aria-valuemin="0" aria-valuemax="${goal}" aria-valuenow="${Math.min(recurring, goal)}" aria-valuetext="${amounts}">${fill}</div>
+	<div class="funding-goal__note">${note}</div>
+</figure>`;
 }
 
 /** Render sponsors as one comma-separated run of linked names. */
@@ -406,11 +445,13 @@ githubLink: https://github.com/versatiles-org/versatiles-org.github.io/blob/main
 # Sponsors
 
 VersaTiles is free and self-hostable — but not free to run. Our server
-infrastructure costs **$500/month**, and covering infrastructure and minimum
-maintenance takes **$1,500/month** in all. Every contribution goes towards those
+infrastructure costs **${usd(FUNDING_GOALS.servers)}/month**, and covering infrastructure and minimum
+maintenance takes **${usd(FUNDING_GOALS.maintenance)}/month** in all. Every contribution goes towards those
 numbers.
 
 ${income}
+
+<!-- funding-goal -->
 
 ${SPONSOR_BUTTONS}
 
