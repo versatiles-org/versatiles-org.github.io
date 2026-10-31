@@ -1,19 +1,10 @@
-/* Two rows: the recurring sponsorships side by side, the one-off donation on
- * its own line below them. */
+/* The recurring sponsorships share a row, or stack where two would not fit; the
+ * one-off donation takes a full row below them. */
 #sponsor-buttons {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 1rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+	gap: 0.75rem;
 	margin: 2rem 0 4rem;
-}
-
-.sponsor-btn-row {
-	display: flex;
-	gap: 1rem;
-	justify-content: center;
-	align-items: stretch;
-	flex-wrap: wrap;
 }
 
 /* Centered, responsive wrapper for the inlined sponsors.svg — no background or
@@ -76,24 +67,25 @@
 }
 
 .sponsor-btn {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 0.6rem;
-	min-height: 56px;
-	padding: 0.9rem 1.6rem;
-	border-radius: 10px;
+	min-height: 52px;
+	padding: 0.75rem 1rem;
+	border: 1px solid transparent;
+	border-radius: 6px;
 	text-decoration: none;
-	font-weight: 700;
-	font-size: 1.05rem;
-	line-height: 1.1;
+	font-weight: 600;
+	font-size: 1rem;
+	line-height: 1.2;
+	text-align: center;
 	box-sizing: border-box;
-	white-space: nowrap;
-	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-	transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+	color: #fff;
+	transition: background-color 0.1s;
 
 	&:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+		color: #fff;
 	}
 
 	.icon {
@@ -103,34 +95,23 @@
 	}
 }
 
-.sponsor-btn--github {
-	background: #bf3989;
-	color: #fff;
-
-	&:hover {
-		background: #a82d76;
-		color: #fff;
-	}
-}
-
+/* Monthly support is what the project needs most, so both ways to give it share
+ * the site's accent purple, which clears 4.5:1 against white text. */
+.sponsor-btn--github,
 .sponsor-btn--oc {
-	background: #297eff;
-	color: #fff;
+	background-color: #9d35ff;
 
 	&:hover {
-		background: #1e6fde;
-		color: #fff;
+		background-color: #8526e6;
 	}
 }
 
-/* The site's accent purple, which also clears 4.5:1 against white text —
- * the roadmap green would not at this font size. */
+/* Quieter than the sponsorships: the same purple, but only as an outline. */
 .sponsor-btn--once {
-	background: #9d35ff;
-	color: #fff;
+	grid-column: 1 / -1;
+	border-color: #9d35ff;
 
 	&:hover {
-		background: #8526e6;
-		color: #fff;
+		background-color: #9d35ff33;
 	}
 }

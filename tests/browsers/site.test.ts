@@ -1,6 +1,6 @@
 /**
- * Renders the built site's menu in every browser engine Playwright supports, then
- * checks each engine against the design and compares the engines with each other.
+ * Renders the built site's menu and donation buttons in every browser engine Playwright
+ * supports, then checks each engine against the design and compares the menu between them.
  *
  * Nothing is stored as a baseline: the screenshots are compared within one run, so
  * the checks do not depend on the fonts of the machine that first ran them.
@@ -506,6 +506,81 @@ describe.each(ENGINE_NAMES)('%s', (engine) => {
 		await withPage(engine, { viewport: { width: 1024, height: 640 } }, async (page) => {
 			await page.emulateMedia({ media: 'print' });
 			expect(await page.locator('nav').isVisible()).toBe(false);
+		});
+	});
+});
+
+describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
+	/** The buttons, read without clicking: the homepage can be slow to settle in some engines. */
+	const readButtons = (page: Page) =>
+		page.locator('.sponsor-btn').evaluateAll((buttons) =>
+			buttons.map((button) => {
+				const box = button.getBoundingClientRect();
+				const style = getComputedStyle(button);
+				return {
+					left: box.left,
+					right: box.right,
+					top: box.top,
+					width: box.width,
+					height: box.height,
+					color: style.color,
+					background: style.backgroundColor,
+				};
+			}),
+		);
+
+	const pages: [string, number][] = [
+		['/index.html', 3],
+		['/sponsors/index.html', 2],
+	];
+
+	describe.each(pages)('on %s', (path, count) => {
+		it.each([320, 360, 430, 704, 1024])('fit and stay tappable at %ipx', async (width) => {
+			await withPage(engine, { path, viewport: { width, height: 640 } }, async (page) => {
+				const buttons = await readButtons(page);
+				expect(buttons).toHaveLength(count);
+				for (const button of buttons) {
+					expect(button.left).toBeGreaterThanOrEqual(0);
+					expect(button.right).toBeLessThanOrEqual(width);
+					expect(button.height).toBeGreaterThanOrEqual(44);
+				}
+				expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+			});
+		});
+	});
+
+	it('puts the sponsorships side by side and the donation below on wide screens', async () => {
+		await withPage(
+			engine,
+			{ path: '/index.html', viewport: { width: 1024, height: 640 } },
+			async (page) => {
+				const [github, collective, once] = await readButtons(page);
+				expect(github?.top).toBe(collective?.top);
+				expect(github?.width).toBeCloseTo(collective?.width ?? 0, 0);
+				expect(once?.top).toBeGreaterThan(github?.top ?? 0);
+				expect(once?.left).toBeCloseTo(github?.left ?? 0, 0);
+				expect(once?.right).toBeCloseTo(collective?.right ?? 0, 0);
+			},
+		);
+	});
+
+	it('stacks them at the same width on phones', async () => {
+		await withPage(engine, { path: '/index.html' }, async (page) => {
+			const buttons = await readButtons(page);
+			expect(new Set(buttons.map((button) => button.left)).size).toBe(1);
+			expect(new Set(buttons.map((button) => button.width)).size).toBe(1);
+		});
+	});
+
+	it('uses white text and the accent purple on the sponsorships', async () => {
+		await withPage(engine, { path: '/index.html' }, async (page) => {
+			const [github, collective, once] = await readButtons(page);
+			for (const button of [github, collective]) {
+				expect(button?.background).toBe('rgb(157, 53, 255)');
+			}
+			for (const button of [github, collective, once]) {
+				expect(button?.color).toBe('rgb(255, 255, 255)');
+			}
 		});
 	});
 });
