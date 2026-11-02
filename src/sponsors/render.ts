@@ -168,10 +168,23 @@ const GITHUB_ICON = `<svg class="icon" viewBox="0 0 16 16" fill="currentColor" a
 
 const OPEN_COLLECTIVE_ICON = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M16.75 3.77a9.5 9.5 0 1 0 0 16.46"/><path d="M20.23 7.25a9.5 9.5 0 0 1 0 9.5"/></svg>`;
 
+const HEART_ICON = `<svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002Z"/></svg>`;
+
+const RECURRING_BUTTONS = `<a class="sponsor-btn sponsor-btn--github" href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank">${GITHUB_ICON}Sponsor on GitHub</a>
+	<a class="sponsor-btn sponsor-btn--oc" href="https://opencollective.com/versatiles" rel="noopener" target="_blank">${OPEN_COLLECTIVE_ICON}Sponsor on Open Collective</a>`;
+
 /** Sponsor call-to-action buttons, styled by `docs/assets/style/sponsor.less`. */
 const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
-	<a class="sponsor-btn sponsor-btn--github" href="https://github.com/sponsors/versatiles-org" rel="noopener" target="_blank">${GITHUB_ICON}Sponsor on GitHub</a>
-	<a class="sponsor-btn sponsor-btn--oc" href="https://opencollective.com/versatiles" rel="noopener" target="_blank">${OPEN_COLLECTIVE_ICON}Sponsor on Open Collective</a>
+	${RECURRING_BUTTONS}
+</div>`;
+
+/**
+ * The sponsorships plus the one-off donation. `client_reference_id` tells this
+ * page's Stripe donations apart from the start page's `versatiles-startpage`.
+ */
+const DONATE_BUTTONS = `<div id="sponsor-buttons">
+	${RECURRING_BUTTONS}
+	<a class="sponsor-btn sponsor-btn--once" href="https://donate.stripe.com/00w6oJ3EMfca6J35Jb1ck00?client_reference_id=versatiles-donate" rel="noopener" target="_blank">${HEART_ICON}Donate once</a>
 </div>`;
 
 /**
@@ -464,6 +477,27 @@ ${thanks}
 ${sections}
 
 ${GENERATED_NOTICE}
+`;
+}
+
+/**
+ * The body of https://versatiles.org/donate/, the page the free tools link to.
+ *
+ * Unlike `/sponsors/`, which SponsorKit generates at deploy time, this page is
+ * always built. A checkout without sponsor data just has no funding meter.
+ */
+export function renderDonatePage(): string {
+	return `<h1>Support VersaTiles</h1>
+
+<p>The maps, tools and downloads of VersaTiles are free and open source, but running them isn't free. Server infrastructure costs <strong>${usd(FUNDING_GOALS.servers)}/month</strong>, and covering infrastructure and minimum maintenance takes <strong>${usd(FUNDING_GOALS.maintenance)}/month</strong> in all.</p>
+
+<p>If VersaTiles is useful to you, please chip in. Monthly support helps most because we can plan around it, and a one-off donation is just as welcome.</p>
+
+<!-- funding-goal -->
+
+${DONATE_BUTTONS}
+
+<p>Thank you! You can see who already supports us on the <a href="/sponsors/">sponsors page</a>.</p>
 `;
 }
 

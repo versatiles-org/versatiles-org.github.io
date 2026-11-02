@@ -543,6 +543,7 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 		[
 			['/index.html', 3],
 			['/sponsors/index.html', 2],
+			['/donate/index.html', 3],
 		] as [string, number][]
 	).filter(([path]) => existsSync(join(DIST, path)));
 	const hasIncome = existsSync(join(DIST, 'sponsors/income.json'));

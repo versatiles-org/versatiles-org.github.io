@@ -4,6 +4,7 @@ import {
 	groupByTier,
 	isActive,
 	isNameable,
+	renderDonatePage,
 	renderFundingGoal,
 	renderIncomeSummary,
 	renderSponsorLinks,
@@ -448,6 +449,22 @@ describe('renderSponsorsPage', () => {
 	it('does not thank anyone when every sponsor has expired', () => {
 		const { html } = parseMarkdown(renderSponsorsPage([entry('past', -1)]));
 		expect(html).not.toContain('thank you!');
+	});
+});
+
+describe('renderDonatePage', () => {
+	it('offers both sponsorships and the one-off donation', () => {
+		const html = renderDonatePage();
+		expect(html).toContain('https://github.com/sponsors/versatiles-org');
+		expect(html).toContain('https://opencollective.com/versatiles');
+		expect(html).toContain('client_reference_id=versatiles-donate');
+	});
+
+	it('states the funding goals and has a slot for the meter', () => {
+		const html = renderDonatePage();
+		expect(html).toContain('$500/month');
+		expect(html).toContain('$1,500/month');
+		expect(html).toContain('<!-- funding-goal -->');
 	});
 });
 
