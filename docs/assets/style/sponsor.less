@@ -1,7 +1,23 @@
 /* The logo's lime: the one logo colour that stands out clearly against the page.
- * It needs dark text, as white on it only reaches 2.6:1. */
-@accent: #93a813;
-@accent-hover: #a6bd1a;
+ * It needs dark text, as white on it only reaches 2.7:1. The funding meter uses
+ * @accent too, so swapping it recolours both.
+ *
+ * All colours of the logo (docs/assets/logo/versatiles.svg), with the text colour
+ * each one needs for 4.5:1 and its contrast against the #1b1b1f page:
+ *
+ *   @accent       @on-accent   white   dark (= page)
+ *   #93a813 lime     #1b1b1f    2.7:1   6.4:1
+ *   #9d35ff violet   #fff       4.8:1   3.6:1
+ *   #810098 purple   #fff       8.8:1   2.0:1
+ *   #6b0075 plum     #fff      11.2:1   1.5:1
+ *   #0065bf blue     #fff       5.8:1   3.0:1
+ *   #006636 green    #fff       7.1:1   2.4:1
+ *   #005034 green    #fff       9.6:1   1.8:1
+ *   #003e28 green    #fff      12.2:1   1.4:1
+ *
+ * Below 3:1 against the page, the Donate button's outline is hard to see. */
+@accent: hsl(270, 100%, 60%);
+@accent-hover: lighten(@accent, 5%);
 @on-accent: #1b1b1f;
 
 /* Recurring income against the next goal. `main` for the specificity to beat the
