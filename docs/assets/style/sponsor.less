@@ -157,17 +157,19 @@ main .funding-goal {
 	}
 }
 
-/* Quieter than the sponsorships: the same colour, but only as an outline. The
- * payment marks make up for that; they wrap below the label on narrow screens. */
+/* Quieter than the sponsorships: the same colour, but only as an outline over a
+ * faint tint, so it still reads as a button. The payment marks wrap below the
+ * label on narrow screens. */
 .sponsor-btn--donate {
 	grid-column: 1 / -1;
 	flex-wrap: wrap;
 	column-gap: 0.6rem;
 	row-gap: 0.4rem;
 	border-color: @accent;
+	background-color: fade(@accent, 15%);
 
 	&:hover {
-		background-color: fade(@accent, 20%);
+		background-color: fade(@accent, 24%);
 	}
 }
 

@@ -673,14 +673,25 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 			const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
 			return ((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05);
 		};
+		/** The page background, which a translucent button shows through. */
+		const PAGE = 'rgb(27, 27, 31)';
+		/** Composites an `rgba()` colour over an opaque one, as the browser paints it. */
+		const blend = (top: string, bottom: string) => {
+			const [r = 0, g = 0, b = 0, a = 1] = (top.match(/[\d.]+/g) ?? []).map(Number);
+			const [br = 0, bg = 0, bb = 0] = (bottom.match(/[\d.]+/g) ?? []).map(Number);
+			const mix = (front: number, back: number) => front * a + back * (1 - a);
+			return `rgb(${mix(r, br)}, ${mix(g, bg)}, ${mix(b, bb)})`;
+		};
 
 		await withPage(engine, { path: '/index.html' }, async (page) => {
 			const [github, collective, donate] = await readButtons(page);
 			for (const button of [github, collective]) {
 				expect(contrast(button?.color ?? '', button?.background ?? '')).toBeGreaterThanOrEqual(4.5);
 			}
-			// The donation button is only an outline, so its label sits on the page itself.
-			expect(contrast(donate?.color ?? '', 'rgb(27, 27, 31)')).toBeGreaterThanOrEqual(4.5);
+			// The donation button is only tinted, so its label sits on that tint over the page.
+			expect(contrast(donate?.color ?? '', blend(donate?.background ?? '', PAGE))).toBeGreaterThanOrEqual(
+				4.5,
+			);
 		});
 	});
 });
