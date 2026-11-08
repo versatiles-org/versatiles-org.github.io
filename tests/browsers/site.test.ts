@@ -683,15 +683,24 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 			return `rgb(${mix(r, br)}, ${mix(g, bg)}, ${mix(b, bb)})`;
 		};
 
+		/** The label's contrast against what is painted behind it: the donation button is only tinted. */
+		const labelContrast = (button?: { color: string; background: string }) =>
+			contrast(button?.color ?? '', blend(button?.background ?? '', PAGE));
+
 		await withPage(engine, { path: '/index.html' }, async (page) => {
-			const [github, collective, donate] = await readButtons(page);
-			for (const button of [github, collective]) {
-				expect(contrast(button?.color ?? '', button?.background ?? '')).toBeGreaterThanOrEqual(4.5);
+			const buttons = await readButtons(page);
+			expect(buttons).toHaveLength(3);
+			for (const [index, button] of buttons.entries()) {
+				expect(labelContrast(button)).toBeGreaterThanOrEqual(4.5);
+
+				// Hovering changes the background, which must not cost the label its contrast.
+				await page.locator('.sponsor-btn').nth(index).hover();
+				// Past the 0.1s background transition.
+				await page.waitForTimeout(300);
+				const hovered = (await readButtons(page))[index];
+				expect(hovered?.background).not.toBe(button.background);
+				expect(labelContrast(hovered)).toBeGreaterThanOrEqual(4.5);
 			}
-			// The donation button is only tinted, so its label sits on that tint over the page.
-			expect(contrast(donate?.color ?? '', blend(donate?.background ?? '', PAGE))).toBeGreaterThanOrEqual(
-				4.5,
-			);
 		});
 	});
 });

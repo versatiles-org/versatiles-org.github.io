@@ -17,8 +17,10 @@
  *
  * Below 3:1 against the page, the Donate button's outline is hard to see. */
 @accent: hsl(270, 100%, 60%);
-@accent-hover: lighten(@accent, 5%);
-@on-accent: #1b1b1f;
+@on-accent: #fff;
+/* Away from the text colour, so hovering never costs contrast: lighter under
+ * dark text, darker under white. */
+@accent-hover: if((luma(@on-accent) > 50%), darken(@accent, 5%), lighten(@accent, 5%));
 
 /* Recurring income against the next goal. `main` for the specificity to beat the
  * site's general figure and paragraph rules. */
