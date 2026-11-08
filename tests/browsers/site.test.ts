@@ -718,6 +718,18 @@ describe.each(ENGINE_NAMES)('%s roadmap pills', (engine) => {
 			// A viewport shot of the scrolled-to pill: a full-page shot can shift the layout
 			// (lazy images) between measuring the pill and capturing it.
 			const pill = page.locator('.status-badge').nth(index);
+			// Chromium snaps the text to whole pixels but not the pill around it, so at a
+			// fractional position the text lands up to 1.5px off-centre whatever the CSS says,
+			// and any change to the content above can move it there. On a whole pixel, the
+			// test measures the CSS. `position: relative` moves the pill without reflowing.
+			await pill.evaluate((element) => {
+				const box = element.getBoundingClientRect();
+				const top = box.top + window.scrollY;
+				const left = box.left + window.scrollX;
+				element.style.position = 'relative';
+				element.style.top = `${Math.ceil(top) - top}px`;
+				element.style.left = `${Math.ceil(left) - left}px`;
+			});
 			await pill.evaluate((element) => element.scrollIntoView({ block: 'center' }));
 			await page.waitForTimeout(200);
 			const box = await pill.boundingBox();
