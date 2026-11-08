@@ -179,12 +179,20 @@ const SPONSOR_BUTTONS = `<div id="sponsor-buttons">
 </div>`;
 
 /**
+ * The payment marks on the Stripe button, drawn by `docs/assets/payment-methods.svg`
+ * as a mask so they take the button's text colour. Only methods the Stripe
+ * checkout actually offers belong here. Exported so the start page, which has
+ * its own copy of the buttons, can be tested against the same markup.
+ */
+export const PAYMENT_METHODS = `<span class="sponsor-btn__methods" role="img" aria-label="Apple Pay, Google Pay, PayPal, Visa, Mastercard, SEPA"></span>`;
+
+/**
  * The sponsorships plus the one-off donation. `client_reference_id` tells this
  * page's Stripe donations apart from the start page's `versatiles-startpage`.
  */
 const DONATE_BUTTONS = `<div id="sponsor-buttons">
 	${RECURRING_BUTTONS}
-	<a class="sponsor-btn sponsor-btn--once" href="https://donate.stripe.com/00w6oJ3EMfca6J35Jb1ck00?client_reference_id=versatiles-donate" rel="noopener" target="_blank">${HEART_ICON}Donate once</a>
+	<a class="sponsor-btn sponsor-btn--donate" href="https://donate.stripe.com/00w6oJ3EMfca6J35Jb1ck00?client_reference_id=versatiles-donate" rel="noopener" target="_blank">${HEART_ICON}Donate${PAYMENT_METHODS}</a>
 </div>`;
 
 /**

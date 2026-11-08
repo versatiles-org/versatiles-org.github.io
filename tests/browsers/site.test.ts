@@ -605,15 +605,53 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 			engine,
 			{ path: '/index.html', viewport: { width: 1024, height: 640 } },
 			async (page) => {
-				const [github, collective, once] = await readButtons(page);
+				const [github, collective, donate] = await readButtons(page);
 				expect(github?.top).toBe(collective?.top);
 				expect(github?.width).toBeCloseTo(collective?.width ?? 0, 0);
-				expect(once?.top).toBeGreaterThan(github?.top ?? 0);
-				expect(once?.left).toBeCloseTo(github?.left ?? 0, 0);
-				expect(once?.right).toBeCloseTo(collective?.right ?? 0, 0);
+				expect(donate?.top).toBeGreaterThan(github?.top ?? 0);
+				expect(donate?.left).toBeCloseTo(github?.left ?? 0, 0);
+				expect(donate?.right).toBeCloseTo(collective?.right ?? 0, 0);
 			},
 		);
 	});
+
+	describe.each(pages.filter(([path]) => path !== '/sponsors/index.html'))(
+		'on %s',
+		(path) => {
+			/** Where the payment marks sit relative to the label, and whether their mask loaded. */
+			const readMarks = (page: Page) =>
+				page.locator('.sponsor-btn--donate').evaluate((button) => {
+					const marks = button.querySelector('.sponsor-btn__methods');
+					const heart = button.querySelector('.icon')?.getBoundingClientRect();
+					const box = marks?.getBoundingClientRect();
+					const outer = button.getBoundingClientRect();
+					return {
+						inside:
+							!!box &&
+							box.left >= outer.left &&
+							box.right <= outer.right &&
+							box.top >= outer.top &&
+							box.bottom <= outer.bottom,
+						height: box?.height ?? 0,
+						belowLabel: !!box && !!heart && box.top >= heart.bottom,
+						mask: marks ? getComputedStyle(marks).maskImage : '',
+					};
+				});
+
+			it.each([
+				[320, true],
+				[1024, false],
+			])('show the payment marks at %ipx, below the label: %s', async (width, below) => {
+				await withPage(engine, { path, viewport: { width, height: 640 } }, async (page) => {
+					const marks = await readMarks(page);
+					expect(marks.inside).toBe(true);
+					expect(marks.height).toBe(32);
+					expect(marks.belowLabel).toBe(below);
+					expect(marks.mask).toContain('payment-methods.svg');
+				});
+			});
+		},
+	);
 
 	it('stacks them at the same width on phones', async () => {
 		await withPage(engine, { path: '/index.html' }, async (page) => {
@@ -637,12 +675,12 @@ describe.each(ENGINE_NAMES)('%s donation buttons', (engine) => {
 		};
 
 		await withPage(engine, { path: '/index.html' }, async (page) => {
-			const [github, collective, once] = await readButtons(page);
+			const [github, collective, donate] = await readButtons(page);
 			for (const button of [github, collective]) {
 				expect(contrast(button?.color ?? '', button?.background ?? '')).toBeGreaterThanOrEqual(4.5);
 			}
 			// The donation button is only an outline, so its label sits on the page itself.
-			expect(contrast(once?.color ?? '', 'rgb(27, 27, 31)')).toBeGreaterThanOrEqual(4.5);
+			expect(contrast(donate?.color ?? '', 'rgb(27, 27, 31)')).toBeGreaterThanOrEqual(4.5);
 		});
 	});
 });

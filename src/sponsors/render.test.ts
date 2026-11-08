@@ -1,9 +1,11 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parseMarkdown } from '../cms/markdown.ts';
 import {
 	groupByTier,
 	isActive,
 	isNameable,
+	PAYMENT_METHODS,
 	renderDonatePage,
 	renderFundingGoal,
 	renderIncomeSummary,
@@ -458,6 +460,18 @@ describe('renderDonatePage', () => {
 		expect(html).toContain('https://github.com/sponsors/versatiles-org');
 		expect(html).toContain('https://opencollective.com/versatiles');
 		expect(html).toContain('client_reference_id=versatiles-donate');
+	});
+
+	it('labels the Stripe button "Donate" and shows how to pay', () => {
+		const html = renderDonatePage();
+		expect(html).toContain(`Donate${PAYMENT_METHODS}</a>`);
+		expect(html).not.toContain('Donate once');
+	});
+
+	it('shows the same payment marks as the start page, which has its own copy of the buttons', () => {
+		const startPage = readFileSync(new URL('../../docs/index.html', import.meta.url), 'utf8');
+		expect(startPage).toContain(PAYMENT_METHODS);
+		expect(startPage).not.toContain('Donate once');
 	});
 
 	it('states the funding goals and has a slot for the meter', () => {

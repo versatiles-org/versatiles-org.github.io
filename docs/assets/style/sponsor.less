@@ -157,12 +157,34 @@ main .funding-goal {
 	}
 }
 
-/* Quieter than the sponsorships: the same colour, but only as an outline. */
-.sponsor-btn--once {
+/* Quieter than the sponsorships: the same colour, but only as an outline. The
+ * payment marks make up for that; they wrap below the label on narrow screens. */
+.sponsor-btn--donate {
 	grid-column: 1 / -1;
+	flex-wrap: wrap;
+	column-gap: 0.6rem;
+	row-gap: 0.4rem;
 	border-color: @accent;
 
 	&:hover {
 		background-color: fade(@accent, 20%);
+	}
+}
+
+/* The marks are a mask, so they take the button's text colour. Square 24px
+ * cells hold wordmarks like Visa, so they are drawn at 32px to stay legible. */
+.sponsor-btn__methods {
+	@height: 32px;
+	display: block;
+	flex-shrink: 0;
+	width: (@height * 174 / 24);
+	height: @height;
+	background-color: currentColor;
+	mask: url('/assets/payment-methods.svg') center / contain no-repeat;
+
+	/* Forced colours would replace the fill and leave a solid block. */
+	@media (forced-colors: active) {
+		forced-color-adjust: none;
+		background-color: LinkText;
 	}
 }
