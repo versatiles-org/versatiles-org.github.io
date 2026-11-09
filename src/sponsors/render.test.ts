@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { parseMarkdown } from '../cms/markdown.ts';
 import {
 	groupByTier,
-	isActive,
 	isNameable,
 	MIN_SPONSOR_DOLLARS,
 	meetsMinimum,
@@ -80,7 +79,7 @@ describe('groupByTier', () => {
 	});
 });
 
-describe('toSponsorEntry / isActive / meetsMinimum / isNameable', () => {
+describe('toSponsorEntry / meetsMinimum / isNameable', () => {
 	it('prefers the display name and the sponsor’s own link', () => {
 		expect(
 			toSponsorEntry({
@@ -162,10 +161,9 @@ describe('toSponsorEntry / isActive / meetsMinimum / isNameable', () => {
 		expect(toSponsorEntry({ sponsor: { login: 'a' }, monthlyDollars: 5 }).isOneTime).toBe(false);
 	});
 
-	it('treats expired records as inactive', () => {
-		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: -1 })).toBe(false);
-		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 0 })).toBe(false);
-		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 1 })).toBe(true);
+	it('drops expired records', () => {
+		expect(meetsMinimum({ sponsor: { login: 'a' }, monthlyDollars: -1 })).toBe(false);
+		expect(meetsMinimum({ sponsor: { login: 'a' }, monthlyDollars: 0 })).toBe(false);
 	});
 
 	it('drops contributions below the $5 minimum, recurring or one-time', () => {

@@ -57,26 +57,19 @@ export interface RawSponsorship {
 }
 
 /**
- * Whether a sponsorship is still live.
- *
- * `includePastSponsors` pulls expired records (`monthlyDollars: -1`) into the
- * fetch so `prorateOnetime` can decay one-time gifts, but they must never reach
- * a renderer: SponsorKit's `partitionTiers` has no bucket for a negative amount
- * and falls back to the *first* tier, so a long-lapsed $5 sponsor would be
- * drawn as a Partner at XL size.
- */
-export function isActive(s: RawSponsorship): boolean {
-	return s.monthlyDollars >= MIN_SPONSOR_DOLLARS;
-}
-
-/**
  * The smallest contribution, in USD, that counts as a sponsorship: the "$5 → your
  * name joins the SPONSORS list" promise of the entry tiers.
  */
 export const MIN_SPONSOR_DOLLARS = 5;
 
 /**
- * Whether a sponsorship reaches {@link MIN_SPONSOR_DOLLARS}.
+ * Whether a sponsorship is live and reaches {@link MIN_SPONSOR_DOLLARS}.
+ *
+ * Expired records: `includePastSponsors` pulls them into the fetch
+ * (`monthlyDollars: -1`) so `prorateOnetime` can decay one-time gifts, but they
+ * must never reach a renderer: SponsorKit's `partitionTiers` has no bucket for
+ * a negative amount and falls back to the *first* tier, so a long-lapsed $5
+ * sponsor would be drawn as a Partner at XL size.
  *
  * Open Collective accepts custom amounts down to $1, and SEO spammers use that:
  * a $1 gift from "Love My Puppy" buys a backlink from our sponsors page, README

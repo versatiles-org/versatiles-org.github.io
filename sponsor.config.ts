@@ -37,7 +37,7 @@
  * at all: without it the GitHub query runs with `activeOnly: true`, so an
  * inactive sponsorship is never fetched and the proration branch is dead code.
  * Together they mean expired records now reach `onSponsorsReady`, which is why
- * it filters before rendering — see `isActive` in `src/sponsors/render.ts`.
+ * it filters before rendering — see `meetsMinimum` in `src/sponsors/render.ts`.
  *
  * Currency — everything downstream assumes USD:
  *   - GitHub always reports `monthlyPriceInDollars`, so that side is USD by
@@ -58,7 +58,6 @@ import process from 'node:process';
 import { defineConfig, tierPresets } from 'sponsorkit';
 import type { Sponsorship, Tier } from 'sponsorkit';
 import {
-	isActive,
 	isNameable,
 	isPlaceholderProfile,
 	meetsMinimum,
@@ -246,8 +245,8 @@ text {
 	 * is what keeps every output of a run describing the same sponsors.
 	 */
 	onSponsorsReady(sponsors: Sponsorship[]) {
-		// `meetsMinimum` keeps $1 SEO-spam gifts off every output — see render.ts.
-		const active = sponsors.filter(isActive).filter(meetsMinimum);
+		// `meetsMinimum` drops expired records and $1 SEO-spam gifts — see render.ts.
+		const active = sponsors.filter(meetsMinimum);
 		const listed = active.filter(isNameable);
 
 		// Every live sponsor, private ones flagged `isAnonymous` rather than
