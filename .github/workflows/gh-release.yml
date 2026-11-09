@@ -72,7 +72,10 @@ jobs:
 
          # Compares the built menu across Chromium, Firefox and WebKit. Before the
          # upload on purpose: a layout broken in one browser should not deploy.
+         # Usually done in about a minute, but it once hung for 20 minutes. Fail
+         # instead of waiting for the 6-hour job default; a re-run gets a fresh runner.
          - name: Install browsers
+           timeout-minutes: 10
            run: npx playwright install --with-deps chromium firefox webkit
 
          - name: Cross-browser tests
