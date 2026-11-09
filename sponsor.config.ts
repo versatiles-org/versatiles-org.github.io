@@ -61,6 +61,7 @@ import {
 	isActive,
 	isNameable,
 	isPlaceholderProfile,
+	meetsMinimum,
 	ONE_TIME_TITLE,
 	renderSponsorsListFile,
 	renderSponsorsPage,
@@ -245,7 +246,8 @@ text {
 	 * is what keeps every output of a run describing the same sponsors.
 	 */
 	onSponsorsReady(sponsors: Sponsorship[]) {
-		const active = sponsors.filter(isActive);
+		// `meetsMinimum` keeps $1 SEO-spam gifts off every output — see render.ts.
+		const active = sponsors.filter(isActive).filter(meetsMinimum);
 		const listed = active.filter(isNameable);
 
 		// Every live sponsor, private ones flagged `isAnonymous` rather than

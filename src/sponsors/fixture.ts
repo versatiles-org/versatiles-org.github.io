@@ -32,6 +32,7 @@ import { config } from '../config.ts';
 import {
 	isActive,
 	isNameable,
+	meetsMinimum,
 	type RawSponsorship,
 	renderSponsorsListFile,
 	renderSponsorsPage,
@@ -84,7 +85,7 @@ async function main() {
 
 	// Mirrors sponsor.config.ts: every live sponsor is passed through, private
 	// ones flagged `isAnonymous` so they are counted and tallied but never named.
-	const active = fetched.filter(isActive);
+	const active = fetched.filter(isActive).filter(meetsMinimum);
 	const listed = active.filter(isNameable);
 	const entries = active.map(toSponsorEntry);
 	const income = summarizeIncome(entries);

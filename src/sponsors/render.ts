@@ -70,6 +70,29 @@ export function isActive(s: RawSponsorship): boolean {
 }
 
 /**
+ * The smallest contribution, in USD, that counts as a sponsorship: the "$5 → your
+ * name joins the SPONSORS list" promise of the entry tiers.
+ */
+export const MIN_SPONSOR_DOLLARS = 5;
+
+/**
+ * Whether a sponsorship reaches {@link MIN_SPONSOR_DOLLARS}.
+ *
+ * Open Collective accepts custom amounts down to $1, and SEO spammers use that:
+ * a $1 gift from "Love My Puppy" buys a backlink from our sponsors page, README
+ * graphic and JSON. Anything below the minimum is dropped from every output —
+ * names, graphic, and income totals alike, since a $1 backlink purchase is not
+ * support the project can plan around.
+ *
+ * Safe for one-time gifts: SponsorKit prorates an expired GitHub one-time gift
+ * to a tier threshold ($25 and up) or -1, never to a few dollars, and Open
+ * Collective reports the gift's real amount.
+ */
+export function meetsMinimum(s: RawSponsorship): boolean {
+	return s.monthlyDollars >= MIN_SPONSOR_DOLLARS;
+}
+
+/**
  * Whether a sponsor consented to being named.
  *
  * SponsorKit strips private sponsors from the SVG/PNG/JSON, but only after

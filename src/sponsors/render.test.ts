@@ -5,6 +5,8 @@ import {
 	groupByTier,
 	isActive,
 	isNameable,
+	MIN_SPONSOR_DOLLARS,
+	meetsMinimum,
 	PAYMENT_METHODS,
 	renderDonatePage,
 	renderFundingGoal,
@@ -78,7 +80,7 @@ describe('groupByTier', () => {
 	});
 });
 
-describe('toSponsorEntry / isActive / isNameable', () => {
+describe('toSponsorEntry / isActive / meetsMinimum / isNameable', () => {
 	it('prefers the display name and the sponsor’s own link', () => {
 		expect(
 			toSponsorEntry({
@@ -164,6 +166,17 @@ describe('toSponsorEntry / isActive / isNameable', () => {
 		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: -1 })).toBe(false);
 		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 0 })).toBe(false);
 		expect(isActive({ sponsor: { login: 'a' }, monthlyDollars: 1 })).toBe(true);
+	});
+
+	it('drops contributions below the $5 minimum, recurring or one-time', () => {
+		const s = { sponsor: { login: 'lovemypuppy' } };
+		expect(MIN_SPONSOR_DOLLARS).toBe(5);
+		expect(meetsMinimum({ ...s, monthlyDollars: 1 })).toBe(false);
+		expect(meetsMinimum({ ...s, monthlyDollars: 1, isOneTime: true })).toBe(false);
+		expect(meetsMinimum({ ...s, monthlyDollars: 4.99 })).toBe(false);
+		expect(meetsMinimum({ ...s, monthlyDollars: -1 })).toBe(false);
+		expect(meetsMinimum({ ...s, monthlyDollars: 5 })).toBe(true);
+		expect(meetsMinimum({ ...s, monthlyDollars: 25, isOneTime: true })).toBe(true);
 	});
 
 	it('treats only PRIVATE sponsors as unnameable', () => {
