@@ -66,7 +66,7 @@ export interface RawSponsorship {
  * drawn as a Partner at XL size.
  */
 export function isActive(s: RawSponsorship): boolean {
-	return s.monthlyDollars > 0;
+	return s.monthlyDollars >= MIN_SPONSOR_DOLLARS;
 }
 
 /**
