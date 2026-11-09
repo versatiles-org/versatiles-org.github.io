@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { config } from '../config.ts';
-import CMS, { canonicalUrl } from './index.ts';
+import CMS, { canonicalUrl, renderSitemap } from './index.ts';
 import { walkFiles } from './walk.ts';
 
 describe('CMS builds site structure', () => {
@@ -47,6 +47,9 @@ describe('CMS builds site structure', () => {
 				'Hallo Welt!',
 			].join('\n'),
 		);
+		// A plain HTML page without front matter, like the satellite_demo redirect.
+		mkdirSync(join(srcPath, 'redirect'));
+		writeFileSync(join(srcPath, 'redirect/index.html'), '<!DOCTYPE html><html></html>');
 	});
 
 	afterAll(() => {
@@ -90,6 +93,15 @@ describe('CMS builds site structure', () => {
 		for (const entry of walkFiles(join(dstPath, 'assets', 'style'))) {
 			expect(entry.name.endsWith('.less')).toBe(false);
 		}
+	});
+
+	it('lists the templated pages in sitemap.xml, but not plain HTML files', async () => {
+		await new CMS(srcPath, dstPath).build();
+
+		const sitemap = readFileSync(join(dstPath, 'sitemap.xml'), 'utf8');
+		expect(sitemap).toContain('<loc>https://versatiles.org/test/</loc>');
+		expect(sitemap).toContain('<loc>https://versatiles.org/german/</loc>');
+		expect(sitemap).not.toContain('redirect');
 	});
 
 	it('fills the funding meter from the income file, or leaves it out without one', async () => {
@@ -149,6 +161,18 @@ describe('canonicalUrl', () => {
 
 	it('keeps nested non-index pages', () => {
 		expect(canonicalUrl('guide/setup.md')).toBe('https://versatiles.org/guide/setup/');
+	});
+});
+
+describe('renderSitemap', () => {
+	it('sorts the URLs and escapes XML', () => {
+		expect(renderSitemap(['https://versatiles.org/b/', 'https://versatiles.org/a/?x&y'])).toBe(
+			'<?xml version="1.0" encoding="UTF-8"?>\n' +
+				'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+				'\t<url><loc>https://versatiles.org/a/?x&amp;y</loc></url>\n' +
+				'\t<url><loc>https://versatiles.org/b/</loc></url>\n' +
+				'</urlset>\n',
+		);
 	});
 });
 

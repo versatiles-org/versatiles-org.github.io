@@ -43,6 +43,24 @@ export function canonicalUrl(relativePath: string): string {
 }
 
 /**
+ * Renders a sitemap (https://www.sitemaps.org/protocol.html) listing the given URLs.
+ *
+ * @param urls - Absolute page URLs, as returned by {@link canonicalUrl}
+ * @returns The sitemap XML, with the URLs sorted so the output is stable
+ */
+export function renderSitemap(urls: string[]): string {
+	const escapeXml = (url: string) =>
+		url.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+	const entries = [...urls].sort().map((url) => `\t<url><loc>${escapeXml(url)}</loc></url>\n`);
+	return (
+		'<?xml version="1.0" encoding="UTF-8"?>\n' +
+		'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+		entries.join('') +
+		'</urlset>\n'
+	);
+}
+
+/**
  * Content Management System for building the VersaTiles static website.
  *
  * Handles the complete build pipeline:
@@ -240,9 +258,14 @@ export default class CMS {
 		}
 	}
 
-	/** Converts Markdown and dynamic .page.ts files to HTML pages using the page template. */
+	/**
+	 * Converts Markdown and dynamic .page.ts files to HTML pages using the page
+	 * template, and lists them in `sitemap.xml`. Plain `.html` files without
+	 * front matter, such as redirects, are copied but not listed.
+	 */
 	private async buildPages() {
 		const { srcPath, dstPath } = this;
+		const sitemapUrls: string[] = [];
 
 		// Render the discovery cards once; the result is injected into any page
 		// that contains a <!-- cards --> placeholder.
@@ -280,6 +303,7 @@ export default class CMS {
 
 			try {
 				let pageHTML: string;
+				let templated = true;
 				const relativePath = relative(srcPath, entry.path);
 
 				if (entry.name.endsWith('.page.ts')) {
@@ -330,10 +354,14 @@ export default class CMS {
 						);
 					} else {
 						pageHTML = applyPlaceholders(content);
+						templated = false;
 					}
 				} else {
 					continue;
 				}
+
+				// Only templated pages carry a canonical URL of their own.
+				if (templated) sitemapUrls.push(canonicalUrl(relativePath));
 
 				const htmlFileName = resolve(
 					dstPath,
@@ -345,6 +373,8 @@ export default class CMS {
 				throw new Error(`Failed to process page "${entry.path}"`, { cause: error });
 			}
 		}
+
+		writeFileSync(resolve(dstPath, 'sitemap.xml'), renderSitemap(sitemapUrls));
 	}
 
 	/** Renders a page from its metadata and content using the shared template. */
