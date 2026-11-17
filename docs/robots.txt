@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://versatiles.org/sitemap.xml
+Sitemap: https://versatiles.org/versatiles-style/sitemap.xml
+Sitemap: https://versatiles.org/node-versatiles-container/sitemap.xml
