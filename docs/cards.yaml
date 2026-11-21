@@ -49,6 +49,12 @@ sections:
         repo: https://github.com/versatiles-org/versatiles-map-editor
         image: assets/cards/map-editor.webp
 
+      - title: "Map animator"
+        hook: "Compose camera flights over 3D maps in the browser, and render them as video."
+        url: https://versatiles.org/versatiles-map-animator/
+        repo: https://github.com/versatiles-org/versatiles-map-animator
+        image: assets/cards/map-animator.webp
+
       - title: "Playground"
         hook: "Runnable code examples for VersaTiles + MapLibre, right in the browser."
         url: https://versatiles.org/playground/
