@@ -31,6 +31,12 @@ sections:
         url: "https://tiles.versatiles.org/#map=13.86/46.67217/9.54747/-62.6/60&style=satellite&config=eyJ0ZXJyYWluIjp0cnVlfQ"
         image: assets/cards/terrain.webp
 
+      - title: "Address search"
+        hook: "Free worldwide geocoder for OpenStreetMap addresses and places, ready for MapLibre."
+        url: https://docs.versatiles.org/guides/use_geocode_versatiles_org
+        repo: https://github.com/versatiles-org/photon-stack
+        image: assets/cards/geocoder.webp
+
       - title: "Style customizer"
         hook: "A MapLibre control to recolor, switch fonts/language, and export styles."
         url: https://versatiles.org/maplibre-versatiles-styler/

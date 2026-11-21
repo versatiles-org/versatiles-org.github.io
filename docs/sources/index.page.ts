@@ -67,6 +67,14 @@ const otherData: SourceEntry[] = [
 	},
 ];
 
+const geocodingData: SourceEntry[] = [
+	{
+		coverage: 'Global',
+		source: { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org/' },
+		license: { name: 'ODbL', url: 'https://opendatacommons.org/licenses/odbl/' },
+	},
+];
+
 async function fetchOrthophotos(): Promise<SourceEntry[]> {
 	const res = await fetch('https://versatiles.org/orthophotos/sources.json');
 	const data = await res.json();
@@ -143,6 +151,9 @@ ${renderTable(elevationData)}
 ${renderTable(await fetchOrthophotos())}
 <h2>Other Data</h2>
 ${renderTable(otherData)}
+<h2>Geocoding</h2>
+<p>The address search at <a href="https://docs.versatiles.org/guides/use_geocode_versatiles_org">geocode.versatiles.org</a> runs <a href="https://github.com/komoot/photon">Photon</a> with an index built by <a href="https://www.graphhopper.com/">GraphHopper</a>.</p>
+${renderTable(geocodingData)}
 </div>`;
 
 	return {
