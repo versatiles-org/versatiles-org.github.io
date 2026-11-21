@@ -70,7 +70,7 @@ Michael Kreil
 
 [^editor]: VersaTiles-Karteneditor: <https://versatiles.org/versatiles-map-editor/>
 
-[^animation]: VersaTiles-Animationseditor: <https://versatiles.org/versatiles-map-animation/>
+[^animation]: VersaTiles-Animationseditor: <https://versatiles.org/versatiles-map-animator/>
 
 [^miz]: Medieninnovationszentrum Babelsberg (MIZ) der Medienanstalt Berlin-Brandenburg: <https://www.miz-babelsberg.de/foerderung/foerderprojekte-alumni/details/versatiles-editorial-tools.html>
 
