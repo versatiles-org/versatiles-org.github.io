@@ -6,7 +6,7 @@ menuEntry: Terms
 
 # Terms of use for tiles.versatiles.org and geocode.versatiles.org
 
-*Last changed: [date]*
+*Last changed: 23 November 2026*
 
 tiles.versatiles.org and geocode.versatiles.org exist to show what
 VersaTiles can do. They are run by Michael Kreil, a private person, in my

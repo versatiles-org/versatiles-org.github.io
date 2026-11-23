@@ -6,7 +6,7 @@ menuEntry: Privacy
 
 # Privacy policy
 
-*Last changed: [date]*
+*Last changed: 23 November 2026*
 
 ## Who is responsible
 
