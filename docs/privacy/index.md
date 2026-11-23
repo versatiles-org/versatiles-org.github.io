@@ -49,8 +49,8 @@ limit the number of requests per client (rate limiting). It is not stored.
 Legal basis: my legitimate interest in running the services securely,
 finding misuse and knowing who relies on them (Art. 6 (1) (f) GDPR).
 
-The servers are hosted by [hosting provider of tiles.versatiles.org] and by
-Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany
+The servers are hosted by the AS250.net Foundation (tiles.versatiles.org)
+and by Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany
 (geocode.versatiles.org), who process the data on my behalf.
 
 ## versatiles.org and docs.versatiles.org
@@ -74,22 +74,24 @@ Cloudflare is certified under the EU-US Data Privacy Framework.
 
 ## Donations
 
-If you donate via [GitHub Sponsors](https://github.com/sponsors/versatiles-org),
-[Open Collective](https://opencollective.com/versatiles) or Stripe, these
-services process your payment under their own privacy policies. I receive
-your name, the amount and, depending on the service, your email address,
-and keep them as long as the law requires for my records. Your name or
-logo appears on [versatiles.org/sponsors](/sponsors/) only if you chose
-to make your sponsorship public.
+You can donate via [GitHub Sponsors](https://github.com/sponsors/versatiles-org),
+[Open Collective](https://opencollective.com/versatiles) or Stripe (the
+donate buttons on this website lead to my own Stripe account). These
+services process your payment and store your data under their own privacy
+policies. In my account with them I can see your name, the amount and,
+depending on the service, your email address. I don't keep any records of
+my own. Your name or logo appears on [versatiles.org/sponsors](/sponsors/)
+only if you chose to make your sponsorship public.
 
-Legal basis: carrying out your donation (Art. 6 (1) (b) GDPR) and legal
-record-keeping duties (Art. 6 (1) (c) GDPR).
+Legal basis: carrying out your donation (Art. 6 (1) (b) GDPR).
 
 ## Email
 
 If you write to me, I use your email address and message to answer you,
-and delete them when they are no longer needed. Legal basis: Art. 6 (1)
-(f) GDPR, or Art. 6 (1) (b) GDPR if your message concerns a contract.
+and delete them when they are no longer needed. My email is hosted by
+checkdomain GmbH, Große Burgstraße 27/29, 23552 Lübeck, Germany, on my
+behalf. Legal basis: Art. 6 (1) (f) GDPR, or Art. 6 (1) (b) GDPR if your
+message concerns a contract.
 
 ## Your rights
 
