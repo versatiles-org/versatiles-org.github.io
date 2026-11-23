@@ -49,9 +49,10 @@ limit the number of requests per client (rate limiting). It is not stored.
 Legal basis: my legitimate interest in running the services securely,
 finding misuse and knowing who relies on them (Art. 6 (1) (f) GDPR).
 
-The servers are hosted by the AS250.net Foundation (tiles.versatiles.org)
-and by Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany
-(geocode.versatiles.org), who process the data on my behalf.
+tiles.versatiles.org runs on my own server, for which the AS250.net
+Foundation provides only rack space and the network connection. geocode.versatiles.org is hosted by
+Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany, who
+process the data on my behalf.
 
 ## versatiles.org and docs.versatiles.org
 
