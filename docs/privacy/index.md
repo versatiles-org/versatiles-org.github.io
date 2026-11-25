@@ -6,7 +6,7 @@ menuEntry: Privacy
 
 # Privacy policy
 
-*Last changed: 23 November 2026*
+*Last changed: 25 November 2026*
 
 ## Who is responsible
 
@@ -72,6 +72,15 @@ The downloads are served by Cloudflare, Inc., USA, which receives your IP
 address and request data; see the
 [Cloudflare Privacy Policy](https://www.cloudflare.com/privacypolicy/).
 Cloudflare is certified under the EU-US Data Privacy Framework.
+
+When you download a file or open the download page, a program run on
+Cloudflare's servers on my behalf answers the request. Cloudflare keeps a
+log of each request for 7 days, which I can read: time, full IP address,
+the approximate location derived from it (country, city, postal code),
+network provider, requested address, referring website and User-Agent. I
+use it to find errors and misuse and to see how the downloads are used.
+Legal basis: my legitimate interest in running the service securely
+(Art. 6 (1) (f) GDPR).
 
 ## Donations
 
